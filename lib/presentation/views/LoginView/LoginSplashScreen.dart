@@ -40,7 +40,9 @@ class LoginSplashScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Image(image: AssetImage('assets/images/MovieNight.gif')),
+                          Image(
+                            fit: BoxFit.contain,
+                              image: AssetImage('assets/images/CinePool.gif')),
                           GestureDetector(
                             onTap: ()=> BlocProvider.of<AuthenticationBloc>(context).add(
                               AuthenticationStarted()),
