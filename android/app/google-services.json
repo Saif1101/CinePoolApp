@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1096334643388",
+    "project_id": "socialentertainmentclub",
+    "storage_bucket": "socialentertainmentclub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096334643388:android:9ffe4be0f9c1755ad0c0b9",
+        "android_client_info": {
+          "package_name": "com.example.socialentertainmentclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096334643388-jbd9ofmss4thsru2osgkvrv05sj90gd0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.socialentertainmentclub",
+            "certificate_hash": "c067b531add92ca02f158973d4298e3907d2f040"
+          }
+        },
+        {
+          "client_id": "1096334643388-uk4ovt8i5ide28uf6ldecrt5v4fc35d3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr0temNaVwNTN8_tD04PA0Ao-gxRaXn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096334643388-uk4ovt8i5ide28uf6ldecrt5v4fc35d3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
