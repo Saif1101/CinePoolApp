@@ -32,9 +32,7 @@ class ProfileBannerBloc extends Bloc<ProfileBannerEvent, ProfileBannerState> {
   @override
   Stream<ProfileBannerState> mapEventToState(ProfileBannerEvent event)
   async* {
-    print(event);
     if(event is ToggleFollowUserEvent){
-      print("${event.isFollowing}");
       if(event.isFollowing){
         await removeFollower(this.profileUserID);
       } else{

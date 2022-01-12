@@ -35,12 +35,10 @@ class FavoriteMoviesBloc extends Bloc<FavoriteMoviesEvent, FavoriteMoviesState> 
   @override
   Stream<FavoriteMoviesState> mapEventToState(FavoriteMoviesEvent event)
   async* {
-    print(event);
     if(event is ToggleFavoriteMovieEvent){
       if(event.isFavorite){
         await removeFavoriteMovie(MovieParams(movieID: event.movieEntity.id));
       } else {
-        print("inside toggle event movie id is ${event.movieEntity}");
         await addMovieToFavorites(event.movieEntity);
       }
         final response = await checkIfFavorite(MovieParams(

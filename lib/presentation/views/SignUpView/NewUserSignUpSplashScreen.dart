@@ -45,7 +45,6 @@ class _NewUserSignUpState extends State<NewUserSignUp> {
       body: Center(
         child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (context,state){
-            print('$state in registration listener');
            if(state is RegistrationComplete){
               //PUSH TO EXPLORE PAGE
              Navigator.pushNamedAndRemoveUntil(context, RouteList.initial, (route) => false); // Configuring the homeview to handle all page changes. the homeview will decide whether
@@ -61,7 +60,6 @@ class _NewUserSignUpState extends State<NewUserSignUp> {
             return true;
           },
             builder: (context,state){
-              print('$state in registration builder');
               if(state is RegistrationPageLoaded){
                 return Scaffold(
                   resizeToAvoidBottomInset: true,

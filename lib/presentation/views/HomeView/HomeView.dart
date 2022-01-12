@@ -19,7 +19,6 @@ class HomeView extends StatelessWidget {
       body: Center(
         child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
-            print("Inside listener $state");
             if (state is AuthenticationFailure) {
               Navigator.pushReplacementNamed(context,RouteList.loginPage);
             }
@@ -46,7 +45,6 @@ class HomeView extends StatelessWidget {
             return true;
           },
           builder: (context, state){
-            print("Inside builder $state");
             if (state is AuthenticationInitial) {
               return LoginSplashScreen();
             }

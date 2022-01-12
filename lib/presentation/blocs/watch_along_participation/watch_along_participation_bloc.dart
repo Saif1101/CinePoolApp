@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_IfParticipant.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optInto_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optOutOf_WatchAlong.dart';
+import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/models/WatchAlong.dart';
 
 part 'watch_along_participation_event.dart';

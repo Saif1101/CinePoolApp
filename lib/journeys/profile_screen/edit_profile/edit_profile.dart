@@ -117,7 +117,6 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   );
                 }
-                print(state);
 
                 return Center(child: Text("UndefinedState in EditPage",style:TextStyle(color: Colors.white)));
                 },

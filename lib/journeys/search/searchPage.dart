@@ -56,7 +56,6 @@ class _SearchPageState extends State<SearchPage> {
           title: Container(
             child: BlocBuilder<SearchPageBloc, SearchPageState>(
               builder: (context, state) {
-                print(state);
                 if(state is UserSearch){
                   return SearchTextField(onSubmit: (query){BlocProvider.of<SearchUsersBloc>(context).add
                     (SearchUsersTermChangedEvent(searchTerm: query));},

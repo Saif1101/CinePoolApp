@@ -22,10 +22,8 @@ class GenericMovieSliderBloc extends Bloc<GenericMovieSliderEvent, GenericMovieS
       GenericMovieSliderEvent event,
       ) async* {
     if(event is GenericMovieSliderLoadEvent){
-      print(event.genreMap);
 
       for(String genreID in event.genreMap.keys) {
-        print("genre id: $genreID");
         final genreMovies = await event.getMoviesByGenre(GenreSearchParams(genreID: genreID));
         yield genreMovies.fold(
             (l)=> GenericMoveSliderError(errorType: l.appErrorType, errorMessage: l.errorMessage),

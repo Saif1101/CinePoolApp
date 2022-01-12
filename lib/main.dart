@@ -64,6 +64,7 @@ class _MyNewAppState extends State<MyNewApp> {
       child: BlocProvider(
         create: (context) => authenticationBloc,
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           navigatorKey: _navigatorKey,
           title: 'Flutter Demo',
           theme: ThemeData(

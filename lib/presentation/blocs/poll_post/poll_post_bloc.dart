@@ -50,7 +50,6 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
 
       final user = await getUserFromID(event.pollPost.ownerID);
       if(user.isRight() && errorFlag!=1){
-        print("Before yielding pollpostloaded state, ${event.pollPost.votersMap} ");
         yield PollPostLoaded(
             pollOptionsMap: event.pollPost.pollOptionsMap,
             movies: movies,
@@ -63,7 +62,6 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
     }
     else if(event is UpdatePollsEvent){
       yield PollPostLoading();
-      print('Before updating, ${event.votersMap}, ${event.pollOptionsMap}');
       final response = await castPollVote(CastPollVoteParams(ownerID: event.owner.id,
             postID: event.postID,
             votersMap: event.votersMap,

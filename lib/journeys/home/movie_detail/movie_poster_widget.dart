@@ -68,7 +68,6 @@ class MoviePoster extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: BlocBuilder<FavoriteMoviesBloc, FavoriteMoviesState>(
                     builder: (context, state) {
-                      print(state);
                       if(state is IsFavoriteMovie){
                         return GestureDetector(
                           onTap: (){BlocProvider.of<FavoriteMoviesBloc>(context)

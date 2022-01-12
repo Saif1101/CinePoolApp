@@ -67,7 +67,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           ],
           child: BlocBuilder<MovieDetailBloc, MovieDetailState>(
             builder: (context, state) {
-              print("$state in MovieDetailScreen");
               if(state is MovieDetailLoaded){
                 final movieDetail = state.movieDetailEntity;
                 return SingleChildScrollView(

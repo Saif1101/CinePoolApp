@@ -133,7 +133,6 @@ class ProfileBanner extends StatelessWidget {
                       Button(text:'Unfollow', onTap: (){BlocProvider.of<ProfileBannerBloc>(context)
                           .add(ToggleFollowUserEvent(isFollowing: isFollowed, userID: user.id));})
                           : RadiantGradientMask(child: Button(text: 'Edit', onTap: (){
-                        print('pushing');
                         Navigator.of(context).pushNamed(RouteList.editProfile);
                       }
                       ),

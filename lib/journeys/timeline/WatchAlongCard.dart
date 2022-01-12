@@ -11,6 +11,7 @@ import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_participation/watch_along_participation_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_post/watch_along_post_bloc.dart';
 import 'package:socialentertainmentclub/common/extensions/string_extensions.dart';
+import 'package:socialentertainmentclub/presentation/widgets/app_error_widget.dart';
 
 class WatchAlongCard extends StatefulWidget {
   final WatchAlong watchAlong;
@@ -54,7 +55,6 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
       ],
       child: BlocBuilder<WatchAlongPostBloc, WatchAlongPostState>(
         builder: (context, state) {
-          print("Inside WatchAlongPost Builder : current state is $state");
           if (state is WatchAlongPostLoaded) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -288,11 +288,11 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                 Icon(
                                   state.isParticipating
                                       ? Icons.emoji_emotions_outlined
-                                      : Icons.beenhere_outlined,
+                                      : Icons.access_alarm_outlined,
                                   color: state.isParticipating
                                       ? Colors.black
                                       : Colors.white,
-                                  size: 48,
+                                  size: 40,
                                 ),
                                 Text(
                                   state.isParticipating
@@ -310,8 +310,8 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                             ),
                           ),
                         );
-                      } else if (state is ParticipationButtonLoading ||
-                          state is WatchAlongParticipationInitial) {
+                      }
+                      else if (state is ParticipationButtonLoading || state is WatchAlongParticipationInitial) {
                         return Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -324,26 +324,42 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               RadiantGradientMask(
-                                  child: CircularProgressIndicator())
+                                  child: CircularProgressIndicator()
+                              )
                             ],
                           ),
                         );
                       }
+                      else if (state is ParticipationButtonError){
+                        return AppErrorWidget(
+                            errorType: state.appErrorType,
+                            onPressed: ()=>{
+                              BlocProvider.of<WatchAlongPostBloc>(context).add(LoadWatchAlongEvent(widget.watchAlong))
+                            }
+                        );
+                      }
                       return Center(
                         child: Text(
-                            "Undefined state in WatchAlongParticipationBloc"),
+                            "Undefined state in WatchAlongParticipationBloc: $state"),
                       );
                     },
                   ),
                 ],
               ),
             );
-          } else if (state is WatchAlongPostLoading ||
-              state is WatchAlongPostInitial) {
+          }
+          else if (state is WatchAlongPostLoading || state is WatchAlongPostInitial) {
             return Card(
               child: Center(
                 child: CircularProgressIndicator(),
               ),
+            );}
+          else if(state is WatchAlongPostError){
+            return AppErrorWidget(
+                errorType: state.appErrorType,
+                onPressed: ()=>{
+                  BlocProvider.of<WatchAlongPostBloc>(context).add(LoadWatchAlongEvent(widget.watchAlong))
+                }
             );
           }
           return Center(

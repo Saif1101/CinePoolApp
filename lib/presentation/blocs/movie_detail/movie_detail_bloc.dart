@@ -47,7 +47,6 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
       yield eitherResponse.fold(
               (l) => MovieDetailError(appErrorType: l.appErrorType, errorMessage: l.errorMessage),
               (r) => MovieDetailLoaded(movieDetailEntity: r));
-      print("UserID is  $currentUserID");
       watchAlongBloc.add(CheckIfScheduledEvent(event.movieID));
       favoriteMoviesBloc.add(CheckIfFavoriteMovieEvent(movieID: event.movieID));
       castBloc.add(LoadCastEvent(movieID: event.movieID));

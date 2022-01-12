@@ -25,7 +25,6 @@ class GenresRemoteDataSourceImpl extends GenresRemoteDataSource{
   @override
   Future<Map<int, String>> getGenres() async {
     //returns a list of genre objects
-    print("Genre response recieverd");
     final response = await _client.get('/genre/movie/list');
 
     final genres = GenreList.fromJson(response).genres;

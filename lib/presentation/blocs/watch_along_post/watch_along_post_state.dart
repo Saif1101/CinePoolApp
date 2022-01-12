@@ -28,4 +28,11 @@ class WatchAlongPostLoaded extends WatchAlongPostState{
   List<Object> get props => [watchAlongPostModel];
 }
 
-class WatchAlongPostError extends WatchAlongPostState{}
+class WatchAlongPostError extends WatchAlongPostState{
+  final AppErrorType appErrorType;
+  final String errorMessage;
+
+  WatchAlongPostError({this.appErrorType, this.errorMessage});
+
+
+}

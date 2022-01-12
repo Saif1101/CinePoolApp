@@ -16,7 +16,6 @@ class FavoritedMovie extends MovieEntity{
     @required this.posterPath});
 
   factory FavoritedMovie.fromMovieEntity(MovieEntity movieEntity){
-    print("Creating new favorited movie from movie entity ${movieEntity.id}");
     return FavoritedMovie(id: movieEntity.id,
         title: movieEntity.title,
         posterPath: movieEntity.posterPath);

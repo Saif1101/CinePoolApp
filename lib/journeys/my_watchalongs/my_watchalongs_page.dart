@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
+import 'package:socialentertainmentclub/helpers/font_size.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/journeys/timeline/WatchAlongCard.dart';
 import 'package:socialentertainmentclub/presentation/blocs/my_watch_alongs/my_watch_alongs_bloc.dart';
@@ -32,6 +33,20 @@ class _MyWatchAlongsPageState extends State<MyWatchAlongsPage> {
       child: BlocProvider<MyWatchAlongsBloc>(
         create: (context) => myWatchAlongsBloc,
         child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Center(
+              child: Text(
+                'My Watch-Alongs',
+                style: TextStyle(
+                  fontSize: FontSize.large,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic
+                ),
+              ),
+            ),
+          ),
           backgroundColor: Color(0xFF142e4a),
           body: BlocBuilder<MyWatchAlongsBloc, MyWatchAlongsState>(
             builder: (context, state) {

@@ -30,7 +30,7 @@ class RecommendationListMovieTile extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(Icons.close,
         color: Colors.blueGrey,),
-        onPressed: (){print("Remove Button Pressed");
+        onPressed: (){
         this.recommendationsPollListBloc.add(RemoveMovieRecommendationEvent(this.movie.id.toString()));},
       ),
     );

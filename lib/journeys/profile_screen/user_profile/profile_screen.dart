@@ -29,7 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    print('Loaded Profile of ${widget.user.id}');
     _profileBannerBloc = getItInstance<ProfileBannerBloc>();
     _profileBannerBloc.add(LoadProfileBannerEvent(userID: widget.user.id));
     _favoriteMoviesBloc = getItInstance<FavoriteMoviesBloc>();
@@ -80,7 +79,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 create: (context) => _profileBannerBloc,
                 child: BlocBuilder<ProfileBannerBloc, ProfileBannerState>(
                   builder: (context, state) {
-                    print(state);
                     if(state is ProfileBannerLoading || state is ProfileBannerInitial){
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -121,7 +119,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 (value: _favoriteMoviesBloc,
                 child: BlocBuilder<FavoriteMoviesBloc, FavoriteMoviesState>(
                   builder: (context, state) {
-                    print(state);
                     if (state is FavoriteMoviesLoaded) {
                       if (state.favoritedMovies.isEmpty) {
                         return Center(

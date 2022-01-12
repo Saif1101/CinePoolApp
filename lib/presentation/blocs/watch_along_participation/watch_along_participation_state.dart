@@ -18,6 +18,12 @@ class IsParticipating extends WatchAlongParticipationState{
 
 class ParticipationButtonLoading extends WatchAlongParticipationState{}
 
-class ParticipationButtonError extends WatchAlongParticipationState{}
+class ParticipationButtonError extends WatchAlongParticipationState{
+  final AppErrorType appErrorType;
+  final String errorMessage;
+
+  ParticipationButtonError({this.appErrorType, this.errorMessage});
+
+}
 
 

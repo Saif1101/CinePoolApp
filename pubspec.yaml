@@ -51,6 +51,8 @@ dependencies:
   polls:
   transparent_image:
   flutter_dotenv:
+  cloud_functions:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

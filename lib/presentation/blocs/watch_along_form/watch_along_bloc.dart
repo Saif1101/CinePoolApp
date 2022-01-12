@@ -26,9 +26,7 @@ class WatchAlongFormBloc extends Bloc<WatchAlongEvent, WatchAlongState> {
   @override
   Stream<WatchAlongState> mapEventToState(WatchAlongEvent event)
   async * {
-    print('Incoming event: $event');
     if(event is ToggleScheduleWatchAlongEvent){
-      print('Event is ${event.isScheduled}');
       if(event.isScheduled){
         yield WatchAlongLoading();
         await removeWatchAlong(event.movieID);
@@ -40,7 +38,6 @@ class WatchAlongFormBloc extends Bloc<WatchAlongEvent, WatchAlongState> {
     else if (event is CheckIfScheduledEvent){
       final response = await checkWatchAlong(event.movieID.toString());
       if(response.isRight())
-        print('WatchAlong ${response.getOrElse(null)}');
       yield response.fold(
               (l) =>  WatchAlongError(),
               (r) => IsScheduled(r)

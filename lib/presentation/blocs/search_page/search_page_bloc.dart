@@ -13,7 +13,6 @@ class SearchPageBloc extends Bloc<SearchPageEvent, SearchPageState> {
   @override
   Stream<SearchPageState> mapEventToState(SearchPageEvent event)
   async* {
-    print(event);
     if(event is UserSearchSelectEvent){
       yield UserSearch();
     }else if(event is MovieSearchSelectEvent){

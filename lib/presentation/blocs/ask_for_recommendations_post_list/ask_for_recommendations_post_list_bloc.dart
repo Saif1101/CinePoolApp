@@ -34,7 +34,6 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
   @override
   Stream<AskForRecommendationsPostListState> mapEventToState(AskForRecommendationsPostListEvent event)
   async* {
-    print('AskForRecommendationsPostList Bloc: Incoming Event: $event');
     if (event is LoadRecommendationsPostListEvent){
       yield AskForRecommendationsPostListLoading();
 
@@ -107,9 +106,7 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
 
 
       if(event.recommendationsTrackMap.keys.contains(event.movieID)){
-        print("The post already contains this movie in its list of recommendations");
         if(!event.recommendationsTrackMap[event.movieID].contains(FirestoreConstants.currentUserId)){
-          print("The movie does not contain current user's vote");
           //Since the movie does not contain the user's vote, we will have to add
           //the user to this movie's entry inside the the movieUserMap
           event.movieUserMap[event.movieID.toString()].add(FirestoreConstants.currentUser);
@@ -139,9 +136,7 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
         }else{
           errorFlag=1; errorMessage= "Error occurred during adding new movie";
         }
-        print("New movie added to the map alongwith the userID of the person who recommended it");
         event.recommendationsTrackMap[event.movieID.toString()] = [event.currentUserID];
-        print("The new recommendationTrackMap is ${event.recommendationsTrackMap}");
       }
 
       final response = await updateRecommendationsTrackMap(UpdateRecommendationsTrackMapParams(
@@ -167,9 +162,7 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
       // has to exist in the recommendation Movie TrackMap
       yield AskForRecommendationsPostListLoading();
       if(event.recommendationsTrackMap.keys.contains(event.movieID)){
-        print("the post contains the movie");
         if(event.recommendationsTrackMap[event.movieID].contains(event.currentUserID)){
-          print("the movie contains the current user's vote");
           event.recommendationsTrackMap[event.movieID].remove(FirestoreConstants.currentUserId);
 
           event.movieUserMap[event.movieID.toString()].removeWhere(
@@ -183,7 +176,6 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
             event.movies.remove(event.movieID);
             event.movieUserMap.remove(event.movieID);
           }
-          print("After removal of vote: , ${event.recommendationsTrackMap}");
           final response = await updateRecommendationsTrackMap(UpdateRecommendationsTrackMapParams(
               recommendationsTrackMap: event.recommendationsTrackMap,
               postID: event.postID,

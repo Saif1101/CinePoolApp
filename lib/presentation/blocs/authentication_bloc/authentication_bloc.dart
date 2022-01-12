@@ -58,7 +58,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       AuthenticationEvent event,
       ) async* {
 
-    print('Inside auth bloc : event : $event');
 
     if(event is CheckIfUserAlreadySignedInEvent){
       if(authenticationFireBaseProvider.checkIfUserSignedIn()){

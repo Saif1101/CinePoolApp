@@ -191,8 +191,6 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                   child: BlocBuilder<AskForRecommendationsPostListBloc,
                           AskForRecommendationsPostListState>(
                       builder: (context, state) {
-                    print(
-                        'Inside AskForRecommendationsPostListBlocBuilder: Current State : $state');
                     if (state is AskForRecommendationsPostListLoaded) {
                       return Column(
                         children: [

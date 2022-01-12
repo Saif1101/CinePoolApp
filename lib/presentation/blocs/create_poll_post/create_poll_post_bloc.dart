@@ -28,7 +28,6 @@ class CreatePollPostBloc extends Bloc<PollPostEvent, PollPostState> {
   @override
   Stream<PollPostState> mapEventToState (PollPostEvent event)
   async* {
-    print('inside poll post bloc , incoming event $event');
     if(event is LoadCreatePollPostPage) {
       yield CreatePollPostLoading();
       yield CreatePollPostLoaded(title: event.title,);
@@ -36,7 +35,6 @@ class CreatePollPostBloc extends Bloc<PollPostEvent, PollPostState> {
     else if(event is CreatePollPostSubmitEvent){
         yield CreatePollPostLoading();
         if(event.title.length>=4 && event.title.length<=15 &&  event.movies.length>=2){
-          print('Creating poll post');
           final responseEither = await createPollPost(PollPostModel(
               votersMap: {},
               ownerID: FirestoreConstants.currentUserId,

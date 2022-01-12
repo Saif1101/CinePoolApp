@@ -18,7 +18,6 @@ class RecommendationsPollListBloc extends Bloc<RecommendationsPollListEvent, Rec
   @override
   Stream<RecommendationsPollListState> mapEventToState(RecommendationsPollListEvent event)
   async * {
-    print('Incoming event : RecommendationsPollList : $event');
     if(event is AddMovieRecommendationEvent){
       yield RecommendationsPollListLoading();
       //need to check for duplicates

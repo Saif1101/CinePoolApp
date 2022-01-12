@@ -10,6 +10,7 @@ import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
 import 'package:socialentertainmentclub/common/extensions/string_extensions.dart';
+import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_form/watch_along_bloc.dart';
 
@@ -49,7 +50,7 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32),
-              color: Colors.white,
+              color: ThemeColors.vulcan.withOpacity(0.9),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -89,13 +90,14 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
                               child: Text('${widget.movieTitle}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w900,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: Sizes.dimen_8.h
                                 ),),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: TextFormField(
+
                                 onSaved: (value){
                                   titleController.text = value;
                                 },
@@ -113,11 +115,18 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
                                 },
                                 autofocus: false,
                                 style: new TextStyle(fontWeight: FontWeight.normal,
-                                  color: Colors.black,),
+                                  color: Colors.white,),
                                 decoration: InputDecoration(
                                   hintText: 'Title',
+                                  hintStyle: TextStyle(color: Colors.white),
                                   contentPadding: new EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0)
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: new BorderSide(
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          6.0
+                                      )
                                   ),
                                 ),
                               ),
@@ -142,12 +151,20 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
                                 },
                                 autofocus: false,
                                 style: new TextStyle(fontWeight: FontWeight.normal,
-                                  color: Colors.black,),
+                                  color: Colors.white,),
                                 decoration: InputDecoration(
                                   hintText: 'Where?',
+                                  hintStyle: TextStyle(color: Colors.white),
+
                                   contentPadding: new EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0)
-                                  ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: new BorderSide(
+                                          color: Colors.white,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                            6.0
+                                        )
+                                    ),
                                 ),
                               ),
                             ),
@@ -159,38 +176,30 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white.withOpacity(0.1),
-                                            Colors.white.withOpacity(0.45),
-                                            Colors.white.withOpacity(0.7),
-                                            Colors.white
-                                          ],
-                                      ),
+                                      color: ThemeColors.primaryColor
                                     ),
-                                    child: RadiantGradientMask(
-                                      child: RaisedButton(
-                                          onPressed: () {
-                                            DatePicker.showDateTimePicker(context,
-                                                showTitleActions: true,
-                                                minTime: DateTime.now(),
-                                                maxTime: DateTime(2019, 6, 7),
-                                                onChanged: (date) {
-                                                  print('change $date');
-                                                }, onConfirm: (date) {
-                                              dateTimeController.text = date.toString();
-                                              dateTimeLabelController.text = date.toString().getDateTime();
-                                                }, currentTime: DateTime.now());
-                                          },
-                                          child: Text(
-                                            'When?',
-                                            style: TextStyle(color: Colors.black),
-                                          )
-                                      ),
+                                    child: RaisedButton(
+                                      color: ThemeColors.primaryColor,
+                                        onPressed: () {
+                                          DatePicker.showDateTimePicker(context,
+                                              showTitleActions: true,
+                                              minTime: DateTime.now(),
+                                              maxTime: DateTime(2019, 6, 7),
+                                              onChanged: (date) {
+                                              }, onConfirm: (date) {
+                                            dateTimeController.text = date.toString();
+                                            dateTimeLabelController.text = date.toString().getDateTime();
+                                              }, currentTime: DateTime.now());
+                                        },
+                                        child: Text(
+                                          'When?',
+                                          style: TextStyle(color: Colors.white),
+                                        )
                                     ),
                                   ),
                                   TextField(
                                     style: TextStyle(
+                                      color: Colors.white,
                                       fontStyle: FontStyle.italic,
                                       fontSize: Sizes.dimen_6.h,
                                     ),
@@ -217,7 +226,6 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
                     ),
                     child: GestureDetector(
                       onTap: (){
-                        print('submitted');
                         if(dateTimeController.text.isEmpty){
                           dateTimeLabelController.text = 'Pick a date';
                         }

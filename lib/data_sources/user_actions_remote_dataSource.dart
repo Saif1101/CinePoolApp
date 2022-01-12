@@ -29,7 +29,6 @@ class UserActionsRemoteDataSourceImpl extends UserActionsRemoteDataSource{
 
   @override
   Future<void> addFollowerAndFollowing(String userID) async {
-    print("${FirestoreConstants.currentUserId} is now following $userID");
     await FirestoreConstants.followersRef.doc('$userID').collection('UserFollowers').doc('${FirestoreConstants.currentUserId}').set({});
     await FirestoreConstants.followingRef.doc('${FirestoreConstants.currentUserId}').collection('UserFollowing').doc('$userID').set({});
   }
@@ -48,7 +47,6 @@ class UserActionsRemoteDataSourceImpl extends UserActionsRemoteDataSource{
         .doc(userID)
         .collection('UserFollowers')
         .get();
-    print('$userID has ${snapshot.docs.length} followers ');
     return snapshot.docs.length;
   }
 
@@ -58,7 +56,6 @@ class UserActionsRemoteDataSourceImpl extends UserActionsRemoteDataSource{
         .doc(userID)
         .collection('UserFollowing')
         .get();
-    print('$userID has ${snapshot.docs.length} following ');
     return snapshot.docs.length;
 }
 

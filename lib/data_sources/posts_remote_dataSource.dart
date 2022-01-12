@@ -25,7 +25,6 @@ class PostsRemoteDataSourceImpl extends PostsRemoteDataSource {
         .collection('Posts')
         .limit(10)
         .get();
-    print('Fetched docs ${snapshot.docs.length}');
 
     snapshot.docs.forEach((doc) {
       if(doc.data()['type'] == 'WatchAlong'){
@@ -38,7 +37,6 @@ class PostsRemoteDataSourceImpl extends PostsRemoteDataSource {
         posts.add(AskForRecommendationsPostModel.fromDocument(doc));
       }
     });
-    print('in get posts datasource, posts fetched ${posts.length}');
     return posts;
   }
 

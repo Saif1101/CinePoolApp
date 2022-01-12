@@ -57,7 +57,6 @@ class _TimelinePageState extends State<TimelinePage> {
               listener: (context, state) {
           },
           builder: (context, state) {
-            print("Inside timeline bloc builder, state : $state");
             if (state is TimelineInitial || state is TimelineLoading) {
               return Center(
                 child: RadiantGradientMask(
@@ -66,7 +65,6 @@ class _TimelinePageState extends State<TimelinePage> {
               );
             }
             else if (state is TimelineLoaded) {
-              print(state.posts);
               if (state.posts.length == 0) {
                 return Center(child: Text('No posts to show'));
               }
@@ -74,9 +72,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 return ListView.builder(
                   itemCount: state.posts.length,
                   itemBuilder: (context, index) {
-                    print(
-                        "The type of the post at $index is ${state.posts[index].runtimeType}");
-                    print('${state.posts[1]}');
+
                     if (state.posts[index].runtimeType.toString() ==
                         'WatchAlong') {
                       return WatchAlongCard(state.posts[index]);

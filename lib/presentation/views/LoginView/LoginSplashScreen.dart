@@ -43,18 +43,21 @@ class LoginSplashScreen extends StatelessWidget {
                           Image(
                             fit: BoxFit.contain,
                               image: AssetImage('assets/images/CinePool.gif')),
-                          GestureDetector(
-                            onTap: ()=> BlocProvider.of<AuthenticationBloc>(context).add(
-                              AuthenticationStarted()),
-                            child: Container(
-                              width: 260.0,
-                              height: 60.0,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/googleSignIn.png',
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: GestureDetector(
+                              onTap: ()=> BlocProvider.of<AuthenticationBloc>(context).add(
+                                AuthenticationStarted()),
+                              child: Container(
+                                width: 260.0,
+                                height: 60.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      'assets/images/googleSignIn.png',
+                                    ),
+                                    fit: BoxFit.cover,
                                   ),
-                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),

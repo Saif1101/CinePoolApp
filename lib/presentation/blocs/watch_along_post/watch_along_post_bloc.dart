@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_MovieDetail.dart';
 
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
+import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/entities/movie_params.dart';
 
 import 'package:socialentertainmentclub/models/WatchAlong.dart';
@@ -30,7 +31,6 @@ class WatchAlongPostBloc extends Bloc<WatchAlongPostEvent, WatchAlongPostState> 
   @override
   Stream<WatchAlongPostState> mapEventToState(WatchAlongPostEvent event)
   async* {
-    print("Inside WatchAlongPostBloc : incoming event is $event");
     if(event is LoadWatchAlongEvent){
       yield WatchAlongPostLoading();
       final user = await getUserFromID(event.watchAlong.ownerID);
@@ -43,7 +43,9 @@ class WatchAlongPostBloc extends Bloc<WatchAlongPostEvent, WatchAlongPostState> 
         ),
         );
       } else{
-        yield WatchAlongPostError();
+        yield WatchAlongPostError(
+          appErrorType: AppErrorType.database
+        );
       }
       watchAlongParticipationBloc.add(CheckIfParticipantEvent(event.watchAlong.watchAlongID));
 

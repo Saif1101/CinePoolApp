@@ -20,7 +20,6 @@ class AskForRecommendationsPostBloc extends Bloc<AskForRecommendationsPostEvent,
   @override
   Stream<AskForRecommendationsPostState> mapEventToState(AskForRecommendationsPostEvent event)
   async * {
-    print("Inside AskForRecommendationsPostBloc: Incoming Event is $event");
     if(event is LoadAskForRecommendationsPostEvent){
       yield AskForRecommendationsPostLoading();
       final user = await getUserFromID(event.askForRecommendationsPost.ownerID);

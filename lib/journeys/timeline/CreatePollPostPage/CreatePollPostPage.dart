@@ -163,9 +163,7 @@ class _CreatePollPostPageState extends State<CreatePollPostPage> {
                         BlocBuilder<RecommendationsPollListBloc, RecommendationsPollListState>(
                           builder: (context, state) {
                             if (state is RecommendationsPollListLoaded) {
-                              print('SelectedMovies: ${state.selectedMovies}');
                               if(state.selectedMovies.length!=0){
-                                state.selectedMovies.forEach((element) {print(element.title);});
                                 return ListView.separated(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,

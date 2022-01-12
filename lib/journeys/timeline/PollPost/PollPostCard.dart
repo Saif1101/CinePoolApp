@@ -14,6 +14,7 @@ import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 import 'package:socialentertainmentclub/models/PollPostModel.dart';
 import 'package:socialentertainmentclub/presentation/blocs/poll_post/poll_post_bloc.dart';
+import 'package:socialentertainmentclub/presentation/widgets/app_error_widget.dart';
 
 class PollPostCard extends StatefulWidget {
   final PollPostModel pollPost;
@@ -31,7 +32,6 @@ class _PollPostCardState extends State<PollPostCard> {
   @override
   void initState() {
     super.initState();
-    print(widget.pollPost);
     pollPostBloc = getItInstance<PollPostBloc>();
     pollPostBloc.add(LoadPollPostEvent(widget.pollPost));
   }
@@ -141,7 +141,17 @@ class _PollPostCardState extends State<PollPostCard> {
                         child: RadiantGradientMask( child: CircularProgressIndicator()),
                       );
                     }
-                    return Center(child: Text('Undefined state in PollPost; $state'));
+                    else if(state is PollPostError){
+                      return SizedBox.shrink();
+                    }
+                    return Center(
+                        child: Text('Undefined state in PollPost; $state',
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                        ),
+
+                    );
                   },
                 ), //Post Header
                 BlocBuilder<PollPostBloc, PollPostState>(
@@ -187,7 +197,20 @@ class _PollPostCardState extends State<PollPostCard> {
                     if(state is PollPostLoading|| state is PollPostInitial){
                       return SizedBox.shrink();
                     }
-                    return Center(child: Text('Undefined state in PollPost; $state'));
+                    else if(state is PollPostError){
+                      return AppErrorWidget(
+                        onPressed: ()=>{
+                          BlocProvider.of<PollPostBloc>(context).add(LoadPollPostEvent(widget.pollPost))
+                        },
+                        errorType: state.appErrorType,
+                      );
+                    }
+                    return Center(child:
+                    Text('Undefined state in PollPost; $state',
+                        style: TextStyle(
+                        color: Colors.white
+                    ),)
+                    );
                   },
 
                 )

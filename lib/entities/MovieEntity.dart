@@ -28,7 +28,6 @@ class MovieEntity extends Equatable{
   bool get stringify => true;
 
   factory MovieEntity.fromMovieDetailEntity(MovieDetailEntity movieDetailEntity){
-    print('creating movie entity, movie id ${movieDetailEntity.movieID} ');
     return MovieEntity(posterPath: movieDetailEntity.posterPath,
         id: movieDetailEntity.movieID,
         backdropPath: movieDetailEntity.backdropPath,

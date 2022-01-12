@@ -15,7 +15,7 @@ class AddMovieToFavorites extends UseCase<void,MovieEntity>{
 
   @override
   Future<Either<AppError, void>> call(MovieEntity params) async {
-    print('inside usecase ${params.id}');
+
     return await movieRepository.addMovieToFavorites(FavoritedMovie.fromMovieEntity(params));
   }
 }

@@ -18,7 +18,7 @@ class ApiClient {
         'Content-Type': 'application/json'
       },
     );*/
-    print("API FETCH PATH ${getPath(path,params)}");
+
 
     final response = await _client.get(
       getPath(path,params),
