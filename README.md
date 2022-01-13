@@ -3,7 +3,7 @@
 
 Tired of texting your friends on 10 different platforms asking them for movie recommendations? Planning to watch a movie with your friends on the weekend?
 
-You can do everything, literally everything, on the CinePoolApp. 
+Everything's possible on the CinePool app. 
 
 
 ## Sign Up 
