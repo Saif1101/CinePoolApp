@@ -32,8 +32,6 @@ class ProfileBannerBloc extends Bloc<ProfileBannerEvent, ProfileBannerState> {
        on<ToggleFollowUserEvent>(_onToggleFollowUserEvent);
       on<LoadProfileBannerEvent>(_onLoadProfileBannerEvent);
       on<UnfollowUserEvent>(_onUnfollowUserEvent);
-      on<ProfileBannerEvent>(fetchFollowedStatusAndLoad);
-
       
     }
   
