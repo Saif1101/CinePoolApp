@@ -38,15 +38,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
     genericMovieSliderBloc.add(GenericMovieSliderLoadEvent(genreMap: widget.currentUser.genres,getMoviesByGenre: genericMovieSliderBloc.getMoviesByGenre));
     movieCarouselBloc.add(CarouselLoadEvent());
   }
-  @override
-  void dispose() {
-    // TODO: implement dispose
 
-    movieCarouselBloc?.close();
-    movieBackdropBloc?.close();
-    genericMovieSliderBloc?.close();
-    super.dispose();
-  }
+ 
   //a fractionally sized box helps you divide the screen between
   // two or more widgets according to you
   //Using a fractionally sized box: use stackfit.expand
@@ -54,14 +47,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<MovieCarouselBloc>(
-          create: (context) => movieCarouselBloc,
+        BlocProvider.value(
+          value:  movieCarouselBloc,
         ),
-        BlocProvider<MovieBackdropBloc>(
-          create: (context) => movieBackdropBloc,
+        BlocProvider.value(
+         value: movieBackdropBloc,
         ),
-        BlocProvider<GenericMovieSliderBloc>(
-          create: (context) => genericMovieSliderBloc,
+        BlocProvider.value(
+         value: genericMovieSliderBloc,
         ),
       ],
       child: Builder(
@@ -76,7 +69,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child: BlocBuilder<MovieCarouselBloc, MovieCarouselState>(
-                      cubit: movieCarouselBloc,
                       builder: (context, state) {
                         if (state is MovieCarouselLoaded) {
                           return Container(

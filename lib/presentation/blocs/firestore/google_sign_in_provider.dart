@@ -19,7 +19,7 @@ class GoogleSignInProvider {
     return authCredential;
   }
 
-  Future<GoogleSignInAccount> GetGoogleAccount() async {
+  Future<GoogleSignInAccount> getGoogleAccount() async {
    GoogleSignInAccount currentAccount;
    _googleSignIn.onCurrentUserChanged.listen((account) {
       currentAccount = account;

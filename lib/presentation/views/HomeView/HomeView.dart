@@ -15,7 +15,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: Center(
         child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {

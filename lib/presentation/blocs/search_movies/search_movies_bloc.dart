@@ -15,8 +15,34 @@ part 'search_movies_state.dart';
 class SearchMoviesBloc extends Bloc<SearchMoviesEvent, SearchMoviesState> {
   final GetSearchedMovies getSearchedMovies;
 
+  SearchMoviesBloc({@required this.getSearchedMovies}) : super(SearchMoviesInitial())
+  {
+    on<SearchMoviesTermChangedEvent>(_onSearchMoviesTermChangedEvent);
+    on<ClearMovieSearchResultsEvent>(_onClearMovieSearchResultsEvent);
+  }
 
-  SearchMoviesBloc({@required this.getSearchedMovies}) : super(SearchMoviesInitial());
+  Future<void> _onSearchMoviesTermChangedEvent(
+    SearchMoviesTermChangedEvent event, 
+    Emitter<SearchMoviesState> emit,
+  ) async {
+    if(event.searchTerm.length>2){
+        emit (SearchMoviesLoading());
+        final Either<AppError, List<MovieEntity>> response = await getSearchedMovies(MovieSearchParams(searchTerm: event.searchTerm));
+        emit(response.fold(
+                (l) => SearchMoviesError(),
+                (r) => SearchMoviesLoaded(r)
+                ));
+      }
+  }
+
+ void _onClearMovieSearchResultsEvent(
+   ClearMovieSearchResultsEvent event, 
+    Emitter<SearchMoviesState> emit,
+ ){
+   emit(SearchMoviesResultsCleared());
+ }
+
+ /*
 
   @override
   Stream<SearchMoviesState> mapEventToState(SearchMoviesEvent event)
@@ -33,6 +59,7 @@ class SearchMoviesBloc extends Bloc<SearchMoviesEvent, SearchMoviesState> {
       yield SearchMoviesResultsCleared();
     }
   }
+  */
 }
 
 

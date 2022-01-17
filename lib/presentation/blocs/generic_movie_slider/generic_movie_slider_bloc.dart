@@ -15,14 +15,35 @@ class GenericMovieSliderBloc extends Bloc<GenericMovieSliderEvent, GenericMovieS
   Map<String,List<MovieModel>> moviesByGenreMap= new Map();
   final GetMoviesByGenre getMoviesByGenre;
 
-  GenericMovieSliderBloc({this.getMoviesByGenre}) : super(GenericMovieSliderInitial());
+  GenericMovieSliderBloc({this.getMoviesByGenre}) : super(GenericMovieSliderInitial()){
+    on<GenericMovieSliderLoadEvent>(_onGenericMovieSliderLoadEvent);
+  }
 
+  Future<void> _onGenericMovieSliderLoadEvent(
+    GenericMovieSliderLoadEvent event, 
+    Emitter<GenericMovieSliderState> emit, 
+  ) async {
+    for(String genreID in event.genreMap.keys) {
+        final genreMovies = await event.getMoviesByGenre(GenreSearchParams(genreID: genreID));
+        emit(genreMovies.fold(
+            (l)=> GenericMoveSliderError(errorType: l.appErrorType, errorMessage: l.errorMessage),
+            (movies){
+              this.moviesByGenreMap[genreID]=movies;
+            }
+        )
+        );
+      }
+      emit( 
+        GenericMoveSliderLoaded(genreIDNameMap: event.genreMap, moviesByGenreMap: this.moviesByGenreMap)
+        );
+  }
+
+/*
   @override
   Stream<GenericMovieSliderState> mapEventToState(
       GenericMovieSliderEvent event,
       ) async* {
     if(event is GenericMovieSliderLoadEvent){
-
       for(String genreID in event.genreMap.keys) {
         final genreMovies = await event.getMoviesByGenre(GenreSearchParams(genreID: genreID));
         yield genreMovies.fold(
@@ -35,4 +56,5 @@ class GenericMovieSliderBloc extends Bloc<GenericMovieSliderEvent, GenericMovieS
       yield GenericMoveSliderLoaded(genreIDNameMap: event.genreMap, moviesByGenreMap: this.moviesByGenreMap);
     }
   }
+  */
 }

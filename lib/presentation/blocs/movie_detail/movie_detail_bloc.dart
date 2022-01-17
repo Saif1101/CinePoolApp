@@ -34,8 +34,28 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
     @required this.favoriteMoviesBloc,
     @required this.castBloc,
     @required this.getMovieDetail
-  }) : super(MovieDetailInitial());
+  }) : super(MovieDetailInitial()){
+    on<MovieDetailLoadEvent>(_onMovieDetailLoadEvent);
+  }
 
+  Future<void> _onMovieDetailLoadEvent(
+    MovieDetailLoadEvent event,
+    Emitter<MovieDetailState> emit,
+  ) async {
+     final Either<AppError, MovieDetailEntity> eitherResponse =
+      await getMovieDetail(MovieParams(movieID: event.movieID));
+      emit (
+        eitherResponse.fold(
+              (l) => MovieDetailError(appErrorType: l.appErrorType, errorMessage: l.errorMessage),
+              (r) => MovieDetailLoaded(movieDetailEntity: r)
+              )
+            );
+      watchAlongBloc.add(CheckIfScheduledEvent(event.movieID));
+      favoriteMoviesBloc.add(CheckIfFavoriteMovieEvent(movieID: event.movieID));
+      castBloc.add(LoadCastEvent(movieID: event.movieID));
+  }
+
+  /* LEGACY mapEventToState
   @override
   Stream<MovieDetailState> mapEventToState
       (MovieDetailEvent event)
@@ -53,4 +73,5 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
 
     }
   }
+  */
 }

@@ -20,9 +20,65 @@ class WatchAlongFormBloc extends Bloc<WatchAlongEvent, WatchAlongState> {
 
   WatchAlongFormBloc({@required this.checkWatchAlong,
    @required this.createWatchAlong,
-    @required this.removeWatchAlong}) : super(WatchAlongInitial());
+    @required this.removeWatchAlong}) : super(WatchAlongInitial()){
+      on<ToggleScheduleWatchAlongEvent>(_onToggleScheduleWatchAlongEvent);
+      on<CheckIfScheduledEvent>(_onCheckIfScheduledEvent);
+      on<WatchAlongDateEditEvent>(_onWatchAlongDateEditEvent);
+      on<WatchAlongSubmitEvent>(_onWatchAlongSubmitEvent);
+    }
 
+Future<void> _onToggleScheduleWatchAlongEvent(
+ToggleScheduleWatchAlongEvent event, 
+Emitter<WatchAlongState> emit,
+) async {
+   if(event.isScheduled){
+        emit (WatchAlongLoading());
+        await removeWatchAlong(event.movieID);
+        emit(IsScheduled(false));
+      }else{
+        emit( CreateWatchAlongState(event.movieID,DateTime.now()));
+      }
+}
 
+Future<void> _onCheckIfScheduledEvent(
+  CheckIfScheduledEvent event, 
+  Emitter<WatchAlongState> emit,
+) async {
+  final response = await checkWatchAlong(event.movieID.toString());
+      if(response.isRight())
+      emit(response.fold(
+              (l) =>  WatchAlongError(),
+              (r) => IsScheduled(r)
+      ));
+}
+
+void _onWatchAlongDateEditEvent(
+  WatchAlongDateEditEvent event,
+  Emitter<WatchAlongState> emit,
+){
+  emit( CreateWatchAlongState(event.movieID,event.dateTime));
+}
+
+Future<void> _onWatchAlongSubmitEvent(
+  WatchAlongSubmitEvent event, 
+  Emitter<WatchAlongState> emit,
+) async {
+  final WatchAlong watchAlong = WatchAlong(
+          title: event.title,
+          ownerID: FirestoreConstants.currentUserId,
+          movieID: event.movieID,
+          scheduledTime: event.scheduledTime, location: event.location);
+
+      await createWatchAlong(watchAlong);
+
+      final response = await checkWatchAlong(event.movieID);
+      emit(response.fold(
+              (l) =>  WatchAlongError(),
+              (r) => IsScheduled(r)
+      ));
+}
+
+/* LEGACY mapEventToState
   @override
   Stream<WatchAlongState> mapEventToState(WatchAlongEvent event)
   async * {
@@ -46,7 +102,6 @@ class WatchAlongFormBloc extends Bloc<WatchAlongEvent, WatchAlongState> {
     else if (event is WatchAlongDateEditEvent){
       yield CreateWatchAlongState(event.movieID,event.dateTime);
     }
-
     else if(event is WatchAlongSubmitEvent){
       final WatchAlong watchAlong = WatchAlong(
           title: event.title,
@@ -62,4 +117,6 @@ class WatchAlongFormBloc extends Bloc<WatchAlongEvent, WatchAlongState> {
               (r) => IsScheduled(r)
       );
     }
-  }}
+  }
+  */
+}

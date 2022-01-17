@@ -45,18 +45,192 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     @required this.unauthenticate,
     @required this.setUsernameAndGenres,
     @required this.getMapOfGenres,
-  }) : super(AuthenticationInitial());
+  }) : super(AuthenticationInitial()) {
+    on<AuthenticationStarted>(_onAuthenticationStarted);
 
+    on<CheckIfUserAlreadySignedInEvent>(_onCheckIfUserAlreadySignedInEvent);
+   
+    on<AuthenticationExited>(_onAuthenticationExited);
+
+    on<LoadRegistrationPage>(_onLoadRegistrationPage);
+
+    on<SignUpButtonPress>(_onSignUpButtonPress);
+
+    on<UserDetailsUpdateEvent>(_onUserDetailsUpdateEvent);
+
+    on<UserUpdateCompleteEvent>(_onUserUpdateCompleteEvent);
+
+  }
 
   @override
   Future<void> close() {
     return super.close();
   }
 
+  Future<void> _onAuthenticationStarted(
+    AuthenticationStarted event, 
+    Emitter<AuthenticationState> emit, 
+  ) async {
+    FirestoreConstants.init();
+        emit(AuthenticationLoading());
+        final authEither = await getAuthenticationDetailFromGoogle(NoParams());
+        if(authEither.isRight()) {
+          AuthenticationDetail authenticationDetail = authEither.getOrElse(null);
+          if (authenticationDetail.isValid) {
+          //get user's details from firestore
+          /*
+          authenticationDetail.isValid evaluates to true only if the user has a google account and signs in w it
+          After we've checked that the user has a valid user acc, we need to check if he has created an account on our platform -> SocialEntertainmentClub
+          To do that-> we'll check our firestoreDB to know if the user's doc exists
+          if exists -> store data in the state-> redirect to the explore page(state.data)
+          else -> redirect user to sign up page.
+           */
+          final userEither = await getUserFromAuthDetail(authenticationDetail);
+
+          if(userEither.isRight())
+          {
+            UserModel currentUser = userEither.getOrElse(null);
+            if(currentUser.isNotEmpty){
+              FirestoreConstants.getCurrentUser(currentUser);
+              emit (
+                AuthenticationSuccess(
+                  currentUser: FirestoreConstants.currentUser,
+                  loginTime: Timestamp.now().toString()
+                  )
+                  );
+          } else {
+            emit (
+              AuthenticationSuccessRecordDoesntExist(
+                authenticationDetail: authenticationDetail
+                ));
+            }
+          } else {
+            emit(AuthenticationFailure(message: 'App Error'));
+          }
+        } else {
+            emit(AuthenticationFailure(message: 'User detail not found.'));
+          }
+        }
+        else {
+          emit(AuthenticationFailure(message: 'AppError'));
+        }
+    
+  }
+
+  void _onCheckIfUserAlreadySignedInEvent(
+    CheckIfUserAlreadySignedInEvent event, 
+    Emitter<AuthenticationState> emit,
+    )
+    {
+      if(authenticationFireBaseProvider.checkIfUserSignedIn()){
+        emit(UserAlreadyLoggedInState());
+      } else{
+        emit(AuthenticationInitial());
+      }
+  }
+  
+  Future<void> _onAuthenticationExited(
+    AuthenticationExited event, 
+    Emitter<AuthenticationState> emit, 
+  ) async {
+     emit(AuthenticationLoading());
+        final unauthEither = await unauthenticate(NoParams());
+        emit (unauthEither.fold(
+                (l) => AuthenticationFailure(message: l.errorMessage),
+                (r) => AuthenticationInitial())
+                );
+  }
+
+  Future<void> _onLoadRegistrationPage(
+    LoadRegistrationPage event, 
+    Emitter<AuthenticationState> emit, 
+  ) async {
+    emit(RegistrationLoading());
+     final finalMapOfGenres = await getMapOfGenres(NoParams());
+     emit (finalMapOfGenres.fold(
+             (l) => RegistrationFailed(message: 'Registration Failed While Fetching Map Of Genres '),
+             (finalMapOfGenres) => RegistrationPageLoaded(mapOfGenres: finalMapOfGenres)
+     ));
+  }
+
+  Future<void> _onSignUpButtonPress(
+    SignUpButtonPress event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit (RegistrationLoading());
+      List<Item> lst = event.tagStateKey.currentState?.getAllItem;
+      List<String> genres = [];
+      lst.where((a) => a.active==true).forEach( (a) => genres.add(a.title));
+      if(event.username.length>=4 && genres.length>=3){
+        Map<String, String>  selectedGenres= new Map();
+        genres.forEach((element) {
+          selectedGenres[(event.mapGenresWithID.keys.firstWhere((k) => event.mapGenresWithID[k] == element).toString())]=element;}
+        );
+
+        final newUserEither = await newUserSignUp(UserSignUpParams(id: event.id,
+            username: event.username,
+            photoUrl: event.photoUrl,
+            email: event.email,
+            selectedGenres: selectedGenres,
+            timestamp:  event.timestamp,
+            displayName:  event.displayName));
+
+       emit(newUserEither.fold(
+                (l) => RegistrationFailed(message:l.errorMessage),
+                (user) => RegistrationComplete(currentUser:user)
+        ));
+
+      } else {
+        if(event.username.length<4){
+          ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(backgroundColor: ThemeColors.primaryColor,
+                content: Text("The username should be atleast 4 characters long",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),),
+              ));
+        }
+        else if(genres.length<3){
+          ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(backgroundColor: ThemeColors.primaryColor,
+                content: Text("Please Select Atleast 3 Genres",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),),
+              ));
+        }
+        emit(RegistrationPageLoaded(mapOfGenres: event.mapGenresWithID));
+      }
+  }
+
+
+  void _onUserDetailsUpdateEvent(
+    UserDetailsUpdateEvent event, 
+    Emitter<AuthenticationState> emit,
+  ){
+    FirestoreConstants.setUsernameAndGenres(event.username, event.selectedGenres);
+     emit(UserDetailsUpdated(currentUser:FirestoreConstants.currentUser));
+  }
+
+  void _onUserUpdateCompleteEvent(
+    UserUpdateCompleteEvent event, 
+    Emitter<AuthenticationState> emit,
+  ){
+    emit(AuthenticationSuccess(currentUser:FirestoreConstants.currentUser));
+  }
+
+
+
+////LEGACY mapEventToState Function
+
+/*
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event,
-      ) async* {
+      ) 
+      async* {
 
 
     if(event is CheckIfUserAlreadySignedInEvent){
@@ -123,7 +297,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
      );
 
    }
-   else if(event is SignUpButtonPress){
+
+  else if(event is SignUpButtonPress){
       yield RegistrationLoading();
       List<Item> lst = event.tagStateKey.currentState?.getAllItem;
       List<String> genres = [];
@@ -175,10 +350,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     else if (event is UserDetailsUpdateEvent){
      FirestoreConstants.setUsernameAndGenres(event.username, event.selectedGenres);
      yield UserDetailsUpdated(currentUser:FirestoreConstants.currentUser);
-   } else if (event is UserUpdateCompleteEvent){
+   } 
+   
+   else if (event is UserUpdateCompleteEvent){
       yield AuthenticationSuccess(currentUser:FirestoreConstants.currentUser);
    }
 
 
+} */
 }
-}
+

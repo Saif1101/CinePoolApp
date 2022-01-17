@@ -14,7 +14,26 @@ part 'my_watch_alongs_state.dart';
 class MyWatchAlongsBloc extends Bloc<MyWatchAlongsEvent, MyWatchAlongsState> {
   final GetMyWatchAlongs getMyWatchAlongs;
 
-  MyWatchAlongsBloc({@required this.getMyWatchAlongs}) : super(MyWatchAlongsInitial());
+  MyWatchAlongsBloc({@required this.getMyWatchAlongs}) : super(MyWatchAlongsInitial()){
+    on<LoadMyWatchAlongsEvent>(_onLoadMyWatchAlongsEvent);
+  }
+
+  Future<void> _onLoadMyWatchAlongsEvent(
+    LoadMyWatchAlongsEvent event, 
+    Emitter<MyWatchAlongsState> emit,
+  ) async {
+    emit( MyWatchAlongsLoading());
+      final response = await getMyWatchAlongs(NoParams()); 
+      emit(response.fold(
+              (l) =>MyWatchAlongsError(
+                errorMessage: l.errorMessage, 
+                appErrorType: l.appErrorType
+              ), 
+              (r) => MyWatchAlongsLoaded(r)
+          ));
+  }
+
+  /* LEGACY mapEventsToState 
 
   @override
   Stream<MyWatchAlongsState> mapEventToState(MyWatchAlongsEvent event)
@@ -30,4 +49,5 @@ class MyWatchAlongsBloc extends Bloc<MyWatchAlongsEvent, MyWatchAlongsState> {
               (r) => MyWatchAlongsLoaded(r));
     }
   }
+  */
 }

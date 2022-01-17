@@ -26,8 +26,33 @@ class WatchAlongPostBloc extends Bloc<WatchAlongPostEvent, WatchAlongPostState> 
     @required this.watchAlongParticipationBloc,
     @required this.getUserFromID,
     @required this.getMovieDetail,
-   }) : super(WatchAlongPostInitial());
+   }) : super(WatchAlongPostInitial()){
+     on<LoadWatchAlongEvent>(_onLoadWatchAlongEvent);
+   }
 
+   Future<void> _onLoadWatchAlongEvent(
+     LoadWatchAlongEvent event, 
+     Emitter<WatchAlongPostState>emit, 
+   ) async {
+     emit (WatchAlongPostLoading());
+      final user = await getUserFromID(event.watchAlong.ownerID);
+      final movieDetail = await getMovieDetail(MovieParams(movieID: int.parse(event.watchAlong.movieID)));
+      if(user.isRight() && movieDetail.isRight()){
+        emit(WatchAlongPostLoaded(watchAlongPostModel: WatchAlongPostModel(
+            movieDetailEntity: movieDetail.getOrElse(null),
+          user: user.getOrElse(null),
+          watchAlong: event.watchAlong,
+        )),
+        );
+      } else{
+        emit(WatchAlongPostError(
+          appErrorType: AppErrorType.database
+        ));
+      }
+      watchAlongParticipationBloc.add(CheckIfParticipantEvent(event.watchAlong.watchAlongID));
+   }
+
+/* LEGACY mapEventToState
   @override
   Stream<WatchAlongPostState> mapEventToState(WatchAlongPostEvent event)
   async* {
@@ -51,4 +76,5 @@ class WatchAlongPostBloc extends Bloc<WatchAlongPostEvent, WatchAlongPostState> 
 
     }
   }
+  */
 }

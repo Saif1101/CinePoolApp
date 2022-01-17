@@ -14,8 +14,21 @@ part 'timeline_state.dart';
 class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
   final GetPosts getPosts;
 
-  TimelineBloc({@required this.getPosts}) : super(TimelineInitial());
+  TimelineBloc({@required this.getPosts}) : super(TimelineInitial()){
+    on<LoadTimelineEvent>(_onLoadTimelineEvent);
+  }
 
+  Future<void> _onLoadTimelineEvent(
+    LoadTimelineEvent event, 
+    Emitter<TimelineState> emit, 
+  ) async {
+      emit(TimelineLoading());
+      final response = await getPosts(NoParams());
+      emit(response.fold(
+              (l) => TimelineError(appErrorType: l.appErrorType, errorMessage: l.errorMessage),
+              (r) => TimelineLoaded(posts: r)
+      ));
+  }
   @override
   Stream<TimelineState> mapEventToState(TimelineEvent event) async* {
     if(event is LoadTimelineEvent){

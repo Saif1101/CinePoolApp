@@ -91,7 +91,7 @@ class UserAndAuthenticationDataSourceImpl extends UserAndAuthenticationDataSourc
       'genres': selectedGenres,
       'timestamp': timestamp,
     });
-    DocumentSnapshot doc = await await FirestoreConstants.usersRef.doc(id).get();
+    DocumentSnapshot doc =  await FirestoreConstants.usersRef.doc(id).get();
     return UserModel.fromDocument(doc);
   }
 
@@ -104,7 +104,7 @@ class UserAndAuthenticationDataSourceImpl extends UserAndAuthenticationDataSourc
 
   @override
   Future<GoogleSignInAccount> getCurrentLoggedInAccount() async {
-    GoogleSignInAccount googleAccount =  await googleSignInProvider.GetGoogleAccount();
+    GoogleSignInAccount googleAccount =  await googleSignInProvider.getGoogleAccount();
     return googleAccount;
   }
 

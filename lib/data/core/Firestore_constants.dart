@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
-import 'package:firebase_storage/firebase_storage.dart';
+
 
 import 'package:socialentertainmentclub/models/UserModel.dart';
 
 class FirestoreConstants {
   static FirestoreConstants _instance;
 
-  static Reference _storageRef;
   static CollectionReference _usersRef;
   static CollectionReference _followersRef;
   static CollectionReference _followingRef;
@@ -59,7 +58,7 @@ class FirestoreConstants {
       _instance = FirestoreConstants._();
     }
      _usersRef = FirebaseFirestore.instance.collection('users');
-    _storageRef= FirebaseStorage.instance.ref();
+
     _favoritesRef= FirebaseFirestore.instance.collection('favorites');
     _followersRef= FirebaseFirestore.instance.collection('followers');
     _followingRef= FirebaseFirestore.instance.collection('following');
@@ -74,7 +73,6 @@ class FirestoreConstants {
 
   //Access the user id from the info passed to the pages
 
-static Reference get storageRef => _storageRef;
 static CollectionReference get usersRef => _usersRef;
 static CollectionReference get favoritesRef => _favoritesRef;
 static CollectionReference get followersRef => _followersRef;

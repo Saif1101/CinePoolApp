@@ -77,7 +77,6 @@ class _AddRecommendationPageState extends State<AddRecommendationPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             BlocBuilder<SearchMoviesBloc,SearchMoviesState>(
-                cubit: recommendationSearchBloc,
                 builder: (context,state){
                   if(state is SearchMoviesLoaded) {
                     final movies = state.movies;

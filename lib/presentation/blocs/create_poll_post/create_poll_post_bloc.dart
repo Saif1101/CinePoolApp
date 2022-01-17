@@ -18,13 +18,74 @@ part 'create_poll_post_state.dart';
 class CreatePollPostBloc extends Bloc<PollPostEvent, PollPostState> {
   final GetMapOfGenres getMapOfGenres;
   final CreatePollPost createPollPost;
-  //need to create and add CreateRecommendationsPoll Usecases
   
   CreatePollPostBloc({
     @required this.getMapOfGenres,
     @required this.createPollPost
-  }) : super(CreatePollPostInitial());
+  }) : super(CreatePollPostInitial()){
+    on<LoadCreatePollPostPage>(_onLoadCreatePollPostPage);
+    on<CreatePollPostSubmitEvent>(_onCreatePollPostSubmitEvent);
+  }
 
+  void _onLoadCreatePollPostPage(
+    LoadCreatePollPostPage event, 
+    Emitter<PollPostState> emit,
+  ){
+    emit (CreatePollPostLoading());
+    emit (CreatePollPostLoaded(title: event.title,));
+  }
+
+  Future<void> _onCreatePollPostSubmitEvent(
+    CreatePollPostSubmitEvent event, 
+    Emitter<PollPostState> emit,
+  ) async {
+    emit(CreatePollPostLoading());
+        if(event.title.length>=4 && event.title.length<=15 &&  event.movies.length>=2){
+          final responseEither = await createPollPost(PollPostModel(
+              votersMap: {},
+              ownerID: FirestoreConstants.currentUserId,
+              type: 'PollPost',
+              pollOptionsMap: Map.fromIterable(event.movies, key: (e) => e.id.toString(), value: (e) => 0),
+            title: event.title,
+              )
+          );
+          emit (
+            responseEither.fold(
+                  (l) => CreatePollPostError(errorMessage: l.errorMessage, errorType: l.appErrorType),
+                  (r) => CreatePollPostSubmitted()
+                  )
+                );
+        } else {
+          if(event.title.length<4 || event.title.length>15){
+            ScaffoldMessenger.of(event.context).showSnackBar(
+                SnackBar(backgroundColor: ThemeColors.primaryColor,
+                  content: Text("The length of the title should be between 4 and 15 characters",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                ));
+          }
+        else if(event.movies.length<2){
+            ScaffoldMessenger.of(event.context).showSnackBar(
+                SnackBar(backgroundColor: ThemeColors.primaryColor,
+                  content: Text("Add A Movie To Your Poll",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                ));
+          }
+          emit (
+            CreatePollPostLoaded(
+              title: event.title,
+            )
+          );
+      }
+  }
+
+
+/*LEGACY mapEventToState
   @override
   Stream<PollPostState> mapEventToState (PollPostEvent event)
   async* {
@@ -73,4 +134,5 @@ class CreatePollPostBloc extends Bloc<PollPostEvent, PollPostState> {
       }
     }
   }
+  */
 }

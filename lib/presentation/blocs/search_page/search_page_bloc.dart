@@ -8,8 +8,26 @@ part 'search_page_event.dart';
 part 'search_page_state.dart';
 
 class SearchPageBloc extends Bloc<SearchPageEvent, SearchPageState> {
-  SearchPageBloc() : super(MovieSearch());
+  SearchPageBloc() : super(MovieSearch()){
+    on<UserSearchSelectEvent>(_onUserSearchSelectEvent);
+    on<MovieSearchSelectEvent>(_onMovieSearchSelectEvent);
+  }
 
+  void _onUserSearchSelectEvent(
+    UserSearchSelectEvent event, 
+    Emitter<SearchPageState> emit,
+  ){
+    emit(UserSearch());
+  }
+
+  void _onMovieSearchSelectEvent(
+    MovieSearchSelectEvent event, 
+    Emitter<SearchPageState> emit,
+  ){
+    emit(MovieSearch());
+  }
+
+/* LEGACY mapEventToState
   @override
   Stream<SearchPageState> mapEventToState(SearchPageEvent event)
   async* {
@@ -19,4 +37,6 @@ class SearchPageBloc extends Bloc<SearchPageEvent, SearchPageState> {
       yield MovieSearch();
     }
   }
+
+  */
 }

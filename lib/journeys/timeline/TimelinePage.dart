@@ -26,17 +26,12 @@ class _TimelinePageState extends State<TimelinePage> {
     timelineBloc.add(LoadTimelineEvent());
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    timelineBloc?.close();
-  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: BlocProvider<TimelineBloc>(
-      create: (context) => timelineBloc,
+        child: BlocProvider.value(
+    value: timelineBloc,
           child: Scaffold(
 
         floatingActionButton: ExpandableFab(

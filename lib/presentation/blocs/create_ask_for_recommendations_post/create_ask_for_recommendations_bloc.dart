@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:meta/meta.dart';
+
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/domain/usecases/CreatePosts/CreateAskForRecommendations.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_MapOfGenres.dart';
@@ -24,8 +24,77 @@ class CreateAskForRecommendationsBloc extends Bloc<CreateAskForRecommendationsEv
   CreateAskForRecommendationsBloc(
      {@required this.getMapOfGenres,
      @required this.createAskForRecommendationsPost,
-      }) : super(CreateAskForRecommendationsPostInitial());
+      }) : super(CreateAskForRecommendationsPostInitial()){
+        on<LoadAskForRecommendationsEvent>(_onLoadAskForRecommendationsEvent);
+        on<CreateAskForRecommendationsButtonPress>(_onCreateAskForRecommendationsButtonPress);
+      }
 
+  
+  Future<void> _onLoadAskForRecommendationsEvent(
+    LoadAskForRecommendationsEvent event, 
+    Emitter<CreateAskForRecommendationsState> emit,
+  ) async {
+      final mapOfGenresEither = await getMapOfGenres(NoParams());
+      emit (mapOfGenresEither.fold(
+              (l) => CreateAskForRecommendationsPostError(l.errorMessage,l.appErrorType),
+              (r) => CreateAskForRecommendationsPostLoaded(event.title,event.description,  r)
+              )
+            );
+    }
+
+  Future<void> _onCreateAskForRecommendationsButtonPress(
+    CreateAskForRecommendationsButtonPress event,
+    Emitter<CreateAskForRecommendationsState> emit,
+  ) async {
+    emit(CreateAskForRecommendationsPostLoading());
+      List<Item> lst = event.tagStateKey.currentState?.getAllItem;
+      List<String> genres = [];
+      lst.where((a) => a.active==true).forEach( (a) => genres.add(a.title));
+      if(event.title.length>=4 && genres.length>=3){
+        Map<String, String>  selectedGenres= new Map();
+        genres.forEach((element) {
+          selectedGenres[(event.mapGenresWithID.keys.firstWhere((k) => event.mapGenresWithID[k] == element).toString())]=element;}
+        );
+
+        final responseEither = await createAskForRecommendationsPost(
+          AskForRecommendationsPostModel(
+            preferredGenres: selectedGenres.values.toList(),
+            recommendationsTrackMap: {},
+            body: event.description,
+            type: 'AskForRecommendationsPost',
+            ownerID: FirestoreConstants.currentUserId,
+          )
+        );
+        emit (responseEither.fold(
+                (l) => CreateAskForRecommendationsPostError(l.errorMessage,l.appErrorType),
+                (r) => CreateAskForRecommendationsPostSuccess()
+                ));
+      } else {
+        if(event.title.length<4 || event.title.length>15){
+          ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(backgroundColor: ThemeColors.primaryColor,
+                content: Text("The length of the title should be between 4 and 15 characters",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),),
+              ));
+        }
+        else if(event.description.length<4 || event.description.length>56){
+          ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(backgroundColor: ThemeColors.primaryColor,
+                content: Text("The length of the description should be between 4 and 56 characters",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),),
+              ));
+        }
+        emit (CreateAskForRecommendationsPostLoaded(event.title,event.description, event.mapGenresWithID));
+      }
+  }
+  
+/* LEGACY mapEventToState
   @override
   Stream<CreateAskForRecommendationsState> mapEventToState(CreateAskForRecommendationsEvent event)
   async * {
@@ -84,4 +153,5 @@ class CreateAskForRecommendationsBloc extends Bloc<CreateAskForRecommendationsEv
       }
     }
   }
+  */
 }

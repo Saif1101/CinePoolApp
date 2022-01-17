@@ -20,8 +20,41 @@ class WatchAlongParticipationBloc extends Bloc<WatchAlongParticipationEvent, Wat
   WatchAlongParticipationBloc({
     @required this.optIntoWatchAlong,
     @required this.optOutOfWatchAlong,
-    @required this.checkIfParticipant}) : super(WatchAlongParticipationInitial());
+    @required this.checkIfParticipant}) : super(WatchAlongParticipationInitial()){
+      on<ToggleParticipationEvent>(_onToggleParticipationEvent); 
+      on<CheckIfParticipantEvent>(_onCheckIfParticipationEvent); 
+    }
 
+    Future<void> _onToggleParticipationEvent(
+      ToggleParticipationEvent event, 
+      Emitter<WatchAlongParticipationState> emit, 
+    ) async {
+      emit(ParticipationButtonLoading());
+      if (event.isParticipating) {
+        await optOutOfWatchAlong(event.watchAlong);
+      } else {
+        await optIntoWatchAlong(event.watchAlong);
+      }
+      final response = await checkIfParticipant(event.watchAlong.watchAlongID);
+      emit (response.fold(
+          (l) => ParticipationButtonError(),
+           (r) => IsParticipating(r)
+           )
+          );
+    }
+
+    Future<void> _onCheckIfParticipationEvent(
+      CheckIfParticipantEvent event,
+      Emitter<WatchAlongParticipationState> emit, 
+    ) async {
+      final response = await checkIfParticipant(event.watchAlongID);
+      emit(response.fold(
+              (l) => ParticipationButtonError(), 
+              (r) => IsParticipating(r) )
+      );
+    }
+
+    /* LEGACY mapEventToState
   @override
   Stream<WatchAlongParticipationState> mapEventToState(
       WatchAlongParticipationEvent event) async* {
@@ -43,5 +76,5 @@ class WatchAlongParticipationBloc extends Bloc<WatchAlongParticipationEvent, Wat
       );
     }
   }
-  
+  */
 }

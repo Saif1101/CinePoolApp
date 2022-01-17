@@ -21,7 +21,7 @@ part 'favorite_movies_event.dart';
 part 'favorite_movies_state.dart';
 
 class FavoriteMoviesBloc extends Bloc<FavoriteMoviesEvent, FavoriteMoviesState> {
-  //Will need to call usecases here
+
   final AddMovieToFavorites addMovieToFavorites;
   final GetFavoriteMovies getFavoritemovies;
   final RemoveFavoriteMovie removeFavoriteMovie;
@@ -30,8 +30,70 @@ class FavoriteMoviesBloc extends Bloc<FavoriteMoviesEvent, FavoriteMoviesState> 
   FavoriteMoviesBloc({@required this.addMovieToFavorites,
     @required this.getFavoritemovies,
     @required this.removeFavoriteMovie,
-    @required  this.checkIfFavorite}) : super(FavoriteMoviesInitial());
+    @required  this.checkIfFavorite}) : super(FavoriteMoviesInitial()){
 
+      on<ToggleFavoriteMovieEvent>(_onToggleFavoriteMovieEvent);
+      on<LoadFavoriteMovieEvent>(_onLoadFavoriteMovieEvent);
+      on<RemoveFromFavoriteEvent>(_onRemoveFromFavoriteEvent);
+      on<CheckIfFavoriteMovieEvent>(_onCheckIfFavoriteMovieEvent); 
+    }
+
+    Future<void> _onToggleFavoriteMovieEvent(
+      ToggleFavoriteMovieEvent event, 
+      Emitter<FavoriteMoviesState> emit, 
+    ) async {
+      if(event.isFavorite){
+        await removeFavoriteMovie(MovieParams(movieID: event.movieEntity.id));
+      } else {
+        await addMovieToFavorites(event.movieEntity);
+      }
+        final response = await checkIfFavorite(MovieParams(
+            movieID: event.movieEntity.id));
+        emit (response.fold(
+                (l) => FavoriteMoviesError(),
+                (r) => IsFavoriteMovie(isMovieFavorite: r)
+        )
+        );
+    }
+
+    void _onLoadFavoriteMovieEvent(
+      LoadFavoriteMovieEvent event, 
+      Emitter<FavoriteMoviesState> emit, 
+    ) async {
+      emit (FavoriteMoviesLoading());
+      final Either<AppError, List<MovieEntity>> response = await getFavoritemovies(event.userID);
+      emit(
+      response.fold(
+      (l) => FavoriteMoviesError(),
+      (r) => FavoriteMoviesLoaded(favoritedMovies: r),
+      )
+      );
+    }
+
+    Future<void> _onRemoveFromFavoriteEvent(
+      RemoveFromFavoriteEvent event,
+      Emitter<FavoriteMoviesState> emit, 
+    ) async {
+      await removeFavoriteMovie(MovieParams(movieID: event.movieID));
+      _onLoadFavoriteMovieEvent(LoadFavoriteMovieEvent(userID: FirestoreConstants.currentUserId), emit);
+    }
+
+    Future<void> _onCheckIfFavoriteMovieEvent(
+      CheckIfFavoriteMovieEvent event, 
+      Emitter<FavoriteMoviesState> emit, 
+    ) async {
+        final response = await checkIfFavorite(MovieParams(movieID: event.movieID));
+      emit(   
+        response.fold(
+              (l) =>  FavoriteMoviesError(),
+              (r) => IsFavoriteMovie(isMovieFavorite: r)
+              )
+          );
+      }
+
+
+
+/* LEGACY mapEventToState
   @override
   Stream<FavoriteMoviesState> mapEventToState(FavoriteMoviesEvent event)
   async* {
@@ -60,15 +122,5 @@ class FavoriteMoviesBloc extends Bloc<FavoriteMoviesEvent, FavoriteMoviesState> 
               (r) => IsFavoriteMovie(isMovieFavorite: r)
       );
     }
-  }
-
-  Stream<FavoriteMoviesState> _fetchLoadFavoriteMovies(String userID) async*{
-    final Either<AppError, List<MovieEntity>> response =
-    await getFavoritemovies(userID);
-
-    yield response.fold(
-            (l) => FavoriteMoviesError(),
-            (r) => FavoriteMoviesLoaded(favoritedMovies: r)
-    );
-  }
+  }*/
 }

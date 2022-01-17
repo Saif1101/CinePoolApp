@@ -26,8 +26,69 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
   PollPostBloc({
     @required this.getMovieDetail,
     @required this.getUserFromID,
-    @required this.castPollVote}) : super(PollPostInitial());
+    @required this.castPollVote}) : super(PollPostInitial()){
+      on<LoadPollPostEvent>(_onLoadPollPostEvent);
+      on<UpdatePollsEvent>(_onUpdatePollsEvent);
+    }
 
+    Future<void> _onLoadPollPostEvent(
+      LoadPollPostEvent event,
+      Emitter<PollPostState> emit,
+    ) async {
+      emit(PollPostLoading());
+      int errorFlag = 0;
+      String errorMessage = '';
+
+      List<MovieDetailEntity> movies = [];
+
+      for(int i= 0; i<event.pollPost.pollOptionsMap.keys.length; i++){
+        final response = await getMovieDetail(MovieParams(movieID: int.parse(event.pollPost.pollOptionsMap.keys.elementAt(i))));
+        if(response.isRight()){
+          movies.add(response.getOrElse(null));
+        } else {
+          errorFlag = 1;
+          errorMessage +=  'Error fetching Movie Details for post.-';
+        }
+      }
+
+      final user = await getUserFromID(event.pollPost.ownerID);
+      if(user.isRight() && errorFlag!=1){
+        emit(
+          PollPostLoaded(
+            pollOptionsMap: event.pollPost.pollOptionsMap,
+            movies: movies,
+            votersMap: event.pollPost.votersMap,
+            postOwner: user.getOrElse(null)
+            )
+          );
+      }
+      else{
+        emit(PollPostError(errorMessage: errorMessage));
+      }
+    }
+
+    Future<void> _onUpdatePollsEvent(
+      UpdatePollsEvent event, 
+      Emitter<PollPostState> emit,
+    ) async {
+      emit (PollPostLoading());
+      final response = await castPollVote(CastPollVoteParams(ownerID: event.owner.id,
+            postID: event.postID,
+            votersMap: event.votersMap,
+            pollOptionsMap: event.pollOptionsMap
+        ));
+
+      emit(response.fold(
+              (l) =>PollPostError(errorMessage: l.errorMessage, appErrorType: l.appErrorType),
+              (r) => PollPostLoaded(movies: event.movies,
+                  postOwner: event.owner,
+                  pollOptionsMap: event.pollOptionsMap,
+                  votersMap: event.votersMap)
+      ));
+
+    }
+
+/*
   @override
   Stream<PollPostState> mapEventToState(PollPostEvent event)
   async* {
@@ -77,4 +138,5 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
       );
     }
   }
+  */
 }

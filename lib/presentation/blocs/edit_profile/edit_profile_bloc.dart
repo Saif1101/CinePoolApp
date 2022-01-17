@@ -20,8 +20,69 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   final GetMapOfGenres getMapOfGenres;
 
 
-  EditProfileBloc({@required this.getMapOfGenres, @required this.setUsernameAndGenres}) : super(EditProfileInitial());
+  EditProfileBloc({@required this.getMapOfGenres, @required this.setUsernameAndGenres}) : super(EditProfileInitial()){
+    on<LoadEditPageEvent>(_onLoadEditPageEvent);
+    on<EditButtonPress>(_onEditButtonPress);
+  }
 
+  Future<void> _onLoadEditPageEvent(
+    LoadEditPageEvent event, 
+    Emitter<EditProfileState> emit,
+  ) async {
+    final mapOfGenresEither = await getMapOfGenres(NoParams());
+    emit (mapOfGenresEither.fold(
+              (l) => EditProfileError(l.errorMessage,l.appErrorType),
+              (r) => EditProfilePageLoaded(event.username, r)
+              ));
+  }
+
+  Future<void> _onEditButtonPress(
+    EditButtonPress event, 
+    Emitter<EditProfileState> emit,
+  ) async {
+    emit (EditProfilePageLoading());
+      List<Item> lst = event.tagStateKey.currentState?.getAllItem;
+      List<String> genres = [];
+      lst.where((a) => a.active==true).forEach( (a) => genres.add(a.title));
+      if(event.username.length>=4 && genres.length>=3){
+        Map<String, String>  selectedGenres= new Map();
+        genres.forEach((element) {
+          selectedGenres[(event.mapGenresWithID.keys.firstWhere((k) => event.mapGenresWithID[k] == element).toString())]=element;}
+          );
+
+        final responseEither = await setUsernameAndGenres(EditProfileParams(event.username,selectedGenres));
+
+        emit (responseEither.fold(
+                (l) => EditProfileError(l.errorMessage,l.appErrorType),
+                (r) => EditProfileSuccess(event.username, selectedGenres)
+                )
+              );
+      } else {
+        if(event.username.length<4){
+          ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(backgroundColor: ThemeColors.primaryColor,
+                content: Text("The username should be atleast 4 characters long",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),),
+              ));
+        }
+        else if(genres.length<3){
+          ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(backgroundColor: ThemeColors.primaryColor,
+                content: Text("Please Select Atleast 3 Genres",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),),
+              ));
+        }
+        emit (EditProfilePageLoaded(event.username, event.mapGenresWithID));
+      }
+  }
+
+ /* LEGACY mapEventToState
   @override
   Stream<EditProfileState> mapEventToState(EditProfileEvent event)
   async* {
@@ -73,5 +134,6 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     }
 
   }
+  */
 }
 

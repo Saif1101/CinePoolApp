@@ -1,4 +1,4 @@
-import 'dart:async';
+
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -13,8 +13,35 @@ class RecommendationsPollListBloc extends Bloc<RecommendationsPollListEvent, Rec
   final List<MovieEntity> selectedMovies = [];
   final List<int> movieIDs = [];
 
-  RecommendationsPollListBloc() : super(RecommendationsPollListInitial());
+  RecommendationsPollListBloc() : super(RecommendationsPollListInitial()){
+    on<AddMovieRecommendationEvent>(_onAddMovieRecommendationEvent);
+    on<RemoveMovieRecommendationEvent>(_onRemoveMovieRecommendationEvent);
+  }
 
+  void _onAddMovieRecommendationEvent(
+    AddMovieRecommendationEvent event, 
+    Emitter<RecommendationsPollListState> emit,
+  ){
+      emit(RecommendationsPollListLoading());
+      //need to check for duplicates
+      if(!movieIDs.contains(event.selectedMovie.id)) {
+        selectedMovies.add(event.selectedMovie);
+        movieIDs.add(event.selectedMovie.id);
+      }
+      emit(RecommendationsPollListLoaded(selectedMovies: selectedMovies));
+  }
+
+  void _onRemoveMovieRecommendationEvent(
+    RemoveMovieRecommendationEvent event, 
+    Emitter<RecommendationsPollListState> emit,
+  ){
+    emit(RecommendationsPollListLoading());
+    selectedMovies.removeWhere((item) =>  item.id.toString() == event.movieID);
+    emit(RecommendationsPollListLoaded(selectedMovies: selectedMovies));
+  }
+
+
+  /* LEGACY mapEventToState
   @override
   Stream<RecommendationsPollListState> mapEventToState(RecommendationsPollListEvent event)
   async * {
@@ -31,5 +58,5 @@ class RecommendationsPollListBloc extends Bloc<RecommendationsPollListEvent, Rec
       selectedMovies.removeWhere((item) =>  item.id.toString() == event.movieID);
       yield RecommendationsPollListLoaded(selectedMovies: selectedMovies);
     }
-  }
+  } */
 }

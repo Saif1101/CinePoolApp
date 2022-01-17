@@ -33,21 +33,15 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    searchPageBloc?.close();
-    searchMoviesBloc?.close();
-    searchUsersBloc?.close();
-    super.dispose();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SearchPageBloc>(create: (context) => searchPageBloc),
-        BlocProvider<SearchMoviesBloc>(create: (context) => searchMoviesBloc),
-        BlocProvider<SearchUsersBloc>(create: (context) => searchUsersBloc),
+        BlocProvider.value(value: searchPageBloc),
+        BlocProvider.value(value: searchMoviesBloc),
+        BlocProvider.value(value: searchUsersBloc),
       ],
       child: Scaffold(
         backgroundColor: ThemeColors.vulcan,
@@ -78,7 +72,6 @@ class _SearchPageState extends State<SearchPage> {
                 onTapMovie: (){searchPageBloc.add(MovieSearchSelectEvent());
             searchUsersBloc.add(ClearUserSearchResultsEvent());}),
             BlocBuilder<SearchMoviesBloc,SearchMoviesState>(
-              cubit: searchMoviesBloc,
                 builder: (context,state){
                   if(BlocProvider.of<SearchPageBloc>(context).state is MovieSearch && state is SearchMoviesLoaded){
                     final movies = state.movies;

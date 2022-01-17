@@ -31,7 +31,9 @@ class MovieRecommendationTile extends StatelessWidget {
       title: Text(
         movie.title,
         style: TextStyle(
-            color: Colors.black
+            color: Colors.white,
+            fontWeight: FontWeight.w500
+
         ),
       ),
       trailing: LayoutBuilder(

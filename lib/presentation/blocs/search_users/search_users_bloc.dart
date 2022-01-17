@@ -17,8 +17,35 @@ class SearchUsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
   final GetSearchedUsers getSearchedUsers;
 
 
-  SearchUsersBloc({@required this.getSearchedUsers}) : super(SearchMoviesInitial());
+  SearchUsersBloc({@required this.getSearchedUsers}) : super(SearchMoviesInitial())
+  {
+    on<SearchUsersTermChangedEvent>(_onSearchUsersTermChangedEvent);
+    on<ClearUserSearchResultsEvent>(_onClearUserSearchResultsEvent);
+  }
 
+  Future<void> _onSearchUsersTermChangedEvent(
+    SearchUsersTermChangedEvent event, 
+    Emitter<SearchUsersState> emit,
+  ) async {
+    if(event.searchTerm.length>2){
+        emit(SearchUsersLoading());
+        final Either<AppError, List<UserModel>> response = await getSearchedUsers(UserSearchParams(searchTerm: event.searchTerm));
+        emit (response.fold(
+                (l) => SearchUsersError(),
+                (r) => SearchUsersLoaded(r)
+                ));
+      }
+  }
+
+  void _onClearUserSearchResultsEvent(
+    ClearUserSearchResultsEvent event, 
+    Emitter<SearchUsersState> emit,
+  ){
+    emit(SearchUsersResultsCleared());
+  }
+
+
+/*LEGACY mapEventToState
   @override
   Stream<SearchUsersState> mapEventToState(SearchUsersEvent event)
   async* {
@@ -34,6 +61,7 @@ class SearchUsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
       yield SearchUsersResultsCleared();
     }
   }
+  */ 
 }
 
 

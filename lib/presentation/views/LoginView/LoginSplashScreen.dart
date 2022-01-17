@@ -1,6 +1,7 @@
 import'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialentertainmentclub/common/constants/route_constants.dart';
+import 'package:socialentertainmentclub/common/screenutil/screenutil.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 
 import 'package:socialentertainmentclub/presentation/blocs/authentication_bloc/authentication_bloc.dart';
@@ -40,23 +41,27 @@ class LoginSplashScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Image(
-                            fit: BoxFit.contain,
-                              image: AssetImage('assets/images/CinePool.gif')),
+                          Container(
+                            width: ScreenUtil.screenWidth,
+                            height: ScreenUtil.screenHeight*0.3,
+                            child: Image(
+                              fit: BoxFit.contain,
+                                image: AssetImage('assets/images/Logo.gif')),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: GestureDetector(
                               onTap: ()=> BlocProvider.of<AuthenticationBloc>(context).add(
                                 AuthenticationStarted()),
                               child: Container(
-                                width: 260.0,
-                                height: 60.0,
+                                width: ScreenUtil.screenWidth,
+                                height: ScreenUtil.screenHeight*0.1,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: AssetImage(
                                       'assets/images/googleSignIn.png',
                                     ),
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
                               ),

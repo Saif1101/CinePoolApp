@@ -16,23 +16,21 @@ class FavoriteMoviesGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Sizes.dimen_2.w),
-      child: StaggeredGridView.countBuilder(
+      child: MasonryGridView.count(
         physics: ScrollPhysics(),
         mainAxisSpacing: Sizes.dimen_4.h,
         shrinkWrap: true,
         itemCount: movies.length,
         crossAxisCount: 3,
           crossAxisSpacing: Sizes.dimen_8.w,
-
-          staggeredTileBuilder: (index) {
-
-              return StaggeredTile.count((index%5==0)?3:1, index.isEven ? 1 : 2);
-          },
         itemBuilder: (context,index){
             return FavoriteMovieCardWidget(
-            movie:movies[index]);
+            movie:movies[index])
+            ;
         },
       ),
     );
   }
 }
+
+

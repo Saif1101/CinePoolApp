@@ -35,12 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _favoriteMoviesBloc.add(LoadFavoriteMovieEvent(userID: widget.user.id));
   }
 
-  @override
-  void dispose() {
-    _profileBannerBloc?.close();
-    _favoriteMoviesBloc?.close();
-    super.dispose();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BlocProvider<ProfileBannerBloc>(
-                create: (context) => _profileBannerBloc,
+              BlocProvider.value(
+                value: _profileBannerBloc,
                 child: BlocBuilder<ProfileBannerBloc, ProfileBannerState>(
                   builder: (context, state) {
                     if(state is ProfileBannerLoading || state is ProfileBannerInitial){
