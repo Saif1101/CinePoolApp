@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialentertainmentclub/common/constants/route_constants.dart';
+import 'package:socialentertainmentclub/common/screenutil/screenutil.dart';
 
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
@@ -42,13 +43,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.watch_later_rounded, color: Colors.white,),
-            onPressed: (){
-              Navigator.pushNamed(context, RouteList.myWatchAlongs);
-            },
-          ) ,
           backgroundColor: Color(0xff090910),
+          title: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.watch_later_rounded, color: Colors.white,),
+                onPressed: (){
+                  Navigator.pushNamed(context, RouteList.myWatchAlongs);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.question_answer_outlined, color: Colors.white,),
+                onPressed: (){
+                  Navigator.pushNamed(context, RouteList.myRecommendationPosts); 
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.poll_outlined, color: Colors.white,),
+                onPressed: (){
+                  Navigator.pushNamed(context, RouteList.myPollPosts); 
+                },
+              ),
+            ],
+          ),
             actions: [
               IconButton(
                 icon: Icon(Icons.device_unknown, color: Colors.white,),

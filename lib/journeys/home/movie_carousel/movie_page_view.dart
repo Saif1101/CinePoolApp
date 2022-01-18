@@ -30,7 +30,6 @@ class _MoviePageViewState extends State<MoviePageView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pageController= PageController(
       initialPage: widget.initialPage,

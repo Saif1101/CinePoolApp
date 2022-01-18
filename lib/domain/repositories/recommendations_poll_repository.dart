@@ -6,8 +6,8 @@ import 'package:socialentertainmentclub/models/PollPostModel.dart';
 abstract class RecommendationsPollRepository{
 
   //Poll Post Methods
-
-
+  Future <Either<AppError,List<PollPostModel>>> getMyPollPosts();
+  
   Future <Either<AppError, void>> createPollPost(
       PollPostModel pollPost,
       );
@@ -25,8 +25,8 @@ abstract class RecommendationsPollRepository{
       AskForRecommendationsPostModel askForRecommendationsPost,
       );
 
-
-
+  Future<Either<AppError,List<AskForRecommendationsPostModel>>> getMyAskForRecommendationPosts(); 
+  
   Future <Either<AppError, void>> updateRecommendationsTrackMap(
       Map <String,List<String>> recommendationsTrackMap,
       String ownerID,

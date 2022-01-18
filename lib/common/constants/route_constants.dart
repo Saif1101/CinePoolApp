@@ -8,6 +8,9 @@ class RouteList{
   static const String aboutPage = '/about';
 
   static const String myWatchAlongs = '/my-watch-alongs';
+  static const String myRecommendationPosts = '/my-recommendation-posts';
+  static const String myPollPosts = '/my-poll-posts';
+
 
   static const String mainPage = '/mainPage';
 
@@ -15,6 +18,7 @@ class RouteList{
 
   static const String profilePage = '/profile';
   static const String editProfile = '/edit-profile';
+
 
 
   static const String loginPage = '/login';

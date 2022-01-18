@@ -242,7 +242,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                           padding: EdgeInsets.only(
                                               left: 4.0, top: 4.0),
                                           child: Text(
-                                            "Where: ${state.watchAlongPostModel.watchAlong.location}",
+                                            "Where:    ${state.watchAlongPostModel.watchAlong.location}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 color: Colors.white,

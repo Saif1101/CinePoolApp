@@ -29,6 +29,9 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
               (r) => TimelineLoaded(posts: r)
       ));
   }
+
+  /*LEGACY mapEventToState
+
   @override
   Stream<TimelineState> mapEventToState(TimelineEvent event) async* {
     if(event is LoadTimelineEvent){
@@ -40,6 +43,7 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
       );
     }
   }
+  */
 }
 
 

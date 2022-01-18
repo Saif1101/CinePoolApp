@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/common/constants/route_constants.dart';
 import 'package:socialentertainmentclub/journeys/home/movie_detail/movie_detail_screen.dart';
-import 'package:socialentertainmentclub/journeys/my_watchalongs/my_watchalongs_page.dart';
 import 'package:socialentertainmentclub/journeys/profile_screen/edit_profile/edit_profile.dart';
+import 'package:socialentertainmentclub/journeys/profile_screen/my_pollPosts/my_pollposts_page.dart';
+import 'package:socialentertainmentclub/journeys/profile_screen/my_recommendationPosts/my_recommendationposts_page.dart';
+import 'package:socialentertainmentclub/journeys/profile_screen/my_watchalongs/my_watchalongs_page.dart';
 import 'package:socialentertainmentclub/journeys/profile_screen/user_profile/profile_screen.dart';
 import 'package:socialentertainmentclub/journeys/timeline/CreateAskForRecommendationsPage/CreateAskForRecommendationsPostPage.dart';
 import 'package:socialentertainmentclub/journeys/timeline/CreatePollPostPage/CreatePollPostPage.dart';
 import 'package:socialentertainmentclub/journeys/timeline/RecommendationSearchPage/AddRecommendationPage.dart';
+
 import 'package:socialentertainmentclub/presentation/views/AboutView/AboutPage.dart';
 import 'package:socialentertainmentclub/presentation/views/HomeView/HomeView.dart';
 import 'package:socialentertainmentclub/presentation/views/LoginView/LoginSplashScreen.dart';
@@ -22,6 +25,8 @@ class Routes{
     RouteList.editProfile:(context)=> EditProfile(),
 
     RouteList.myWatchAlongs:(context)=> MyWatchAlongsPage(),
+    RouteList.myRecommendationPosts:(context)=> MyRecommendationPosts(),
+    RouteList.myPollPosts:(context)=> MyPollPosts(),
 
     RouteList.createPollPostPage:(context)=> CreatePollPostPage(),
 

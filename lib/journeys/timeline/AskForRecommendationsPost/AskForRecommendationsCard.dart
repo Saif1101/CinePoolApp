@@ -192,6 +192,9 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                           AskForRecommendationsPostListState>(
                       builder: (context, state) {
                     if (state is AskForRecommendationsPostListLoaded) {
+
+                      bool isOwner = state.ownerID==FirestoreConstants.currentUserId;
+
                       return Column(
                         children: [
                           Row(
@@ -213,9 +216,17 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
+                                      //STOP OWNER OF THE POST FROM ADD RECOMMENDATIONS
                                       FittedBox(
                                         fit: BoxFit.fitWidth,
-                                        child: state.users.containsKey(
+                                        child: isOwner?
+                                        Text(
+                                          'What Your Friends Recommended',
+                                           textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500)
+                                                    ):state.users.containsKey(
                                                 FirestoreConstants.currentUserId)
                                             ? Text(
                                                 'Recommendation Added',
@@ -227,9 +238,12 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontWeight: FontWeight.w500)),
+                                                    fontWeight: FontWeight.w500)
+                                                    ),
                                       ),
-                                      state.users.containsKey(
+                                       isOwner?
+                                       SizedBox.shrink()
+                                       :state.users.containsKey(
                                               FirestoreConstants.currentUserId)
                                           ? SizedBox.shrink()
                                           : RadiantGradientMask(

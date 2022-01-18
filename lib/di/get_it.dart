@@ -29,8 +29,10 @@ import 'package:socialentertainmentclub/domain/repositories/recommendations_poll
 
 import 'package:socialentertainmentclub/domain/usecases/CreatePosts/CreateAskForRecommendations.dart';
 import 'package:socialentertainmentclub/domain/usecases/CreatePosts/CreatePollPost.dart';
+import 'package:socialentertainmentclub/domain/usecases/PollPosts/get_myPollPosts.dart';
 import 'package:socialentertainmentclub/domain/usecases/PostActions/CastPollVote.dart';
 import 'package:socialentertainmentclub/domain/usecases/PostActions/UpdateRecommendationsTrackMap.dart';
+import 'package:socialentertainmentclub/domain/usecases/RecommendationPosts/get_myRecommendationPosts.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/add_MovieToFavorites.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/check_favorite.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_CastCrew.dart';
@@ -71,6 +73,8 @@ import 'package:socialentertainmentclub/presentation/blocs/authentication_bloc/a
 import 'package:socialentertainmentclub/presentation/blocs/cast/cast_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/create_ask_for_recommendations_post/create_ask_for_recommendations_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/create_poll_post/create_poll_post_bloc.dart';
+import 'package:socialentertainmentclub/presentation/blocs/my_poll_posts/mypollposts_bloc.dart';
+import 'package:socialentertainmentclub/presentation/blocs/my_recommendation_posts/myrecommendationposts_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/my_watch_alongs/my_watch_alongs_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/poll_post/poll_post_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/recommendations_poll_movie_list/recommendations_poll_list_bloc.dart';
@@ -178,6 +182,8 @@ Future init() async {
   getItInstance.registerLazySingleton<CreateAskForRecommendationsPost>(() => CreateAskForRecommendationsPost(getItInstance()));
   getItInstance.registerLazySingleton<UpdateRecommendationsTrackMap>(()=>UpdateRecommendationsTrackMap(getItInstance()));
   getItInstance.registerLazySingleton<CastPollVote>(()=>CastPollVote(getItInstance()));
+  getItInstance.registerLazySingleton<GetMyRecommendationPosts>(() =>GetMyRecommendationPosts(getItInstance()));
+  getItInstance.registerLazySingleton<GetMyPollPosts>(() =>GetMyPollPosts(getItInstance()));
 
 
   //Repository implementations
@@ -319,6 +325,18 @@ Future init() async {
       MyWatchAlongsBloc(
           getMyWatchAlongs: getItInstance()
       )
+  );
+
+  getItInstance.registerFactory(() => 
+    MyRecommendationPostsBloc(
+      getMyRecommendationPosts: getItInstance()
+    )
+  );
+
+  getItInstance.registerFactory(() => 
+    MyPollPostsBloc(
+      getMyPollPosts: getItInstance()
+    )
   );
 
 

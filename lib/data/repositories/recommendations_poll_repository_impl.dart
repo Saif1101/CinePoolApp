@@ -38,6 +38,18 @@ class RecommendationsPollRepositoryImpl extends RecommendationsPollRepository{
   }
 
   @override
+  Future <Either<AppError,List<PollPostModel>>> getMyPollPosts() async {
+    try{
+      final response = await recommendationsPollsDataSource.getMyPollPosts();
+      return Right(response);
+    } on SocketException{
+      return Left(AppError(appErrorType: AppErrorType.network));
+    } on Exception catch(e){
+      return Left(AppError(appErrorType: AppErrorType.api, errorMessage: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<AppError, void>> castPollVote({Map<String, int> pollOptionsMap,
       Map<String, int> votersMap,
       String ownerID,
@@ -68,5 +80,15 @@ class RecommendationsPollRepositoryImpl extends RecommendationsPollRepository{
     }
   }
 
-
+  @override
+  Future<Either<AppError,List<AskForRecommendationsPostModel>>> getMyAskForRecommendationPosts() async {
+    try{
+      final response = await recommendationsPollsDataSource.getMyAskForRecommendationPosts();
+      return Right(response);
+    } on SocketException{
+      return Left(AppError(appErrorType: AppErrorType.network));
+    } on Exception catch(e){
+      return Left(AppError(appErrorType: AppErrorType.api, errorMessage: e.toString()));
+    }
+  }
 }

@@ -3,41 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/helpers/font_size.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
-import 'package:socialentertainmentclub/journeys/timeline/WatchAlongCard.dart';
-import 'package:socialentertainmentclub/presentation/blocs/my_watch_alongs/my_watch_alongs_bloc.dart';
+import 'package:socialentertainmentclub/journeys/timeline/PollPost/PollPostCard.dart';
+import 'package:socialentertainmentclub/presentation/blocs/my_poll_posts/mypollposts_bloc.dart';
 
-class MyWatchAlongsPage extends StatefulWidget {
+class MyPollPosts extends StatefulWidget {
+
   @override
-  _MyWatchAlongsPageState createState() => _MyWatchAlongsPageState();
+  _MyPollPostsState createState() => _MyPollPostsState();
 }
 
-class _MyWatchAlongsPageState extends State<MyWatchAlongsPage> {
-  MyWatchAlongsBloc myWatchAlongsBloc;
+class _MyPollPostsState extends State<MyPollPosts> {
+  MyPollPostsBloc myPollPostsBloc; 
 
   @override
   void initState() {
     super.initState();
-    myWatchAlongsBloc = getItInstance<MyWatchAlongsBloc>();
-    myWatchAlongsBloc.add(LoadMyWatchAlongsEvent());
+    myPollPostsBloc = getItInstance<MyPollPostsBloc>();
+    myPollPostsBloc.add(LoadMyPollPostsEvent());
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    myWatchAlongsBloc?.close();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocProvider<MyWatchAlongsBloc>(
-        create: (context) => myWatchAlongsBloc,
-        child: Scaffold(
+      child: BlocProvider.value(
+        value:myPollPostsBloc,
+        child:Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Center(
               child: Text(
-                'My Watch-Alongs',
+                'My Polls',
                 style: TextStyle(
                   fontSize: FontSize.large,
                   color: Colors.white,
@@ -48,17 +44,17 @@ class _MyWatchAlongsPageState extends State<MyWatchAlongsPage> {
             ),
           ),
           backgroundColor: Color(0xFF142e4a),
-          body: BlocBuilder<MyWatchAlongsBloc, MyWatchAlongsState>(
+          body: BlocBuilder<MyPollPostsBloc, MyPollPostsState>(
             builder: (context, state) {
-              if(state is MyWatchAlongsLoaded){
-                if (state.myWatchAlongs.length == 0) {
+              if(state is MyPollPostsLoaded){
+                if (state.myPollPosts.length == 0) {
                   return Center(child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                          'No Watch-Alongs to show',
+                          'No Polls to show',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500
@@ -67,7 +63,7 @@ class _MyWatchAlongsPageState extends State<MyWatchAlongsPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Opt into your friends\' Watch-Alongs and get watching!",
+                          "Go to your Timeline and host polls now!",
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500
@@ -79,24 +75,24 @@ class _MyWatchAlongsPageState extends State<MyWatchAlongsPage> {
                 }
                 else {
                   return ListView.builder(
-                    itemCount: state.myWatchAlongs.length,
+                    itemCount: state.myPollPosts.length,
                     itemBuilder: (context, index) {
-                      return WatchAlongCard(state.myWatchAlongs[index]);
+                      return PollPostCard(state.myPollPosts[index]);
                     },
                   );
                 }
-              } else if(state is MyWatchAlongsLoading){
+              } else if(state is MyPollPostsLoading){
                 return RadiantGradientMask(
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 );
               }
-              return Center(child: Text("Undefined state in MyWatchAlongsPage"));
+              return Center(child: Text("Undefined state in MyPollPostsPage"));
             },
           ),
         ),
-      ),
+        )
     );
   }
 }

@@ -30,7 +30,8 @@ class MyWatchAlongsBloc extends Bloc<MyWatchAlongsEvent, MyWatchAlongsState> {
                 appErrorType: l.appErrorType
               ), 
               (r) => MyWatchAlongsLoaded(r)
-          ));
+            )
+          );
   }
 
   /* LEGACY mapEventsToState 

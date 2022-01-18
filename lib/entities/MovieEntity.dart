@@ -21,7 +21,6 @@ class MovieEntity extends Equatable{
   this.overview});
 
   @override
-  // TODO: implement props
   List<Object> get props => [id,title];
 
   @override
