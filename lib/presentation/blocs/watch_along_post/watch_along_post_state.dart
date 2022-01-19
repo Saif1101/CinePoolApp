@@ -7,6 +7,7 @@ abstract class WatchAlongPostState extends Equatable {
   List<Object> get props => [];
 }
 
+
 class WatchAlongPostLoading extends WatchAlongPostState{}
 
 class WatchAlongPostInitial extends WatchAlongPostState {
@@ -33,6 +34,6 @@ class WatchAlongPostError extends WatchAlongPostState{
   final String errorMessage;
 
   WatchAlongPostError({this.appErrorType, this.errorMessage});
-
-
 }
+
+class WatchAlongPostDeleted extends WatchAlongPostState{}

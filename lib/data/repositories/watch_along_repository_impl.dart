@@ -96,5 +96,17 @@ class WatchAlongRepositoryImpl extends WatchAlongRepository{
       return Left(AppError(appErrorType: AppErrorType.database, errorMessage: e.toString()));
     }
   }
+
+  @override
+  Future<Either<AppError, void>> deleteWatchAlong(String movieID, String watchAlongID) async {
+    try{
+      final response = await watchAlongDataSource.deleteWatchAlong(movieID, watchAlongID);
+      return Right(response);
+    }on SocketException{
+      return Left(AppError(appErrorType: AppErrorType.network));
+    } on Exception catch(e){
+      return Left(AppError(appErrorType: AppErrorType.database, errorMessage: e.toString()));
+    }
+  }
 }
 

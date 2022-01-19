@@ -15,6 +15,7 @@ import 'package:socialentertainmentclub/models/WatchAlong.dart';
 
 
 abstract class WatchAlongDataSource{
+  Future<void> deleteWatchAlong(String movieID, String watchAlongID);
   Future <bool> checkWatchAlong(String movieID);
   Future <void> createWatchAlong(WatchAlong watchAlong);
   Future <void> removeWatchAlong(String movieID);
@@ -28,15 +29,13 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
   @override
   Future<bool> checkWatchAlong(movieID) async {
-    QuerySnapshot docs = await FirestoreConstants.watchAlongRef
+    DocumentSnapshot doc = await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
         .collection('WatchAlongs')
     .doc(movieID)
-    .collection('MovieWatchAlongs')
-    .limit(1)
     .get();
     
-    if(docs.docs.length != 0){
+    if(doc.exists){
       return true;
     }
     return false;
@@ -48,17 +47,13 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
     String id = FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId)
         .collection('WatchAlongs')
-        .doc(watchAlong.movieID)
-        .collection('MovieWatchAlongs')
-        .doc('${watchAlong.watchAlongID}')
+        .doc()
         .id;
 
     await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
         .collection('WatchAlongs')
         .doc(watchAlong.movieID)
-    .collection('MovieWatchAlongs')
-    .doc(id)
         .set({
       'type': 'WatchAlong',
       'location': watchAlong.location,
@@ -148,6 +143,11 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
         .doc(FirestoreConstants.currentUserId)
         .collection('MyWatchAlongs')
         .get();
+    
+    QuerySnapshot snapshot2 = await FirestoreConstants.watchAlongRef
+        .doc(FirestoreConstants.currentUserId)
+        .collection('WatchAlongs')
+        .get();
 
     if(snapshot.docs.length>0){
       snapshot.docs.forEach((doc) {
@@ -155,9 +155,25 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
       });
     }
 
+    if(snapshot2.docs.length>0){
+      snapshot2.docs.forEach((doc) {
+        myWatchAlongs.add(WatchAlong.fromDocument(doc));
+      });
+    }
+
     return myWatchAlongs;
 
   }
-  
+
+  @override
+  Future<void> deleteWatchAlong(String movieID, String watchAlongID) async {
+    await FirestoreConstants.watchAlongRef
+        .doc(FirestoreConstants.currentUserId.toString())
+        .collection('WatchAlongs')
+        .doc(movieID)
+    .collection('MovieWatchAlongs')
+    .doc(watchAlongID)
+        .delete();
+  }
 }
 

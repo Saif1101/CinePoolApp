@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_MovieDetail.dart';
 
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
+import 'package:socialentertainmentclub/domain/usecases/watchalong/delete_WatchAlong.dart';
+import 'package:socialentertainmentclub/entities/DeleteWatchAlongParams.dart';
+
 import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/entities/movie_params.dart';
 
@@ -21,13 +24,29 @@ class WatchAlongPostBloc extends Bloc<WatchAlongPostEvent, WatchAlongPostState> 
   final GetUserFromID getUserFromID;
   final GetMovieDetail getMovieDetail;
   final WatchAlongParticipationBloc watchAlongParticipationBloc;
+  final DeleteWatchAlong deleteWatchAlong; 
 
   WatchAlongPostBloc({
+    @required this.deleteWatchAlong,
     @required this.watchAlongParticipationBloc,
     @required this.getUserFromID,
     @required this.getMovieDetail,
    }) : super(WatchAlongPostInitial()){
      on<LoadWatchAlongEvent>(_onLoadWatchAlongEvent);
+     on<DeleteWatchAlongEvent>(_onDeleteWatchAlongEvent);
+   }
+
+   Future<void> _onDeleteWatchAlongEvent(
+      DeleteWatchAlongEvent event, 
+     Emitter<WatchAlongPostState>emit,
+     ) async {
+       emit(WatchAlongPostLoading());
+       final response = await deleteWatchAlong(DeleteWatchAlongParams(watchAlongID: event.watchAlongID, movieID: event.movieID));
+       emit(response.fold(
+         (l) => WatchAlongPostError(errorMessage: l.errorMessage, appErrorType: l.appErrorType), 
+         (r) => WatchAlongPostDeleted())
+         );
+
    }
 
    Future<void> _onLoadWatchAlongEvent(

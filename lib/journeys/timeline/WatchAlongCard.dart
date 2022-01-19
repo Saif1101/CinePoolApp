@@ -1,13 +1,17 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialentertainmentclub/data/core/API_constants.dart';
+import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 import 'package:socialentertainmentclub/models/WatchAlong.dart';
 import 'package:socialentertainmentclub/common/constants/size_constants.dart';
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
+import 'package:socialentertainmentclub/presentation/blocs/timeline/timeline_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_participation/watch_along_participation_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_post/watch_along_post_bloc.dart';
 import 'package:socialentertainmentclub/common/extensions/string_extensions.dart';
@@ -36,26 +40,29 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    watchAlongPostBloc?.close();
-    watchAlongParticipationBloc?.close();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<WatchAlongPostBloc>(
-          create: (context) => watchAlongPostBloc,
+        BlocProvider.value(
+          value: watchAlongPostBloc,
         ),
-        BlocProvider<WatchAlongParticipationBloc>(
-          create: (context) => watchAlongParticipationBloc,
+        BlocProvider.value(
+          value: watchAlongParticipationBloc,
         ),
       ],
-      child: BlocBuilder<WatchAlongPostBloc, WatchAlongPostState>(
+      child: BlocConsumer<WatchAlongPostBloc, WatchAlongPostState>(
+        listener: ((context, state) {
+          if(state is WatchAlongPostDeleted){
+            Navigator.pop(context);
+          }
+        }),
         builder: (context, state) {
           if (state is WatchAlongPostLoaded) {
+            bool isOwner = FirestoreConstants.currentUserId==widget.watchAlong.ownerID;
+
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -131,7 +138,16 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(
+                                          isOwner?IconButton(
+                                            onPressed: (){
+                                              watchAlongPostBloc.add(
+                                                DeleteWatchAlongEvent(movieID: widget.watchAlong.movieID
+                                              ,watchAlongID: widget.watchAlong.watchAlongID)
+                                               );
+                                              },
+                                            icon: Icon(Icons.delete_forever),
+                                            color: Colors.redAccent,)
+                                            :Icon(
                                             Icons.calendar_today,
                                             size: 26,
                                           ),
@@ -161,6 +177,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                   ),
                                 ),
                               ),
+                            
                             ],
                           ), //HeaderRow
                           BlocBuilder<WatchAlongParticipationBloc,
@@ -168,7 +185,9 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                             builder: (context, state) {
                               if (state is IsParticipating) {
                                 return Divider(
-                                  color: state.isParticipating
+                                  color: isOwner?
+                                  Colors.white
+                                  :state.isParticipating
                                       ? Colors.greenAccent
                                       : Colors.redAccent,
                                   thickness: 4.0,
@@ -242,7 +261,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                           padding: EdgeInsets.only(
                                               left: 4.0, top: 4.0),
                                           child: Text(
-                                            "Where:    ${state.watchAlongPostModel.watchAlong.location}",
+                                            "${state.watchAlongPostModel.watchAlong.location}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 color: Colors.white,
@@ -265,15 +284,21 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                     builder: (context, state) {
                       if (state is IsParticipating) {
                         return GestureDetector(
-                          onTap: () =>
+                          onTap: (){
+                            if(!isOwner){
                               BlocProvider.of<WatchAlongParticipationBloc>(
                                       context)
                                   .add(ToggleParticipationEvent(
                                 watchAlong: widget.watchAlong,
-                                      isParticipating: state.isParticipating)),
+                                      isParticipating: state.isParticipating)
+                                      );
+                            }
+                          },
                           child: Container(
                             decoration: BoxDecoration(
-                                color: state.isParticipating
+                                color: isOwner?
+                                Colors.white
+                                :state.isParticipating
                                     ? Colors.greenAccent
                                     : Colors.redAccent,
                                 borderRadius: BorderRadius.only(
@@ -286,20 +311,28 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
+                                  isOwner?
+                                  Icons.assignment_turned_in_outlined:
                                   state.isParticipating
                                       ? Icons.emoji_emotions_outlined
                                       : Icons.access_alarm_outlined,
-                                  color: state.isParticipating
+                                  color:isOwner?
+                                  Colors.black
+                                  :state.isParticipating
                                       ? Colors.black
                                       : Colors.white,
                                   size: 40,
                                 ),
                                 Text(
-                                  state.isParticipating
+                                  isOwner?
+                                  'Scheduled'
+                                  :state.isParticipating
                                       ? 'You\'re in'
                                       : 'Opt in',
                                   style: TextStyle(
-                                    color: state.isParticipating
+                                    color: isOwner?
+                                    Colors.black
+                                    :state.isParticipating
                                         ? Colors.black
                                         : Colors.white,
                                     fontSize: Sizes.dimen_6.h,
@@ -353,7 +386,8 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
               child: Center(
                 child: CircularProgressIndicator(),
               ),
-            );}
+            );
+            }
           else if(state is WatchAlongPostError){
             return AppErrorWidget(
                 errorType: state.appErrorType,

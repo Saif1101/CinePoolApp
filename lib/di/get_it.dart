@@ -61,6 +61,7 @@ import 'package:socialentertainmentclub/domain/usecases/userandauth/unauthentica
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_IfParticipant.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/create_WatchAlong.dart';
+import 'package:socialentertainmentclub/domain/usecases/watchalong/delete_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/get_MyWatchAlongs.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optInto_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optOutOf_WatchAlong.dart';
@@ -176,6 +177,7 @@ Future init() async {
   getItInstance.registerLazySingleton<RemoveWatchAlong>(() => RemoveWatchAlong(getItInstance()));
   getItInstance.registerLazySingleton<CheckIfParticipant>(() =>CheckIfParticipant(getItInstance()));
   getItInstance.registerLazySingleton<GetMyWatchAlongs>(() => GetMyWatchAlongs(getItInstance()));
+  getItInstance.registerLazySingleton<DeleteWatchAlong>(() =>DeleteWatchAlong(getItInstance()));
 
   //Recommendation/Polls Usecases
   getItInstance.registerLazySingleton<CreatePollPost>(() => CreatePollPost(getItInstance()));
@@ -286,6 +288,7 @@ Future init() async {
   );
 
   getItInstance.registerFactory(() => WatchAlongPostBloc(
+    deleteWatchAlong: getItInstance(),
       getUserFromID: getItInstance(),
       getMovieDetail: getItInstance(),
     watchAlongParticipationBloc: getItInstance(),

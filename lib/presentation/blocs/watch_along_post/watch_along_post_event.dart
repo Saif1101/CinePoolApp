@@ -17,6 +17,18 @@ class LoadWatchAlongEvent extends WatchAlongPostEvent{
   List<Object> get props => [watchAlong];
 }
 
+class DeleteWatchAlongEvent extends WatchAlongPostEvent{
+  final String watchAlongID; 
+  final String movieID;
+
+  DeleteWatchAlongEvent({
+    @required this.watchAlongID,
+   @required this.movieID}); 
+
+  @override
+  List<Object> get props => [watchAlongID, movieID];
+}
+
 
 
 

@@ -8,6 +8,7 @@ import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/entities/NavigateRecommendationPollParams.dart';
 import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
+import 'package:socialentertainmentclub/helpers/font_size.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 import 'package:socialentertainmentclub/journeys/profile_screen/user_profile/profile_genre_tags_grid.dart';
@@ -218,12 +219,13 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                     children: [
                                       //STOP OWNER OF THE POST FROM ADD RECOMMENDATIONS
                                       FittedBox(
-                                        fit: BoxFit.fitWidth,
+                                        fit: BoxFit.contain,
                                         child: isOwner?
                                         Text(
                                           'What Your Friends Recommended',
                                            textAlign: TextAlign.center,
                                           style: TextStyle(
+                                                    fontSize: FontSize.medium,
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w500)
                                                     ):state.users.containsKey(
