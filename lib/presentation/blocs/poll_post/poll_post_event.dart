@@ -15,6 +15,13 @@ class LoadPollPostEvent extends PollPostEvent{
 
 }
 
+class DeletePollPostEvent extends PollPostEvent{
+  final String postID;
+
+  DeletePollPostEvent(this.postID); 
+  
+}
+
 class UpdatePollsEvent extends PollPostEvent{
   final UserModel owner;
   final List<MovieDetailEntity> movies;

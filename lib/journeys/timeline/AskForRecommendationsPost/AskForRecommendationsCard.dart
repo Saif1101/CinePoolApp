@@ -6,6 +6,7 @@ import 'package:socialentertainmentclub/common/constants/size_constants.dart';
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
+import 'package:socialentertainmentclub/domain/usecases/RecommendationPosts/delete_RecommendationPost.dart';
 import 'package:socialentertainmentclub/entities/NavigateRecommendationPollParams.dart';
 import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
 import 'package:socialentertainmentclub/helpers/font_size.dart';
@@ -17,6 +18,7 @@ import 'package:socialentertainmentclub/journeys/timeline/AskForRecommendationsP
 import 'package:socialentertainmentclub/models/AskForRecommendationsPostModel.dart';
 import 'package:socialentertainmentclub/presentation/blocs/ask_for_recommendations_post/ask_for_recommendations_post_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/ask_for_recommendations_post_list/ask_for_recommendations_post_list_bloc.dart';
+import 'package:socialentertainmentclub/presentation/blocs/my_recommendation_posts/myrecommendationposts_bloc.dart';
 
 class AskForRecommendationsCard extends StatefulWidget {
   final AskForRecommendationsPostModel askForRecommendationsPost;
@@ -51,12 +53,6 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
         ownerID: widget.askForRecommendationsPost.ownerID));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    askForRecommendationsPostListBloc?.close();
-    askForRecommendationsPostBloc?.close();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +75,23 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                BlocBuilder<AskForRecommendationsPostBloc, AskForRecommendationsPostState>(
+                BlocConsumer<AskForRecommendationsPostBloc, AskForRecommendationsPostState>(
+                  listener: ((context, state) {
+                    if(state is DeleteRecommendationPostState){
+                      Navigator.pop(context);
+                      return SizedBox.shrink();
+                    }
+                    
+                  }),
+                  buildWhen: (prev,curr){
+                    if(curr is DeleteRecommendationPostState){
+                      return false;
+                    }
+                    return true; 
+                  },
                   builder: (context, state) {
                     if (state is AskForRecommendationsPostLoaded) {
+                      bool isOwner = state.askForRecommendationsPost.ownerID == FirestoreConstants.currentUserId;
                       return Padding(
                         padding: EdgeInsets.only(
                             left: 8.0,
@@ -136,6 +146,14 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                     ),
                                   ),
                                 ),
+                                isOwner?Flexible(
+                                  child: IconButton(
+                                            onPressed: (){
+                                              askForRecommendationsPostBloc.add(DeleteRecommendationPostEvent(state.askForRecommendationsPost.postID));
+                                              },
+                                            icon: Icon(Icons.delete_forever),
+                                            color: Colors.redAccent,)
+                                  ):SizedBox.shrink(),
                               ],
                             ),
 
@@ -175,16 +193,19 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                           ],
                         ),
                       );
-                    } else if (state is AskForRecommendationsPostLoading) {
+                    } else if (state is AskForRecommendationsPostLoading || state is AskForRecommendationsPostInitial) {
                       return Center(
                         child: RadiantGradientMask(
                           child: CircularProgressIndicator(),
                         ),
                       );
                     }
+                     print('Undefined state inside AskForRecommendationsCard $state');
                     return Center(
                         child: Text(
-                            'Undefined state inside AskForRecommendationsCard $state'));
+                            'Undefined state inside AskForRecommendationsCard $state',
+                            style: TextStyle(
+                              color: Colors.white),));
                   },
                 ),
                 Padding(
@@ -314,12 +335,13 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                               })
                         ],
                       );
-                    } else if (state is AskForRecommendationsPostListLoading) {
+                    } else if (state is AskForRecommendationsPostListLoading|| state is AskForRecommendationsPostListInitial ) {
                       return Center(
                           child: RadiantGradientMask(
                             child: CircularProgressIndicator(),
                           ));
                     }
+                    print("Undefined state in AskForRecommendationsPostListBloc: Header: $state");
                     return Center(
                       child: Text(
                           "Undefined state in AskForRecommendationsPostListBloc: Header: $state"),

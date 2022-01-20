@@ -19,6 +19,13 @@ abstract class RecommendationsPollRepository{
       String postID,}
       );
 
+    
+  Future <Either<AppError, void>> deletePollPost(String postID);
+
+
+
+
+
   //Recommendations Post Methods
 
   Future <Either<AppError, void>> createRecommendationsPost(
@@ -32,4 +39,6 @@ abstract class RecommendationsPollRepository{
       String ownerID,
       String postID
       );
+
+    Future <Either<AppError, void>> deleteRecommendationPost(String postID);
 }

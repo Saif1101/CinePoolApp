@@ -168,12 +168,13 @@ class MoviePoster extends StatelessWidget {
                       ),
                     ),
                     elevation: 10,
-                    color: state.isScheduled?Colors.greenAccent:Colors.redAccent,
+                    color: state.watchAlongID!="NA"?Colors.greenAccent:Colors.redAccent,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: (){
-                          BlocProvider.of<WatchAlongFormBloc>(context).add(ToggleScheduleWatchAlongEvent(isScheduled: state.isScheduled,
+                          BlocProvider.of<WatchAlongFormBloc>(context).add(ToggleScheduleWatchAlongEvent(watchAlongID: state.watchAlongID,
+                        
                               movieID: movie.movieID.toString())
                           );
                         },
@@ -182,10 +183,10 @@ class MoviePoster extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.schedule_rounded,
-                              color:state.isScheduled?Colors.green:Colors.red,
+                              color:state.watchAlongID!="NA"?Colors.green:Colors.red,
                               size: Sizes.dimen_48.w,
                             ),
-                            state.isScheduled? Text('Scheduled',style: TextStyle(
+                            state.watchAlongID!="NA"? Text('Scheduled',style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                                 fontSize: 16,

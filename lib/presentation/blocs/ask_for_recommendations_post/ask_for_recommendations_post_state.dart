@@ -16,8 +16,9 @@ class AskForRecommendationsPostError extends AskForRecommendationsPostState{
 
   @override
   List<Object> get props => [errorMessage,appErrorType];
-
 }
+
+class DeleteRecommendationPostState extends AskForRecommendationsPostState{}
 
 class AskForRecommendationsPostLoading extends AskForRecommendationsPostState{}
 

@@ -16,4 +16,11 @@ class LoadAskForRecommendationsPostEvent extends AskForRecommendationsPostEvent{
   List<Object> get props => [askForRecommendationsPost];
 }
 
+class DeleteRecommendationPostEvent extends AskForRecommendationsPostEvent{
+  final String postID;
+
+  DeleteRecommendationPostEvent(this.postID); 
+  
+}
+
 

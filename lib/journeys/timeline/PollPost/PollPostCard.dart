@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:polls/polls.dart';
@@ -10,9 +10,11 @@ import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 
 
 import 'package:socialentertainmentclub/di/get_it.dart';
+import 'package:socialentertainmentclub/domain/usecases/PollPosts/delete_PollPost.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 import 'package:socialentertainmentclub/models/PollPostModel.dart';
+import 'package:socialentertainmentclub/presentation/blocs/my_poll_posts/mypollposts_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/poll_post/poll_post_bloc.dart';
 import 'package:socialentertainmentclub/presentation/widgets/app_error_widget.dart';
 
@@ -36,11 +38,7 @@ class _PollPostCardState extends State<PollPostCard> {
     pollPostBloc.add(LoadPollPostEvent(widget.pollPost));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    pollPostBloc?.close();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +63,15 @@ class _PollPostCardState extends State<PollPostCard> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BlocBuilder<PollPostBloc, PollPostState>(
+                BlocConsumer<PollPostBloc, PollPostState>(
+                  listener: ((context, state) {
+                    if(state is PollPostDeleted){
+                      Navigator.pop(context);
+                    }
+                  }),
                   builder: (context, state) {
                     if(state is PollPostLoaded){
+                     bool isOwner = widget.pollPost.ownerID == FirestoreConstants.currentUserId;
                      return  Column(
                        mainAxisSize: MainAxisSize.min,
                          crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,6 +119,14 @@ class _PollPostCardState extends State<PollPostCard> {
                                   ),
                                 ),
                               ),
+                              isOwner?Flexible(
+                                  child: IconButton(
+                                            onPressed: (){
+                                              pollPostBloc.add(DeletePollPostEvent(widget.pollPost.postID));
+                                              },
+                                            icon: Icon(Icons.delete_forever),
+                                            color: Colors.redAccent,)
+                                  ):SizedBox.shrink()
                             ],
                           ),
                          Divider(color: Colors.white,thickness: 2,),

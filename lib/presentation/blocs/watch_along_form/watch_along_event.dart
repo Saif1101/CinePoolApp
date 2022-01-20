@@ -2,20 +2,19 @@ part of 'watch_along_bloc.dart';
 
 abstract class WatchAlongEvent extends Equatable {
   const WatchAlongEvent();
-
   @override
   List<Object> get props => [];
 }
 
 class ToggleScheduleWatchAlongEvent extends WatchAlongEvent{
-  final bool isScheduled;
+  final String watchAlongID;
   final String movieID;
 
-  ToggleScheduleWatchAlongEvent({@required this.isScheduled,
+  ToggleScheduleWatchAlongEvent({@required this.watchAlongID,
    @required this.movieID});
 
   @override
-  List<Object> get props => [isScheduled];
+  List<Object> get props => [watchAlongID];
 }
 
 

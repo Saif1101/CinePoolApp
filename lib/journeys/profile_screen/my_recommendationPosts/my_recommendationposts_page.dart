@@ -32,7 +32,7 @@ class _MyRecommendationPostsState extends State<MyRecommendationPosts> {
             automaticallyImplyLeading: false,
             title: Center(
               child: Text(
-                'My Polls',
+                'My Recommendation Posts',
                 style: TextStyle(
                   fontSize: FontSize.large,
                   color: Colors.white,
@@ -53,7 +53,7 @@ class _MyRecommendationPostsState extends State<MyRecommendationPosts> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                          'No Polls to show',
+                          'No Posts To Show',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500
@@ -62,7 +62,7 @@ class _MyRecommendationPostsState extends State<MyRecommendationPosts> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Go to your Timeline and host polls now!",
+                          "Go To Your Timeline To Ask Your Friends For Movie Recommendations!",
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500

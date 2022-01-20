@@ -29,9 +29,11 @@ import 'package:socialentertainmentclub/domain/repositories/recommendations_poll
 
 import 'package:socialentertainmentclub/domain/usecases/CreatePosts/CreateAskForRecommendations.dart';
 import 'package:socialentertainmentclub/domain/usecases/CreatePosts/CreatePollPost.dart';
+import 'package:socialentertainmentclub/domain/usecases/PollPosts/delete_PollPost.dart';
 import 'package:socialentertainmentclub/domain/usecases/PollPosts/get_myPollPosts.dart';
 import 'package:socialentertainmentclub/domain/usecases/PostActions/CastPollVote.dart';
 import 'package:socialentertainmentclub/domain/usecases/PostActions/UpdateRecommendationsTrackMap.dart';
+import 'package:socialentertainmentclub/domain/usecases/RecommendationPosts/delete_RecommendationPost.dart';
 import 'package:socialentertainmentclub/domain/usecases/RecommendationPosts/get_myRecommendationPosts.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/add_MovieToFavorites.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/check_favorite.dart';
@@ -65,7 +67,7 @@ import 'package:socialentertainmentclub/domain/usecases/watchalong/delete_WatchA
 import 'package:socialentertainmentclub/domain/usecases/watchalong/get_MyWatchAlongs.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optInto_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optOutOf_WatchAlong.dart';
-import 'package:socialentertainmentclub/domain/usecases/watchalong/remove_WatchAlong.dart';
+
 import 'package:socialentertainmentclub/presentation/blocs/ask_for_recommendations_post/ask_for_recommendations_post_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/ask_for_recommendations_post_list/ask_for_recommendations_post_list_bloc.dart';
 
@@ -99,6 +101,7 @@ import 'package:socialentertainmentclub/presentation/blocs/timeline/timeline_blo
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_form/watch_along_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_participation/watch_along_participation_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_post/watch_along_post_bloc.dart';
+import 'package:socialentertainmentclub/presentation/widgets/tagsField.dart';
 
 
 
@@ -174,7 +177,6 @@ Future init() async {
   getItInstance.registerLazySingleton<CreateWatchAlong>(() => CreateWatchAlong(getItInstance()));
   getItInstance.registerLazySingleton<OptIntoWatchAlong>(() => OptIntoWatchAlong(getItInstance()));
   getItInstance.registerLazySingleton<OptOutOfWatchAlong>(() => OptOutOfWatchAlong(getItInstance()));
-  getItInstance.registerLazySingleton<RemoveWatchAlong>(() => RemoveWatchAlong(getItInstance()));
   getItInstance.registerLazySingleton<CheckIfParticipant>(() =>CheckIfParticipant(getItInstance()));
   getItInstance.registerLazySingleton<GetMyWatchAlongs>(() => GetMyWatchAlongs(getItInstance()));
   getItInstance.registerLazySingleton<DeleteWatchAlong>(() =>DeleteWatchAlong(getItInstance()));
@@ -186,6 +188,8 @@ Future init() async {
   getItInstance.registerLazySingleton<CastPollVote>(()=>CastPollVote(getItInstance()));
   getItInstance.registerLazySingleton<GetMyRecommendationPosts>(() =>GetMyRecommendationPosts(getItInstance()));
   getItInstance.registerLazySingleton<GetMyPollPosts>(() =>GetMyPollPosts(getItInstance()));
+  getItInstance.registerLazySingleton<DeletePollPost>(() => DeletePollPost(getItInstance()));
+  getItInstance.registerLazySingleton<DeleteRecommendationPost>(() => DeleteRecommendationPost(getItInstance()));
 
 
   //Repository implementations
@@ -248,7 +252,8 @@ Future init() async {
 
   getItInstance.registerFactory(()=>WatchAlongFormBloc(checkWatchAlong: getItInstance(),
       createWatchAlong: getItInstance(),
-      removeWatchAlong: getItInstance())
+      deleteWatchAlong: getItInstance(),
+      )
   );
 
 
@@ -313,6 +318,7 @@ Future init() async {
   );
 
   getItInstance.registerFactory(() => PollPostBloc(
+    deletePollPost: getItInstance() ,
       getMovieDetail: getItInstance(),
       getUserFromID: getItInstance(),
       castPollVote: getItInstance(),
@@ -321,6 +327,7 @@ Future init() async {
 
   getItInstance.registerFactory(() => AskForRecommendationsPostBloc
     (
+      deleteRecommendationPost: getItInstance(),
       getUserFromID:getItInstance()
   ));
 

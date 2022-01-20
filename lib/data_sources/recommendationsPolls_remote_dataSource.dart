@@ -15,6 +15,8 @@ abstract class RecommendationsPollsDataSource {
   //For Poll Post
   Future <void> createPollPost (PollPostModel pollPost);
 
+  Future<void> deletePollPost(String postID); 
+
   Future<List<PollPostModel>> getMyPollPosts(); 
 
   Future <void> castPollVote(
@@ -34,6 +36,8 @@ abstract class RecommendationsPollsDataSource {
       String ownerID,
       String postID,
       );
+  
+  Future<void> deleteRecommendationPost(String postID); 
 
 }
 
@@ -80,6 +84,7 @@ class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
         }
     );
   }
+  
   @override
   Future<void> createRecommendationsPost(AskForRecommendationsPostModel askForRecommendationsPost) async {
 
@@ -102,6 +107,16 @@ class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
         }
     );
   }
+
+  @override 
+  Future<void> deleteRecommendationPost(String postID) async {
+    print("Deletion path : recommendationPostsRef/currentUid/UserRecommendationPost/$postID");
+    // await FirestoreConstants.recommendationPostsRef.doc(FirestoreConstants.currentUserId)
+    // .collection('UserRecommendationPosts')
+    // .doc(postID).delete();
+  }
+
+
   //For PollPosts
   @override
   Future<List<PollPostModel>> getMyPollPosts() async {
@@ -119,7 +134,6 @@ class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
     }
 
     return myPollPosts;
-
   }
 
   @override
@@ -144,6 +158,14 @@ class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
       }
     );
 
+  }
+
+  @override 
+  Future<void> deletePollPost(String postID) async {
+    print('inside deletePollPostDataSource');
+    await FirestoreConstants.pollPostsRef.doc(FirestoreConstants.currentUserId)
+    .collection('UserPollPosts')
+    .doc(postID).delete();
   }
 
   @override
@@ -174,9 +196,5 @@ class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
         }
     );
   }
-
-  
-
-
 
 }

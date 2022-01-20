@@ -4,13 +4,13 @@ import 'package:socialentertainmentclub/domain/repositories/watch_along_reposito
 import 'package:socialentertainmentclub/domain/usecases/usecase.dart';
 import 'package:socialentertainmentclub/entities/app_error.dart';
 
-class CheckWatchAlong extends UseCase<bool,String>{
+class CheckWatchAlong extends UseCase<String,String>{
   final WatchAlongRepository repository;
 
   CheckWatchAlong(this.repository);
 
   @override
-  Future<Either<AppError, bool>> call(String movieID) async {
+  Future<Either<AppError,String>> call(String movieID) async {
     return await repository.checkWatchAlong(movieID);
   }
 

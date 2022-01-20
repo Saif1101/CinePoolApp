@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:socialentertainmentclub/domain/usecases/PollPosts/delete_PollPost.dart';
 import 'package:socialentertainmentclub/domain/usecases/PostActions/CastPollVote.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_MovieDetail.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
@@ -21,14 +23,30 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
   final GetMovieDetail getMovieDetail;
   final GetUserFromID getUserFromID;
   final CastPollVote castPollVote;
+  final DeletePollPost deletePollPost; 
 
 
   PollPostBloc({
+    @required this.deletePollPost,
     @required this.getMovieDetail,
     @required this.getUserFromID,
     @required this.castPollVote}) : super(PollPostInitial()){
       on<LoadPollPostEvent>(_onLoadPollPostEvent);
       on<UpdatePollsEvent>(_onUpdatePollsEvent);
+      on<DeletePollPostEvent>(_onDeletePollPostEvent);
+    }
+
+    Future<void> _onDeletePollPostEvent(
+      DeletePollPostEvent event, 
+      Emitter<PollPostState> emit,
+    ) async {
+      emit(PollPostLoading());
+      final response = await deletePollPost(event.postID);
+      emit(response.fold(
+        (l) => PollPostError(errorMessage: l.errorMessage, appErrorType: l.appErrorType), 
+        (r) => PollPostDeleted())
+        );
+
     }
 
     Future<void> _onLoadPollPostEvent(

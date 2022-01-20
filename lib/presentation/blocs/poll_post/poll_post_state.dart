@@ -26,6 +26,8 @@ class PollPostLoaded extends PollPostState{
 
 }
 
+class PollPostDeleted extends PollPostState{}
+
 class PollPostLoading extends PollPostState{}
 
 class PollPostUpdated extends PollPostState{}

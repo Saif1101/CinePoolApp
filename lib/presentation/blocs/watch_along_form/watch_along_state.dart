@@ -16,9 +16,9 @@ class WatchAlongError extends WatchAlongState{}
 
 
 class IsScheduled extends WatchAlongState{
-  final bool isScheduled;
+  final String watchAlongID;
 
-  IsScheduled(this.isScheduled);
+  IsScheduled(this.watchAlongID);
 
 }
 

@@ -59,6 +59,12 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
             Navigator.pop(context);
           }
         }),
+        buildWhen: (prev,curr){
+          if(curr is WatchAlongPostDeleted){
+            return false; 
+          }
+          return true; 
+        },
         builder: (context, state) {
           if (state is WatchAlongPostLoaded) {
             bool isOwner = FirestoreConstants.currentUserId==widget.watchAlong.ownerID;
@@ -396,6 +402,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                 }
             );
           }
+          print("Undefined state in  WatchAlongCard $state");
           return Center(
               child: Text(
             'Undefined state in WatchAlongCard $state',

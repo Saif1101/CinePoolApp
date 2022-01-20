@@ -12,7 +12,10 @@ part 'myrecommendationposts_state.dart';
 class MyRecommendationPostsBloc extends Bloc<MyRecommendationPostsEvent, MyRecommendationPostsState> {
   final GetMyRecommendationPosts getMyRecommendationPosts; 
 
-  MyRecommendationPostsBloc({@required this.getMyRecommendationPosts}) : super(MyRecommendationPostsInitial()) {
+
+  MyRecommendationPostsBloc({
+    @required this.getMyRecommendationPosts
+  }) : super(MyRecommendationPostsInitial()) {
      on<LoadMyRecommendationPostsEvent>(_onLoadMyRecommendationPostsEvent); 
   }
 

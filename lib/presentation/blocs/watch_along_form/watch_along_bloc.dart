@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/create_WatchAlong.dart';
+import 'package:socialentertainmentclub/domain/usecases/watchalong/delete_WatchAlong.dart';
 
-import 'package:socialentertainmentclub/domain/usecases/watchalong/remove_WatchAlong.dart';
+import 'package:socialentertainmentclub/entities/DeleteWatchAlongParams.dart';
 import 'package:socialentertainmentclub/models/WatchAlong.dart';
+
 
 part 'watch_along_event.dart';
 part 'watch_along_state.dart';
@@ -16,11 +18,11 @@ part 'watch_along_state.dart';
 class WatchAlongFormBloc extends Bloc<WatchAlongEvent, WatchAlongState> {
   final CheckWatchAlong checkWatchAlong;
   final CreateWatchAlong createWatchAlong;
-  final RemoveWatchAlong removeWatchAlong;
+  final DeleteWatchAlong deleteWatchAlong;
 
   WatchAlongFormBloc({@required this.checkWatchAlong,
    @required this.createWatchAlong,
-    @required this.removeWatchAlong}) : super(WatchAlongInitial()){
+    @required this.deleteWatchAlong}) : super(WatchAlongInitial()){
       on<ToggleScheduleWatchAlongEvent>(_onToggleScheduleWatchAlongEvent);
       on<CheckIfScheduledEvent>(_onCheckIfScheduledEvent);
       on<WatchAlongDateEditEvent>(_onWatchAlongDateEditEvent);
@@ -31,12 +33,12 @@ Future<void> _onToggleScheduleWatchAlongEvent(
 ToggleScheduleWatchAlongEvent event, 
 Emitter<WatchAlongState> emit,
 ) async {
-   if(event.isScheduled){
+   if(event.watchAlongID!='NA'){
         emit (WatchAlongLoading());
-        await removeWatchAlong(event.movieID);
-        emit(IsScheduled(false));
+        await deleteWatchAlong(DeleteWatchAlongParams(watchAlongID: event.watchAlongID, movieID: event.movieID));
+        emit(IsScheduled('NA'));
       }else{
-        emit( CreateWatchAlongState(event.movieID,DateTime.now()));
+        emit(CreateWatchAlongState(event.movieID,DateTime.now()));
       }
 }
 

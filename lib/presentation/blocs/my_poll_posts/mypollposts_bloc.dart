@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:socialentertainmentclub/domain/usecases/PollPosts/delete_PollPost.dart';
 import 'package:socialentertainmentclub/domain/usecases/PollPosts/get_myPollPosts.dart';
 import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/entities/no_params.dart';
@@ -13,7 +14,9 @@ class MyPollPostsBloc extends Bloc<MyPollPostsEvent, MyPollPostsState> {
   final GetMyPollPosts getMyPollPosts;
 
 
-  MyPollPostsBloc({@required this.getMyPollPosts}) : super(MyPollPostsInitial()) {
+  MyPollPostsBloc({
+    @required this.getMyPollPosts,
+    }) : super(MyPollPostsInitial()) {
       on<LoadMyPollPostsEvent>(_onLoadMyPollPostsEvent); 
   }
 

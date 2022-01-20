@@ -13,10 +13,12 @@ class RecommendationsPollRepositoryImpl extends RecommendationsPollRepository{
 
   RecommendationsPollRepositoryImpl({@required this.recommendationsPollsDataSource});
 
-  @override
-  Future<Either<AppError, void>> updateRecommendationsTrackMap(Map <String,List<String>> recommendationsTrackMap, String ownerID, String postID) async {
-    try{
-      final response = await recommendationsPollsDataSource.updateRecommendationsTrackMap(recommendationsTrackMap, ownerID, postID);
+  //FOR POLL POSTS 
+
+   @override
+  Future<Either<AppError, void>> deletePollPost(String postID) async {
+   try{
+      final response = await recommendationsPollsDataSource.deletePollPost(postID);
       return Right(response);
     } on SocketException{
       return Left(AppError(appErrorType: AppErrorType.network));
@@ -24,6 +26,8 @@ class RecommendationsPollRepositoryImpl extends RecommendationsPollRepository{
       return Left(AppError(appErrorType: AppErrorType.api, errorMessage: e.toString()));
     }
   }
+
+  
 
   @override
   Future<Either<AppError, void>> createPollPost(PollPostModel pollPost) async {
@@ -68,6 +72,9 @@ class RecommendationsPollRepositoryImpl extends RecommendationsPollRepository{
     }
   }
 
+
+  ///FOR RECOMMENDATION POSTS 
+
   @override
   Future<Either<AppError, void>> createRecommendationsPost(AskForRecommendationsPostModel askForRecommendationsPost) async {
     try{
@@ -91,4 +98,29 @@ class RecommendationsPollRepositoryImpl extends RecommendationsPollRepository{
       return Left(AppError(appErrorType: AppErrorType.api, errorMessage: e.toString()));
     }
   }
+
+  @override
+  Future<Either<AppError, void>> updateRecommendationsTrackMap(Map <String,List<String>> recommendationsTrackMap, String ownerID, String postID) async {
+    try{
+      final response = await recommendationsPollsDataSource.updateRecommendationsTrackMap(recommendationsTrackMap, ownerID, postID);
+      return Right(response);
+    } on SocketException{
+      return Left(AppError(appErrorType: AppErrorType.network));
+    } on Exception catch(e){
+      return Left(AppError(appErrorType: AppErrorType.api, errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AppError, void>> deleteRecommendationPost(String postID) async {
+    try{
+      final response = await recommendationsPollsDataSource.deleteRecommendationPost(postID);
+      return Right(response);
+    } on SocketException{
+      return Left(AppError(appErrorType: AppErrorType.network));
+    } on Exception catch(e){
+      return Left(AppError(appErrorType: AppErrorType.api, errorMessage: e.toString()));
+    }
+  }
+
 }

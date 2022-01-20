@@ -16,9 +16,8 @@ import 'package:socialentertainmentclub/models/WatchAlong.dart';
 
 abstract class WatchAlongDataSource{
   Future<void> deleteWatchAlong(String movieID, String watchAlongID);
-  Future <bool> checkWatchAlong(String movieID);
+  Future <String> checkWatchAlong(String movieID); //Return WatchAlongID if scheduled, else return NA
   Future <void> createWatchAlong(WatchAlong watchAlong);
-  Future <void> removeWatchAlong(String movieID);
   Future <void> optIntoWatchAlong(WatchAlong watchAlong);
   Future <void> optOutOfWatchAlong(WatchAlong watchAlong);
   Future <bool> checkIfParticipant(String watchAlongID);//Add WatchAlongParticipants/WatchAlongID/UserID
@@ -28,7 +27,9 @@ abstract class WatchAlongDataSource{
 class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
   @override
-  Future<bool> checkWatchAlong(movieID) async {
+  Future<String> checkWatchAlong(movieID) async { 
+    //TODO fetch watchAlongID if a WatchAlong has been schedueled so that
+    // you can delete it from the movie detail screen too
     DocumentSnapshot doc = await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
         .collection('WatchAlongs')
@@ -36,9 +37,9 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
     .get();
     
     if(doc.exists){
-      return true;
+      return doc.data()['watchAlongID'];
     }
-    return false;
+    return 'NA';
   }
 
   @override
@@ -63,22 +64,22 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
       'title':watchAlong.title,
       'scheduledTime':watchAlong.scheduledTime,
     });
+
   }
 
 
   @override
-  Future<void> removeWatchAlong(movieID) async {
+  Future<void> deleteWatchAlong(String movieID, String watchAlongID) async {
 
+    print("Delete Path: watchAlongRef/${FirestoreConstants.currentUserId.toString()}/WatchAlongs/$movieID");
     await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
         .collection('WatchAlongs')
         .doc(movieID)
-        .collection('MovieWatchAlongs')
-        .get().then((snapshot) {
-    for (DocumentSnapshot ds in snapshot.docs){
-      ds.reference.delete();
-    }
-    });
+        .delete();
+        
+    await FirestoreConstants.watchAlongParticipantsRef.doc(watchAlongID)
+        .delete();
   }
 
   @override
@@ -165,15 +166,6 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
   }
 
-  @override
-  Future<void> deleteWatchAlong(String movieID, String watchAlongID) async {
-    await FirestoreConstants.watchAlongRef
-        .doc(FirestoreConstants.currentUserId.toString())
-        .collection('WatchAlongs')
-        .doc(movieID)
-    .collection('MovieWatchAlongs')
-    .doc(watchAlongID)
-        .delete();
-  }
+  
 }
 

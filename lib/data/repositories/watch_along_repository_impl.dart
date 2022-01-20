@@ -14,7 +14,7 @@ class WatchAlongRepositoryImpl extends WatchAlongRepository{
   WatchAlongRepositoryImpl({@required this.watchAlongDataSource});
 
   @override
-  Future<Either<AppError, bool>> checkWatchAlong(String movieID) async {
+  Future<Either<AppError, String>> checkWatchAlong(String movieID) async {
    try{
      final response = await watchAlongDataSource.checkWatchAlong(movieID);
      return Right(response);
@@ -61,17 +61,6 @@ class WatchAlongRepositoryImpl extends WatchAlongRepository{
     }
   }
 
-  @override
-  Future<Either<AppError, void>> removeWatchAlong(String movieID) async {
-    try{
-      final response = await watchAlongDataSource.removeWatchAlong(movieID);
-      return Right(response);
-    }on SocketException{
-      return Left(AppError(appErrorType: AppErrorType.network));
-    } on Exception catch(e){
-      return Left(AppError(appErrorType: AppErrorType.database, errorMessage: e.toString()));
-    }
-  }
 
   @override
   Future<Either<AppError, bool>> checkIfParticipant(String watchAlongID) async {

@@ -54,7 +54,7 @@ class _MyPollPostsState extends State<MyPollPosts> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                          'No Polls to show',
+                          'No Posts To Show',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500
@@ -63,7 +63,7 @@ class _MyPollPostsState extends State<MyPollPosts> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Go to your Timeline and host polls now!",
+                          "Go To Your Timeline To Host Polls!",
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500
