@@ -11,6 +11,7 @@ import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
 import 'package:socialentertainmentclub/common/extensions/num_extensions.dart';
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
+import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 import 'package:socialentertainmentclub/journeys/home/movie_detail/WatchAlong/WatchAlongForm.dart';
 import 'package:socialentertainmentclub/journeys/home/movie_detail/movie_detail_app_bar.dart';
 import 'package:socialentertainmentclub/presentation/blocs/favorite_movies/favorite_movies_bloc.dart';
@@ -127,7 +128,7 @@ class MoviePoster extends StatelessWidget {
                     child: Dialog(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                        backgroundColor: Colors.white,
+                        backgroundColor: ThemeColors.vulcan,
                         insetPadding: EdgeInsets.symmetric(horizontal: 12.0),
                         child: SingleChildScrollView(
                           child: Stack(
@@ -138,7 +139,7 @@ class MoviePoster extends StatelessWidget {
                                   movieID: movie.movieID.toString(),
                                   movieTitle: movie.title),
                               Positioned(
-                                top: -24,
+                                top:  -12,
                                 child: Text("WATCH ALONG",
                                     style: TextStyle(
                                       fontSize: 24,

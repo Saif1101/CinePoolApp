@@ -12,6 +12,7 @@ import 'package:socialentertainmentclub/common/extensions/string_extensions.dart
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 
 import 'package:socialentertainmentclub/presentation/blocs/watch_along_form/watch_along_bloc.dart';
+import 'package:socialentertainmentclub/presentation/views/SignUpView/widgets/CustomTextField.dart';
 
 
 class WatchAlongForm extends StatefulWidget {
@@ -48,172 +49,181 @@ class _WatchAlongFormState extends State<WatchAlongForm> {
         if(state is CreateWatchAlongState){
           return Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(32),
-              color: ThemeColors.vulcan.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(12),
+              color: ThemeColors.vulcan,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        foregroundDecoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withOpacity(0.1),
-                                  Colors.white.withOpacity(0.45),
-                                  Colors.white.withOpacity(0.7),
-                                  Colors.white
-                                ]
-                            )
-                        ),
-                        child: widget.moviePosterPath!=null?CachedNetworkImage(
-                          imageUrl: '${ApiConstants.BASE_IMAGE_URL}${widget.moviePosterPath}',
-                          width: ScreenUtil.screenWidth/4,
-                        ):Image.asset('assets/images/FreeVector-Sync-Slate.jpg',),
-                      ),
-                    ),
-                    Expanded(
-                      child: Form(
-                        key: formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text('${widget.movieTitle}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    fontSize: Sizes.dimen_8.h
-                                ),),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: TextFormField(
-
-                                onSaved: (value){
-                                  titleController.text = value;
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Empty';
-                                  }
-                                  else if(value.length>13){
-                                    return 'The title should be less than 13 characters';
-                                  }
-                                  else if(value.length<2){
-                                    return 'The title should be more than 2 characters';
-                                  }
-                                  return null;
-                                },
-                                autofocus: false,
-                                style: new TextStyle(fontWeight: FontWeight.normal,
-                                  color: Colors.white,),
-                                decoration: InputDecoration(
-                                  hintText: 'Title',
-                                  hintStyle: TextStyle(color: Colors.white),
-                                  contentPadding: new EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: new BorderSide(
-                                        color: Colors.white,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                          6.0
-                                      )
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TextFormField(
-                                onSaved: (value){
-                                  whereController.text = value;
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Empty';
-                                  }
-                                  else if(value.length>13){
-                                    return 'The title should be less than 13 characters';
-                                  }
-                                  else if(value.length<2){
-                                    return 'The title should be more than 2 characters';
-                                  }
-                                  return null;
-                                },
-                                autofocus: false,
-                                style: new TextStyle(fontWeight: FontWeight.normal,
-                                  color: Colors.white,),
-                                decoration: InputDecoration(
-                                  hintText: 'Where?',
-                                  hintStyle: TextStyle(color: Colors.white),
-
-                                  contentPadding: new EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: new BorderSide(
-                                          color: Colors.white,
-                                        ),
-                                        borderRadius: BorderRadius.circular(
-                                            6.0
-                                        )
-                                    ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(2.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: ThemeColors.primaryColor
-                                    ),
-                                    child: RaisedButton(
-                                      color: ThemeColors.primaryColor,
-                                        onPressed: () {
-                                          DatePicker.showDateTimePicker(context,
-                                              showTitleActions: true,
-                                              minTime: DateTime.now(),
-                                              maxTime: DateTime(2019, 6, 7),
-                                              onChanged: (date) {
-                                              }, onConfirm: (date) {
-                                            dateTimeController.text = date.toString();
-                                            dateTimeLabelController.text = date.toString().getDateTime();
-                                              }, currentTime: DateTime.now());
-                                        },
-                                        child: Text(
-                                          'When?',
-                                          style: TextStyle(color: Colors.white),
-                                        )
-                                    ),
-                                  ),
-                                  TextField(
-                                    style: TextStyle(
+                Flexible(
+                        child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Text('${widget.movieTitle}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
                                       color: Colors.white,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: Sizes.dimen_6.h,
-                                    ),
-                                    textAlign:  TextAlign.center,
-                                    controller: dateTimeLabelController,
-                                    readOnly: true,
+                                      fontSize: Sizes.dimen_8.h
+                                  ),),
+                              ),),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              foregroundDecoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        Colors.white.withOpacity(0.1),
+                                        Colors.white.withOpacity(0.45),
+                                        Colors.white.withOpacity(0.7),
+                                        Colors.white
+                                      ]
                                   )
-                                ],
                               ),
+                              child: widget.moviePosterPath!=null?CachedNetworkImage(
+                                imageUrl: '${ApiConstants.BASE_IMAGE_URL}${widget.moviePosterPath}',
+                                width: ScreenUtil.screenWidth/4,
+                              ):Image.asset('assets/images/FreeVector-Sync-Slate.jpg',),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                        Expanded(
+                          child: Form(
+                            key: formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomTextField(
+                                    maxLength: 21,
+                                    minLength: 2,
+                                    hintText: 'Title', 
+                                    hintTextColor: Colors.white,
+                                    controller: titleController),
+                                  // child: TextFormField(
+
+                                  //   onSaved: (value){
+                                  //     titleController.text = value;
+                                  //   },
+                                  //   validator: (value) {
+                                  //     if (value == null || value.isEmpty) {
+                                  //       return 'Can\'t Be Empty';
+                                  //     }
+                                  //     else if(value.length>20){
+                                  //       return '2 < Title Length < 21';
+                                  //     }
+                                  //     else if(value.length<2){
+                                  //       return '2 < Title Length < 21';
+                                  //     }
+                                  //     return null;
+                                  //   },
+                                  //   autofocus: false,
+                                  //   style: new TextStyle(fontWeight: FontWeight.normal,
+                                  //     color: Colors.white,),
+                                  //   decoration: InputDecoration(
+                                  //     hintText: 'Title',
+                                  //     hintStyle: TextStyle(color: Colors.white),
+                                  //     contentPadding: new EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                            
+                                  //   ),
+                                  // ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: CustomTextField(
+                                    hintText: 'Where?', 
+                                    maxLength: 52,
+                                    minLength: 2,
+                                    hintTextColor: Colors.white,
+                                    controller: whereController) ,
+                                  // child: TextFormField(
+                                  //   onSaved: (value){
+                                  //     whereController.text = value;
+                                  //   },
+                                  //   validator: (value) {
+                                  //     if (value == null || value.isEmpty) {
+                                  //       return 'Can\'t Be Empty';
+                                  //     }
+                                  //     else if(value.length>15){
+                                  //       return '2 < Title Length < 21';
+                                  //     }
+                                  //     else if(value.length<2){
+                                  //       return '2 < Title Length < 21';
+                                  //     }
+                                  //     return null;
+                                  //   },
+                                  //   autofocus: false,
+                                  //   style: new TextStyle(fontWeight: FontWeight.normal,
+                                  //     color: Colors.white,),
+                                  //   decoration: InputDecoration(
+                                  //     hintText: 'Where?',
+                                  //     hintStyle: TextStyle(color: Colors.white),
+                                  //     contentPadding: new EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                                      
+                                  //   ),
+                                  // ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(2.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        
+                                          style: ElevatedButton.styleFrom(
+                                            primary: ThemeColors.primaryColor,
+                                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+                                            textStyle: TextStyle(
+                                              fontWeight: FontWeight.bold)
+                                              ),
+                                              onPressed: () {
+                                                DatePicker.showDateTimePicker(context,
+                                                showTitleActions: true,
+                                                minTime: DateTime.now(),
+                                                maxTime: DateTime(2019, 6, 7),
+                                                onChanged: (date) {
+                                                }, onConfirm: (date) {
+                                              dateTimeController.text = date.toString();
+                                              dateTimeLabelController.text = date.toString().getDateTime();
+                                                }, currentTime: DateTime.now());
+                                          },
+                                          child: Text(
+                                            'When?',
+                                            style: TextStyle(color: Colors.white),
+                                          )
+                                      ),
+                                      TextField(
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: Sizes.dimen_6.h,
+                                        ),
+                                        textAlign:  TextAlign.center,
+                                        controller: dateTimeLabelController,
+                                        readOnly: true,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
                 RadiantGradientMask(
                   child: Container(

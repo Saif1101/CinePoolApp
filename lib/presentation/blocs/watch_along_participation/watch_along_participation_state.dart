@@ -9,8 +9,11 @@ class WatchAlongParticipationInitial extends WatchAlongParticipationState {}
 
 class IsParticipating extends WatchAlongParticipationState{
   final bool isParticipating;
+  final List<UserModel> participants; 
 
-  IsParticipating(this.isParticipating);
+  IsParticipating(
+    {@required this.participants,
+    @required this.isParticipating});
 
   @override
   List<Object> get props => [isParticipating];

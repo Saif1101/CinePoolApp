@@ -22,6 +22,7 @@ abstract class WatchAlongDataSource{
   Future <void> optOutOfWatchAlong(WatchAlong watchAlong);
   Future <bool> checkIfParticipant(String watchAlongID);//Add WatchAlongParticipants/WatchAlongID/UserID
   Future <List<WatchAlong>> getMyWatchAlongs();
+  Future<List<String>> getWatchAlongParticipants(String watchAlongID); 
 }
 
 class WatchAlongDataSourceImpl extends WatchAlongDataSource{
@@ -164,6 +165,22 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
     return myWatchAlongs;
 
+  }
+
+  @override
+  Future<List<String>> getWatchAlongParticipants(String watchAlongID) async {
+    List<String> participantIDs = []; 
+
+    QuerySnapshot snapshot = await FirestoreConstants.watchAlongParticipantsRef
+        .doc(watchAlongID)
+        .collection('Participants')
+        .get();
+      
+    snapshot.docs.forEach((doc) {
+       participantIDs.add(doc.id);
+      });
+    
+    return participantIDs;
   }
 
   

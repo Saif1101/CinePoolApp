@@ -8,8 +8,10 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final int minLength;
   final int maxLength;
+  final Color hintTextColor;
+  
 
-  const CustomTextField({Key key, this.maxLength, this.minLength, @required this.hintText,
+  const CustomTextField({Key key, this.hintTextColor, this.maxLength, this.minLength, @required this.hintText,
     @ required this.controller,}) : super(key: key);
 
 
@@ -27,6 +29,9 @@ class CustomTextField extends StatelessWidget {
           return "This field can't have more than ${maxLength.toString()} characters";
         }
       },
+      onSaved: (value){
+        controller.text=value;
+      },
       style: GoogleFonts.poppins(
         color: ThemeColors.whiteTextColor,
       ),
@@ -36,8 +41,9 @@ class CustomTextField extends StatelessWidget {
         fillColor: ThemeColors.textFieldBgColor,
         filled: true,
         hintText: "$hintText",
+        counterStyle: TextStyle(color: Colors.white),
         hintStyle: GoogleFonts.poppins(
-          color: ThemeColors.textFieldHintColor,
+          color: hintTextColor??ThemeColors.textFieldHintColor,
           fontSize: FontSize.medium,
           fontWeight: FontWeight.w400,
         ),

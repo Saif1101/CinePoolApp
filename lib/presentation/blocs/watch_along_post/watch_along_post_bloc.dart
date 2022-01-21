@@ -8,6 +8,7 @@ import 'package:socialentertainmentclub/domain/usecases/movies/get_MovieDetail.d
 
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/delete_WatchAlong.dart';
+import 'package:socialentertainmentclub/domain/usecases/watchalong/get_WatchAlongParticipants.dart';
 import 'package:socialentertainmentclub/entities/DeleteWatchAlongParams.dart';
 
 import 'package:socialentertainmentclub/entities/app_error.dart';
@@ -25,8 +26,10 @@ class WatchAlongPostBloc extends Bloc<WatchAlongPostEvent, WatchAlongPostState> 
   final GetMovieDetail getMovieDetail;
   final WatchAlongParticipationBloc watchAlongParticipationBloc;
   final DeleteWatchAlong deleteWatchAlong; 
+  final GetWatchAlongParticipants getWatchAlongParticipants; 
 
   WatchAlongPostBloc({
+    @required this.getWatchAlongParticipants,
     @required this.deleteWatchAlong,
     @required this.watchAlongParticipationBloc,
     @required this.getUserFromID,

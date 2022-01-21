@@ -8,6 +8,7 @@ import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
+import 'package:socialentertainmentclub/journeys/timeline/FacePile.dart';
 import 'package:socialentertainmentclub/models/WatchAlong.dart';
 import 'package:socialentertainmentclub/common/constants/size_constants.dart';
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
@@ -287,8 +288,8 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                   ),
                   BlocBuilder<WatchAlongParticipationBloc,
                       WatchAlongParticipationState>(
-                    builder: (context, state) {
-                      if (state is IsParticipating) {
+                    builder: (context, participationState) {
+                      if (participationState is IsParticipating) {
                         return GestureDetector(
                           onTap: (){
                             if(!isOwner){
@@ -296,7 +297,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                       context)
                                   .add(ToggleParticipationEvent(
                                 watchAlong: widget.watchAlong,
-                                      isParticipating: state.isParticipating)
+                                      isParticipating: participationState.isParticipating)
                                       );
                             }
                           },
@@ -304,7 +305,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                             decoration: BoxDecoration(
                                 color: isOwner?
                                 Colors.white
-                                :state.isParticipating
+                                :participationState.isParticipating
                                     ? Colors.greenAccent
                                     : Colors.redAccent,
                                 borderRadius: BorderRadius.only(
@@ -316,41 +317,55 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  isOwner?
-                                  Icons.assignment_turned_in_outlined:
-                                  state.isParticipating
-                                      ? Icons.emoji_emotions_outlined
-                                      : Icons.access_alarm_outlined,
-                                  color:isOwner?
-                                  Colors.black
-                                  :state.isParticipating
-                                      ? Colors.black
-                                      : Colors.white,
-                                  size: 40,
-                                ),
-                                Text(
-                                  isOwner?
-                                  'Scheduled'
-                                  :state.isParticipating
-                                      ? 'You\'re in'
-                                      : 'Opt in',
-                                  style: TextStyle(
-                                    color: isOwner?
+                                Flexible(
+                                  child: Icon(
+                                    isOwner?
+                                    Icons.assignment_turned_in_outlined:
+                                    participationState.isParticipating
+                                        ? Icons.emoji_emotions_outlined
+                                        : Icons.access_alarm_outlined,
+                                    color:isOwner?
                                     Colors.black
-                                    :state.isParticipating
+                                    :participationState.isParticipating
                                         ? Colors.black
                                         : Colors.white,
-                                    fontSize: Sizes.dimen_6.h,
-                                    fontWeight: FontWeight.bold,
+                                    size: 40,
                                   ),
-                                )
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    isOwner?
+                                    'Scheduled'
+                                    :participationState.isParticipating
+                                        ? 'You\'re in'
+                                        : 'Opt in',
+                                    style: TextStyle(
+                                      color: isOwner?
+                                      Colors.black
+                                      :participationState.isParticipating
+                                          ? Colors.black
+                                          : Colors.white,
+                                      fontSize: Sizes.dimen_6.h,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: LayoutBuilder(
+                                    builder:(context,constraints)=>SizedBox(
+                                      width: constraints.maxWidth/3,
+                                      child: FacePile(
+                                        users: participationState.participants
+                                        ),
+                                      ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         );
                       }
-                      else if (state is ParticipationButtonLoading || state is WatchAlongParticipationInitial) {
+                      else if (participationState is ParticipationButtonLoading || participationState is WatchAlongParticipationInitial) {
                         return Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -369,9 +384,9 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                           ),
                         );
                       }
-                      else if (state is ParticipationButtonError){
+                      else if (participationState is ParticipationButtonError){
                         return AppErrorWidget(
-                            errorType: state.appErrorType,
+                            errorType:participationState.appErrorType,
                             onPressed: ()=>{
                               BlocProvider.of<WatchAlongPostBloc>(context).add(LoadWatchAlongEvent(widget.watchAlong))
                             }
@@ -379,7 +394,7 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                       }
                       return Center(
                         child: Text(
-                            "Undefined state in WatchAlongParticipationBloc: $state"),
+                            "Undefined state in WatchAlongParticipationBloc: $participationState"),
                       );
                     },
                   ),
