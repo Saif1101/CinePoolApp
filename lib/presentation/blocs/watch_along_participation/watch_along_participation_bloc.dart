@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
+import 'package:socialentertainmentclub/domain/usecases/ActivityFeed/OptedIntoWatchAlongActivity.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_IfParticipant.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/get_WatchAlongParticipants.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optInto_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/optOutOf_WatchAlong.dart';
+import 'package:socialentertainmentclub/entities/FeedActivityItem.dart';
 import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/models/UserModel.dart';
 import 'package:socialentertainmentclub/models/WatchAlong.dart';
@@ -18,11 +21,13 @@ part 'watch_along_participation_state.dart';
 class WatchAlongParticipationBloc extends Bloc<WatchAlongParticipationEvent, WatchAlongParticipationState> {
   final OptIntoWatchAlong optIntoWatchAlong;
   final OptOutOfWatchAlong optOutOfWatchAlong;
+  final OptedIntoWatchAlongActivity optedIntoWatchAlongActivity; 
   final CheckIfParticipant checkIfParticipant;
   final GetUserFromID getUserFromID;
   final GetWatchAlongParticipants getWatchAlongParticipants; 
 
   WatchAlongParticipationBloc({
+    @required this.optedIntoWatchAlongActivity,
     @required this.getUserFromID,
     @required this.getWatchAlongParticipants,
     @required this.optIntoWatchAlong,
@@ -41,13 +46,25 @@ class WatchAlongParticipationBloc extends Bloc<WatchAlongParticipationEvent, Wat
         await optOutOfWatchAlong(event.watchAlong);
       } else {
         await optIntoWatchAlong(event.watchAlong);
+        await optedIntoWatchAlongActivity(
+          OptedInToWatchAlongActivity(
+          actorUserID: FirestoreConstants.currentUserId,
+          postID: event.watchAlong.watchAlongID,
+          movieID: event.watchAlong.movieID,
+          postTitle: event.watchAlong.title,
+          username: FirestoreConstants.currentUsername,
+          timestamp: DateTime.now(),
+          type: 'OptedInToWatchAlong', 
+          postOwnerID: event.watchAlong.ownerID,
+          userPhotoURL: FirestoreConstants.currentUser.photoUrl)
+          );
       }
 
       List<UserModel> participants=[];
 
       final watchAlongParticipants = await getWatchAlongParticipants(event.watchAlong.watchAlongID);
 
-       int errorFlag = 0;
+      int errorFlag = 0;
       String errorMessage='';
 
 

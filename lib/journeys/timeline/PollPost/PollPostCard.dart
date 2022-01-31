@@ -10,11 +10,11 @@ import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 
 
 import 'package:socialentertainmentclub/di/get_it.dart';
-import 'package:socialentertainmentclub/domain/usecases/PollPosts/delete_PollPost.dart';
+
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
 import 'package:socialentertainmentclub/models/PollPostModel.dart';
-import 'package:socialentertainmentclub/presentation/blocs/my_poll_posts/mypollposts_bloc.dart';
+
 import 'package:socialentertainmentclub/presentation/blocs/poll_post/poll_post_bloc.dart';
 import 'package:socialentertainmentclub/presentation/widgets/app_error_widget.dart';
 
@@ -183,7 +183,7 @@ class _PollPostCardState extends State<PollPostCard> {
                                 question: Text(''),
                                   children: pollOptions,
                                   currentUser: FirestoreConstants.currentUserId,
-                                  creatorID: state.postOwner.id+'*',
+                                  creatorID: state.postOwner.id,
                                   voteData: state.votersMap,
                                   userChoice: state.votersMap[FirestoreConstants.currentUserId],
                                   onVoteBackgroundColor: Colors.blue,
@@ -197,7 +197,8 @@ class _PollPostCardState extends State<PollPostCard> {
                                         owner : state.postOwner,
                                         postID: widget.pollPost.postID,
                                         votersMap: state.votersMap,
-                                        pollOptionsMap: state.pollOptionsMap)
+                                        pollOptionsMap: state.pollOptionsMap, 
+                                        postTitle: widget.pollPost.title)
                                     );
 
                               },

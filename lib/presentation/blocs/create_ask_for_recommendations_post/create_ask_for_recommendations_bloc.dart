@@ -60,7 +60,7 @@ class CreateAskForRecommendationsBloc extends Bloc<CreateAskForRecommendationsEv
           AskForRecommendationsPostModel(
             preferredGenres: selectedGenres.values.toList(),
             recommendationsTrackMap: {},
-            body: event.description,
+            title: event.description,
             type: 'AskForRecommendationsPost',
             ownerID: FirestoreConstants.currentUserId,
           )

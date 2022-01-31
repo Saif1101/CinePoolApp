@@ -4,9 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
+import 'package:socialentertainmentclub/domain/usecases/ActivityFeed/AddRecommendationActivity.dart';
+
 import 'package:socialentertainmentclub/domain/usecases/PostActions/UpdateRecommendationsTrackMap.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_MovieDetail.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
+import 'package:socialentertainmentclub/entities/FeedActivityItem.dart';
 import 'package:socialentertainmentclub/entities/UpdateRecommendationsTrackMapParams.dart';
 import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
@@ -20,11 +23,13 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
   final GetUserFromID getUserFromID;
   final GetMovieDetail getMovieDetail;
   final UpdateRecommendationsTrackMap updateRecommendationsTrackMap;
+  final AddRecommendationActivity addRecommendationActivity;
 
 
 
 
   AskForRecommendationsPostListBloc({
+    @required this.addRecommendationActivity,
     @required this.updateRecommendationsTrackMap,
     @required this.getUserFromID,
     @required this.getMovieDetail
@@ -96,7 +101,8 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
           users: users,
           recommendationsTrackMap: event.recommendationsTrackMap,
           movies: movies,
-          movieUserMap : movieUserMap,
+          movieUserMap : movieUserMap, 
+          postTitle: event.postTitle,
         ));
       } else{
         emit (AskForRecommendationsPostListError(errorMessage: errorMessage, appErrorType: appErrorType));
@@ -116,7 +122,7 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
           //Since the movie does not contain the user's vote, we will have to add
           //the user to this movie's entry inside the the movieUserMap
           event.movieUserMap[event.movieID.toString()].add(FirestoreConstants.currentUser);
-          //add UsersID to movie's key in the recommendationTrackMap
+          //add UsersID to movie's key in the recommendationsTrackMap
           event.recommendationsTrackMap[event.movieID].add(FirestoreConstants.currentUserId);
 
           if(!event.users.containsKey(FirestoreConstants.currentUserId)){
@@ -148,6 +154,18 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
           recommendationsTrackMap:  event.recommendationsTrackMap,
           postID: event.postID,
           ownerID: FirestoreConstants.currentUserId));
+
+      await addRecommendationActivity(VoteRecommendActivity(
+            username: FirestoreConstants.currentUser.username,
+            timestamp: DateTime.now(), 
+            type: 'AddRecommendation', 
+            postOwnerID: event.ownerID, 
+            userPhotoURL: FirestoreConstants.currentUser.photoUrl, 
+            actorUserID:FirestoreConstants.currentUserId, 
+            postID: event.postID, 
+            postTitle: event.postTitle, 
+   ));
+
       if(errorFlag == 1) {
         emit(AskForRecommendationsPostListError(errorMessage: errorMessage, appErrorType: appErrorType));
       } 
@@ -162,7 +180,8 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
             movies: event.movies,
             postID: event.postID,
              movieUserMap: event.movieUserMap,
-             ownerID: event.ownerID,
+             ownerID: event.ownerID, 
+             postTitle: event.postTitle,
              ),
             )
           );
@@ -190,11 +209,14 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
             event.movies.remove(event.movieID);
             event.movieUserMap.remove(event.movieID);
           }
+          print("Updating new track map ${event.recommendationsTrackMap} to ${event.ownerID} and postID: ${event.postID}");
           final response = await updateRecommendationsTrackMap(UpdateRecommendationsTrackMapParams(
               recommendationsTrackMap: event.recommendationsTrackMap,
               postID: event.postID,
               ownerID: event.ownerID));
-
+          
+        
+    
           emit(
             response.fold(
                 (l) => AskForRecommendationsPostListError(errorMessage: l.errorMessage, appErrorType: l.appErrorType),
@@ -204,11 +226,12 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
                     movies: event.movies,
                     ownerID: event.ownerID,
                     postID: event.postID,
-                    movieUserMap: event.movieUserMap),
+                    movieUserMap: event.movieUserMap, 
+                    postTitle: event.postTitle),
                     )
                 );
         } else {
-          print("The recommendationTrackMap"
+          print("The recommendationsTrackMap"
               "contains the movie ${event.movieID} but does"
               "not contain ${FirestoreConstants.currentUserId}'s vote");
         }

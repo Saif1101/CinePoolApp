@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/common/constants/route_constants.dart';
+import 'package:socialentertainmentclub/journeys/activity_feed/activity_feed_page.dart';
+import 'package:socialentertainmentclub/journeys/activity_feed/show_post.dart';
 import 'package:socialentertainmentclub/journeys/home/movie_detail/movie_detail_screen.dart';
 import 'package:socialentertainmentclub/journeys/profile_screen/edit_profile/edit_profile.dart';
 import 'package:socialentertainmentclub/journeys/profile_screen/my_pollPosts/my_pollposts_page.dart';
@@ -33,6 +35,9 @@ class Routes{
     RouteList.addRecommendationPage:(context)=> AddRecommendationPage(navigateRecommendationsPollParams: setting.arguments),
 
     RouteList.addToPollOptions:(context)=> AddRecommendationPage(navigateRecommendationsPollParams: setting.arguments),
+
+    RouteList.activityFeedPage:(context)=> ActivityFeedPage(),
+    RouteList.showPostFromFeedPage:(context)=> ShowPostFromFeedPage(feedActivityItem: setting.arguments),
 
     RouteList.aboutPage:(context)=>AboutPage(),
 

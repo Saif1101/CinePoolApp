@@ -19,6 +19,9 @@ class RouteList{
   static const String profilePage = '/profile';
   static const String editProfile = '/edit-profile';
 
+  static const String activityFeedPage = '/activity-feed';
+  static const String showPostFromFeedPage = '/show-post-from-feed'; 
+
 
 
   static const String loginPage = '/login';

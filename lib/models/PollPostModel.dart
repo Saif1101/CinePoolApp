@@ -34,7 +34,7 @@ class PollPostModel extends Post{
 
     return PollPostModel(
         postID: doc.data()['postID'],
-        title: doc.data()['body'],
+        title: doc.data()['title'],
         pollOptionsMap: pollOptionsMap,
         type: doc.data()['type'],
         ownerID: doc.data()['ownerID'],

@@ -33,12 +33,12 @@ class _MyPollPostsState extends State<MyPollPosts> {
             automaticallyImplyLeading: false,
             title: Center(
               child: Text(
-                'My Polls',
+                'Polls',
                 style: TextStyle(
                   fontSize: FontSize.large,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic
+                  fontWeight: FontWeight.w700,
+                  
                 ),
               ),
             ),
@@ -54,22 +54,11 @@ class _MyPollPostsState extends State<MyPollPosts> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                          'No Posts To Show',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Go To Your Timeline To Host Polls!",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500
-                          ),
-                        ),
-                      ),
+                      'Head To Your Timeline To Host Polls!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
                     ],
                   ));
                 }

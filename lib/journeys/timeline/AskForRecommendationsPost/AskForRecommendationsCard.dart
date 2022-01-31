@@ -6,7 +6,7 @@ import 'package:socialentertainmentclub/common/constants/size_constants.dart';
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
-import 'package:socialentertainmentclub/domain/usecases/RecommendationPosts/delete_RecommendationPost.dart';
+
 import 'package:socialentertainmentclub/entities/NavigateRecommendationPollParams.dart';
 import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
 import 'package:socialentertainmentclub/helpers/font_size.dart';
@@ -18,7 +18,7 @@ import 'package:socialentertainmentclub/journeys/timeline/AskForRecommendationsP
 import 'package:socialentertainmentclub/models/AskForRecommendationsPostModel.dart';
 import 'package:socialentertainmentclub/presentation/blocs/ask_for_recommendations_post/ask_for_recommendations_post_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/ask_for_recommendations_post_list/ask_for_recommendations_post_list_bloc.dart';
-import 'package:socialentertainmentclub/presentation/blocs/my_recommendation_posts/myrecommendationposts_bloc.dart';
+import 'package:socialentertainmentclub/presentation/widgets/app_error_widget.dart';
 
 class AskForRecommendationsCard extends StatefulWidget {
   final AskForRecommendationsPostModel askForRecommendationsPost;
@@ -50,9 +50,9 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
         recommendationsTrackMap:
             widget.askForRecommendationsPost.recommendationsTrackMap,
         postID: widget.askForRecommendationsPost.postID,
-        ownerID: widget.askForRecommendationsPost.ownerID));
+        ownerID: widget.askForRecommendationsPost.ownerID,
+        postTitle: widget.askForRecommendationsPost.title));
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -75,30 +75,27 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                BlocConsumer<AskForRecommendationsPostBloc, AskForRecommendationsPostState>(
+                BlocConsumer<AskForRecommendationsPostBloc,
+                    AskForRecommendationsPostState>(
                   listener: ((context, state) {
-                    if(state is DeleteRecommendationPostState){
+                    if (state is DeleteRecommendationPostState) {
                       Navigator.pop(context);
                       return SizedBox.shrink();
                     }
-                    
                   }),
-                  buildWhen: (prev,curr){
-                    if(curr is DeleteRecommendationPostState){
+                  buildWhen: (prev, curr) {
+                    if (curr is DeleteRecommendationPostState) {
                       return false;
                     }
-                    return true; 
+                    return true;
                   },
                   builder: (context, state) {
                     if (state is AskForRecommendationsPostLoaded) {
-                      bool isOwner = state.askForRecommendationsPost.ownerID == FirestoreConstants.currentUserId;
+                      bool isOwner = state.askForRecommendationsPost.ownerID ==
+                          FirestoreConstants.currentUserId;
                       return Padding(
                         padding: EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                            bottom: 16.0,
-                            top: 16.0
-                        ),
+                            left: 8.0, right: 8.0, bottom: 16.0, top: 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
@@ -118,7 +115,8 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                   flex: 2,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0,),
+                                      horizontal: 8.0,
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -146,14 +144,20 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                     ),
                                   ),
                                 ),
-                                isOwner?Flexible(
-                                  child: IconButton(
-                                            onPressed: (){
-                                              askForRecommendationsPostBloc.add(DeleteRecommendationPostEvent(state.askForRecommendationsPost.postID));
-                                              },
-                                            icon: Icon(Icons.delete_forever),
-                                            color: Colors.redAccent,)
-                                  ):SizedBox.shrink(),
+                                isOwner
+                                    ? Flexible(
+                                        child: IconButton(
+                                        onPressed: () {
+                                          askForRecommendationsPostBloc.add(
+                                              DeleteRecommendationPostEvent(
+                                                  state
+                                                      .askForRecommendationsPost
+                                                      .postID));
+                                        },
+                                        icon: Icon(Icons.delete_forever),
+                                        color: Colors.redAccent,
+                                      ))
+                                    : SizedBox.shrink(),
                               ],
                             ),
 
@@ -162,13 +166,11 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                               child: FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Text(
-                                  '${state.askForRecommendationsPost.body}',
+                                  '${state.askForRecommendationsPost.title}',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.white,
-                                    fontSize: Sizes.dimen_8.h
-                                  ),
-
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white,
+                                      fontSize: Sizes.dimen_6.h),
                                 ),
                               ),
                             ),
@@ -179,8 +181,8 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8.0),
                               child: GenreTagsHorizontalScroll(
-                                leftTitleWeight: FontWeight.bold,
-                                titleColor: Colors.white,
+                                  leftTitleWeight: FontWeight.bold,
+                                  titleColor: Colors.white,
                                   scrollBgColor: ThemeColors.vulcan,
                                   genres: state.askForRecommendationsPost
                                       .preferredGenres,
@@ -189,23 +191,25 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                             Divider(
                               color: Colors.white,
                               thickness: 1,
-                            ),//GenreTags
+                            ), //GenreTags
                           ],
                         ),
                       );
-                    } else if (state is AskForRecommendationsPostLoading || state is AskForRecommendationsPostInitial) {
+                    } else if (state is AskForRecommendationsPostLoading ||
+                        state is AskForRecommendationsPostInitial) {
                       return Center(
                         child: RadiantGradientMask(
                           child: CircularProgressIndicator(),
                         ),
                       );
                     }
-                     print('Undefined state inside AskForRecommendationsCard $state');
+                    print(
+                        'Undefined state inside AskForRecommendationsCard $state');
                     return Center(
                         child: Text(
-                            'Undefined state inside AskForRecommendationsCard $state',
-                            style: TextStyle(
-                              color: Colors.white),));
+                      'Undefined state inside AskForRecommendationsCard $state',
+                      style: TextStyle(color: Colors.white),
+                    ));
                   },
                 ),
                 Padding(
@@ -214,79 +218,82 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                           AskForRecommendationsPostListState>(
                       builder: (context, state) {
                     if (state is AskForRecommendationsPostListLoaded) {
-
-                      bool isOwner = state.ownerID==FirestoreConstants.currentUserId;
+                      bool isOwner =
+                          state.ownerID == FirestoreConstants.currentUserId;
 
                       return Column(
                         children: [
                           Row(
                             children: [
                               Expanded(
-                                  child: Divider(
-                                color: state.users.containsKey(
-                                    FirestoreConstants.currentUserId)
-                                    ? Colors.blueAccent
-                                    : Colors.white,
-                                    thickness: 2.0,
-
-                                  ),
+                                child: Divider(
+                                  color: state.users.containsKey(
+                                          FirestoreConstants.currentUserId)
+                                      ? Colors.blueAccent
+                                      : Colors.white,
+                                  thickness: 2.0,
+                                ),
                               ),
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(2.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       //STOP OWNER OF THE POST FROM ADD RECOMMENDATIONS
                                       FittedBox(
                                         fit: BoxFit.contain,
-                                        child: isOwner?
-                                        Text(
-                                          'What Your Friends Recommended',
-                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                        child: isOwner
+                                            ? Text(
+                                                'What Your Friends Recommended',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
                                                     fontSize: FontSize.medium,
                                                     color: Colors.white,
-                                                    fontWeight: FontWeight.w500)
-                                                    ):state.users.containsKey(
-                                                FirestoreConstants.currentUserId)
-                                            ? Text(
-                                                'Recommendation Added',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w500))
-                                            : Text('Add Recommendations',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w500)
-                                                    ),
+                                                    fontWeight:
+                                                        FontWeight.w500))
+                                            : state.users.containsKey(
+                                                    FirestoreConstants
+                                                        .currentUserId)
+                                                ? Text('Recommendation Added',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w500))
+                                                : Text('Add Recommendations',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
                                       ),
-                                       isOwner?
-                                       SizedBox.shrink()
-                                       :state.users.containsKey(
-                                              FirestoreConstants.currentUserId)
+                                      isOwner
                                           ? SizedBox.shrink()
-                                          : RadiantGradientMask(
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
+                                          : state.users.containsKey(
+                                                  FirestoreConstants
+                                                      .currentUserId)
+                                              ? SizedBox.shrink()
+                                              : RadiantGradientMask(
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                    ),
+                                                    onPressed: () => {
+                                                      Navigator.of(context).pushNamed(
+                                                          RouteList
+                                                              .addRecommendationPage,
+                                                          arguments: NavigateRecommendationsPollParams(
+                                                              blocName:
+                                                                  'RecommendationsPost',
+                                                              askForRecommendationsPostListBloc:
+                                                                  askForRecommendationsPostListBloc))
+                                                    },
+                                                  ),
                                                 ),
-                                                onPressed: () => {
-                                                  Navigator.of(context).pushNamed(
-                                                      RouteList
-                                                          .addRecommendationPage,
-                                                      arguments: NavigateRecommendationsPollParams(
-                                                          blocName:
-                                                              'RecommendationsPost',
-                                                          askForRecommendationsPostListBloc:
-                                                              askForRecommendationsPostListBloc))
-                                                },
-                                              ),
-                                            ),
                                     ],
                                   ),
                                 ),
@@ -294,12 +301,11 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                               Expanded(
                                   child: Divider(
                                 color: state.users.containsKey(
-                                    FirestoreConstants.currentUserId)
+                                        FirestoreConstants.currentUserId)
                                     ? Colors.blueAccent
                                     : Colors.white,
-                                    thickness: 2.0,
-                              )
-                              ),
+                                thickness: 2.0,
+                              )),
                             ],
                           ),
                           ListView.separated(
@@ -316,18 +322,23 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                     state.movies.values.toList()[index];
                                 return MovieRecommendationTile(
                                   movie: movie,
-                                  users: state.movieUserMap[movie.movieID.toString()],
+                                  users: state
+                                      .movieUserMap[movie.movieID.toString()],
                                   onTap: () {
                                     BlocProvider.of<
                                                 AskForRecommendationsPostListBloc>(
                                             context)
                                         .add(
                                             RemoveRecommendationFromPostListEvent(
+                                                postTitle: state.postTitle,
                                                 ownerID: state.ownerID,
-                                                movieID: movie.movieID.toString(),
-                                                recommendationsTrackMap: state.recommendationsTrackMap,
+                                                movieID:
+                                                    movie.movieID.toString(),
+                                                recommendationsTrackMap: state
+                                                    .recommendationsTrackMap,
                                                 movies: state.movies,
-                                                movieUserMap: state.movieUserMap,
+                                                movieUserMap:
+                                                    state.movieUserMap,
                                                 postID: state.postID,
                                                 users: state.users));
                                   },
@@ -335,13 +346,24 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                               })
                         ],
                       );
-                    } else if (state is AskForRecommendationsPostListLoading|| state is AskForRecommendationsPostListInitial ) {
+                    } else if (state is AskForRecommendationsPostListLoading ||
+                        state is AskForRecommendationsPostListInitial) {
                       return Center(
                           child: RadiantGradientMask(
-                            child: CircularProgressIndicator(),
-                          ));
+                        child: CircularProgressIndicator(),
+                      ));
+                    } else if (state is AskForRecommendationsPostListError) {
+                      print(state.errorMessage);
+                      return AppErrorWidget(
+                          errorType: state.appErrorType,
+                          onPressed: () {
+                            askForRecommendationsPostBloc.add(
+                                LoadAskForRecommendationsPostEvent(
+                                    widget.askForRecommendationsPost));
+                          });
                     }
-                    print("Undefined state in AskForRecommendationsPostListBloc: Header: $state");
+                    print(
+                        "Undefined state in AskForRecommendationsPostListBloc: Header: $state");
                     return Center(
                       child: Text(
                           "Undefined state in AskForRecommendationsPostListBloc: Header: $state"),

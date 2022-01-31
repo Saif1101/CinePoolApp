@@ -28,9 +28,12 @@ class UpdatePollsEvent extends PollPostEvent{
   final String postID;
   final Map<String, int> votersMap;
   final Map<String,int> pollOptionsMap;
+  final String postTitle; 
 
   UpdatePollsEvent(
-      {@required this.owner,
+      {
+        @required this.postTitle, 
+        @required this.owner,
         @required this.movies,
       @required this.postID,
       @required this.votersMap,

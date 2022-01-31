@@ -1,14 +1,17 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
+import 'package:socialentertainmentclub/domain/usecases/ActivityFeed/AddVoteActivity.dart';
 import 'package:socialentertainmentclub/domain/usecases/PollPosts/delete_PollPost.dart';
 import 'package:socialentertainmentclub/domain/usecases/PostActions/CastPollVote.dart';
 import 'package:socialentertainmentclub/domain/usecases/movies/get_MovieDetail.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
 import 'package:socialentertainmentclub/entities/CastPollVoteParams.dart';
+import 'package:socialentertainmentclub/entities/FeedActivityItem.dart';
 import 'package:socialentertainmentclub/entities/app_error.dart';
 import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
 import 'package:socialentertainmentclub/entities/movie_params.dart';
@@ -24,9 +27,11 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
   final GetUserFromID getUserFromID;
   final CastPollVote castPollVote;
   final DeletePollPost deletePollPost; 
+  final AddVoteActivity addVoteActivity; 
 
 
   PollPostBloc({
+    @required this.addVoteActivity, 
     @required this.deletePollPost,
     @required this.getMovieDetail,
     @required this.getUserFromID,
@@ -95,6 +100,18 @@ class PollPostBloc extends Bloc<PollPostEvent, PollPostState> {
             votersMap: event.votersMap,
             pollOptionsMap: event.pollOptionsMap
         ));
+      
+      await addVoteActivity(
+        VoteRecommendActivity(
+          actorUserID: FirestoreConstants.currentUserId,
+          username: FirestoreConstants.currentUsername, 
+          timestamp: DateTime.now(),
+          type: "AddVote", 
+          postOwnerID: event.owner.id, 
+          userPhotoURL: FirestoreConstants.currentPhotoUrl,
+          postID: event.postID, 
+          postTitle: event.postTitle,
+          ));
 
       emit(response.fold(
               (l) =>PollPostError(errorMessage: l.errorMessage, appErrorType: l.appErrorType),

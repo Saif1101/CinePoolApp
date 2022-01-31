@@ -4,35 +4,43 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
+import 'package:socialentertainmentclub/domain/usecases/ActivityFeed/NewFollowerActivity.dart';
+
+
 import 'package:socialentertainmentclub/domain/usecases/userandauth/add_FollowersAndFollowing.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/check_IfFollowing.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_Followers.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_Following.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/remove_Follower.dart';
+import 'package:socialentertainmentclub/entities/FeedActivityItem.dart';
 
 import 'package:socialentertainmentclub/entities/app_error.dart';
+
 
 part 'profile_banner_event.dart';
 part 'profile_banner_state.dart';
 
 class ProfileBannerBloc extends Bloc<ProfileBannerEvent, ProfileBannerState> {
   final AddFollowersAndFollowing addFollowersAndFollowing;
+  final AddNewFollowerActivity addNewFollowerActivity;
   final RemoveFollower removeFollower;
   final GetFollowing getFollowing;
   final GetFollowers getFollowers;
   final CheckIfFollowing checkIfFollowing;
   String profileUserID;
 
-  ProfileBannerBloc({@required this.addFollowersAndFollowing,
+  ProfileBannerBloc({
+    @required this.addNewFollowerActivity,
+    @required this.addFollowersAndFollowing,
       @required this.removeFollower,
       @required this.getFollowing,
     @required this.getFollowers,
     @required this.checkIfFollowing}) : super(ProfileBannerInitial())
     {
-       on<ToggleFollowUserEvent>(_onToggleFollowUserEvent);
+      on<ToggleFollowUserEvent>(_onToggleFollowUserEvent);
       on<LoadProfileBannerEvent>(_onLoadProfileBannerEvent);
-      on<UnfollowUserEvent>(_onUnfollowUserEvent);
-      
+      on<UnfollowUserEvent>(_onUnfollowUserEvent); 
     }
   
   Future<void> _onToggleFollowUserEvent(
@@ -43,6 +51,15 @@ class ProfileBannerBloc extends Bloc<ProfileBannerEvent, ProfileBannerState> {
         await removeFollower(this.profileUserID);
       } else{
         await addFollowersAndFollowing(this.profileUserID);
+        await addNewFollowerActivity(NewFollowerActivity(
+          username: FirestoreConstants.currentUsername, 
+          timestamp: DateTime.now(), 
+          type:"NewFollower", 
+          followedUserID: this.profileUserID, 
+          userPhotoURL: FirestoreConstants.currentPhotoUrl, 
+          actorUserID: FirestoreConstants.currentUserId)
+          );
+
       }
       fetchFollowedStatusAndLoad();
   }

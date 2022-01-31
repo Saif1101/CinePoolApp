@@ -33,12 +33,12 @@ class _MyWatchAlongsPageState extends State<MyWatchAlongsPage> {
             automaticallyImplyLeading: false,
             title: Center(
               child: Text(
-                'My Watch-Alongs',
+                'Watch-Alongs',
                 style: TextStyle(
                   fontSize: FontSize.large,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic
+                  fontWeight: FontWeight.w700,
+                  
                 ),
               ),
             ),

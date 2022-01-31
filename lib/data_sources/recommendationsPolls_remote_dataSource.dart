@@ -11,125 +11,128 @@ RecommendationsPoll	/ownerID	UserRecommendationsPost 	/pollPostID
 //Make sure no data processing happens here-> only retrieval and updation
 //Passing in PROCESSED MAPS for updation
 abstract class RecommendationsPollsDataSource {
-
   //For Poll Post
-  Future <void> createPollPost (PollPostModel pollPost);
+  Future<void> createPollPost(PollPostModel pollPost);
 
-  Future<void> deletePollPost(String postID); 
+  Future<void> deletePollPost(String postID);
 
-  Future<List<PollPostModel>> getMyPollPosts(); 
+  Future<List<PollPostModel>> getMyPollPosts();
 
-  Future <void> castPollVote(
-      {Map<String,int> pollOptionsMap,
-      Map<String, int> votersMap,
-      String ownerID,
-      String postID,}
-      );
+  Future<void> castPollVote({
+    Map<String, int> pollOptionsMap,
+    Map<String, int> votersMap,
+    String ownerID,
+    String postID,
+  });
 
   //For Recommendations Post
-  Future<void> createRecommendationsPost(AskForRecommendationsPostModel askForRecommendationsPostModel);
+  Future<void> createRecommendationsPost(
+      AskForRecommendationsPostModel askForRecommendationsPostModel);
 
-  Future<List<AskForRecommendationsPostModel>> getMyAskForRecommendationPosts(); 
+  Future<List<AskForRecommendationsPostModel>> getMyAskForRecommendationPosts();
 
   Future<void> updateRecommendationsTrackMap(
-      Map <String,List<String>> recommendationsTrackMap,
-      String ownerID,
-      String postID,
-      );
-  
-  Future<void> deleteRecommendationPost(String postID); 
+    Map<String, List<String>> recommendationsTrackMap,
+    String ownerID,
+    String postID,
+  );
 
+  Future<void> deleteRecommendationPost(String postID);
 }
 
-class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
-
+class RecommendationsPollsDataSourceImpl
+    extends RecommendationsPollsDataSource {
   //For Recommendations
   @override
-  Future<List<AskForRecommendationsPostModel>> getMyAskForRecommendationPosts() async {
-    List<AskForRecommendationsPostModel>  myAskForRecommendationsPosts = [];
+  Future<List<AskForRecommendationsPostModel>>
+      getMyAskForRecommendationPosts() async {
+    List<AskForRecommendationsPostModel> myAskForRecommendationsPosts = [];
 
     QuerySnapshot snapshot = await FirestoreConstants.recommendationPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserRecommendationPosts')
         .get();
 
-    if(snapshot.docs.length>0){
+    if (snapshot.docs.length > 0) {
       snapshot.docs.forEach((doc) {
-         myAskForRecommendationsPosts.add(AskForRecommendationsPostModel.fromDocument(doc));
+        myAskForRecommendationsPosts
+            .add(AskForRecommendationsPostModel.fromDocument(doc));
       });
     }
 
     return myAskForRecommendationsPosts;
-
   }
 
   @override
-  Future<void> updateRecommendationsTrackMap(Map <String,List<String>> recommendationsTrackMap, String ownerID, String postID) async {
+  Future<void> updateRecommendationsTrackMap(
+      Map<String, List<String>> recommendationsTrackMap,
+      String ownerID,
+      String postID) async {
+    print(
+        "Updating new track map $recommendationsTrackMap to $ownerID and postID: $postID");
 
     await FirestoreConstants.recommendationPostsRef
         .doc(ownerID)
         .collection('UserRecommendationPosts')
-        .doc(postID).update(
-        {
-          'recommendationsTrackMap': recommendationsTrackMap,
-        }
-    );
+        .doc(postID)
+        .update({
+      'recommendationsTrackMap': recommendationsTrackMap,
+    });
 
     await FirestoreConstants.timelineRef
         .doc(FirestoreConstants.currentUserId)
         .collection('Posts')
-        .doc(postID).update(
-        {
-          'recommendationsTrackMap': recommendationsTrackMap,
-        }
-    );
+        .doc(postID)
+        .update({
+      'recommendationsTrackMap': recommendationsTrackMap,
+    });
   }
-  
-  @override
-  Future<void> createRecommendationsPost(AskForRecommendationsPostModel askForRecommendationsPost) async {
 
+  @override
+  Future<void> createRecommendationsPost(
+      AskForRecommendationsPostModel askForRecommendationsPost) async {
     String id = FirestoreConstants.recommendationPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserRecommendationPosts')
-        .doc().id;
+        .doc()
+        .id;
 
     await FirestoreConstants.recommendationPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserRecommendationPosts')
         .doc(id)
-        .set(
-        {
-          'type': askForRecommendationsPost.type,
-          'postID': id,
-          'body':askForRecommendationsPost.body,
-          'ownerID': FirestoreConstants.currentUserId,
-          'recommendationsTrackMap': askForRecommendationsPost.recommendationsTrackMap,
-        }
-    );
+        .set({
+      'type': askForRecommendationsPost.type,
+      'postID': id,
+      'title': askForRecommendationsPost.title,
+      'ownerID': FirestoreConstants.currentUserId,
+      'recommendationsTrackMap':
+          askForRecommendationsPost.recommendationsTrackMap,
+    });
   }
 
-  @override 
+  @override
   Future<void> deleteRecommendationPost(String postID) async {
-    print("Deletion path : recommendationPostsRef/currentUid/UserRecommendationPost/$postID");
-    // await FirestoreConstants.recommendationPostsRef.doc(FirestoreConstants.currentUserId)
-    // .collection('UserRecommendationPosts')
-    // .doc(postID).delete();
+    await FirestoreConstants.recommendationPostsRef
+        .doc(FirestoreConstants.currentUserId)
+        .collection('UserRecommendationPosts')
+        .doc(postID)
+        .delete();
   }
-
 
   //For PollPosts
   @override
   Future<List<PollPostModel>> getMyPollPosts() async {
-    List<PollPostModel>  myPollPosts = [];
+    List<PollPostModel> myPollPosts = [];
 
     QuerySnapshot snapshot = await FirestoreConstants.pollPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserPollPosts')
         .get();
 
-    if(snapshot.docs.length>0){
+    if (snapshot.docs.length > 0) {
       snapshot.docs.forEach((doc) {
-         myPollPosts.add(PollPostModel.fromDocument(doc));
+        myPollPosts.add(PollPostModel.fromDocument(doc));
       });
     }
 
@@ -141,60 +144,49 @@ class RecommendationsPollsDataSourceImpl extends RecommendationsPollsDataSource{
     String id = FirestoreConstants.pollPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserPollPosts')
-        .doc().id;
+        .doc()
+        .id;
 
     await FirestoreConstants.pollPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserPollPosts')
         .doc(id)
-        .set(
-      {
-        'type': 'PollPost',
-        'postID': id,
-        'body':pollPost.title,
-        'pollOptionsMap': pollPost.pollOptionsMap,
-        'ownerID': FirestoreConstants.currentUserId,
-        'votersMap': pollPost.votersMap,
-      }
-    );
-
-  }
-
-  @override 
-  Future<void> deletePollPost(String postID) async {
-    print('inside deletePollPostDataSource');
-    await FirestoreConstants.pollPostsRef.doc(FirestoreConstants.currentUserId)
-    .collection('UserPollPosts')
-    .doc(postID).delete();
+        .set({
+      'type': 'PollPost',
+      'postID': id,
+      'body': pollPost.title,
+      'pollOptionsMap': pollPost.pollOptionsMap,
+      'ownerID': FirestoreConstants.currentUserId,
+      'votersMap': pollPost.votersMap,
+    });
   }
 
   @override
-  Future<void> castPollVote (
-      {Map<String,int> pollOptionsMap,
-      Map<String, int> votersMap,
-      String ownerID,
-      String postID,}
-      ) async {
-
+  Future<void> deletePollPost(String postID) async {
     await FirestoreConstants.pollPostsRef
-    .doc(ownerID)
-    .collection('UserPollPosts')
-        .doc(postID).update(
-      {
-        'pollOptionsMap': pollOptionsMap,
-        'votersMap': votersMap
-      }
-    );
+        .doc(FirestoreConstants.currentUserId)
+        .collection('UserPollPosts')
+        .doc(postID)
+        .delete();
+  }
+
+  @override
+  Future<void> castPollVote({
+    Map<String, int> pollOptionsMap,
+    Map<String, int> votersMap,
+    String ownerID,
+    String postID,
+  }) async {
+    await FirestoreConstants.pollPostsRef
+        .doc(ownerID)
+        .collection('UserPollPosts')
+        .doc(postID)
+        .update({'pollOptionsMap': pollOptionsMap, 'votersMap': votersMap});
 
     await FirestoreConstants.timelineRef
         .doc(ownerID)
         .collection('Posts')
-        .doc(postID).update(
-        {
-          'pollOptionsMap': pollOptionsMap,
-          'votersMap': votersMap
-        }
-    );
+        .doc(postID)
+        .update({'pollOptionsMap': pollOptionsMap, 'votersMap': votersMap});
   }
-
 }

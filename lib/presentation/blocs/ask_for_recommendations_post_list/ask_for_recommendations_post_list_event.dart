@@ -11,8 +11,10 @@ class LoadRecommendationsPostListEvent extends AskForRecommendationsPostListEven
   final Map<String, List<String>> recommendationsTrackMap;
   final String ownerID;
   final String postID;
+  final String postTitle;
 
   LoadRecommendationsPostListEvent({
+    @required this.postTitle,
     @required this.recommendationsTrackMap,
   @required this.ownerID,
   @required this.postID}); //{movieID, ListOfUsers who recommended this} //
@@ -31,8 +33,11 @@ class AddMovieToRecommendationsPostListEvent extends AskForRecommendationsPostLi
   final String currentUserID = FirestoreConstants.currentUserId;
   final Map <String,UserModel> users;
   final Map <String,List<UserModel>> movieUserMap;
+  final String postTitle;
+
 
   AddMovieToRecommendationsPostListEvent({
+    @required this.postTitle,
     @required this.movieUserMap,
     @required this.users,
     @required this.movies,
@@ -47,6 +52,7 @@ class AddMovieToRecommendationsPostListEvent extends AskForRecommendationsPostLi
 }
 
 class RemoveRecommendationFromPostListEvent extends AskForRecommendationsPostListEvent{
+  final String postTitle;
   final Map<String,MovieDetailEntity> movies;
   final Map<String, List<String>> recommendationsTrackMap;
   final String ownerID;
@@ -57,6 +63,7 @@ class RemoveRecommendationFromPostListEvent extends AskForRecommendationsPostLis
   final Map <String,List<UserModel>> movieUserMap;
 
   RemoveRecommendationFromPostListEvent({
+    @required this.postTitle,
     @required this.movieUserMap,
     @required this.movies,
     @required this.users,

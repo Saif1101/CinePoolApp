@@ -128,7 +128,8 @@ class _AddRecommendationPageState extends State<AddRecommendationPage> {
                                               ownerID: state.ownerID,
                                               postID: state.postID,
                                               recommendationsTrackMap: state.recommendationsTrackMap,
-                                              movieID: movies[index].id, movieUserMap: state.movieUserMap)
+                                              movieID: movies[index].id, movieUserMap: state.movieUserMap, 
+                                              postTitle: state.postTitle)
                                           );
                                         Navigator.pop(context);
                                       },
@@ -136,7 +137,7 @@ class _AddRecommendationPageState extends State<AddRecommendationPage> {
                                         movie: movies[index],
                                       ),
                                     );
-                                  };
+                                  }
                                   return SizedBox.shrink();
                           }
                           ),

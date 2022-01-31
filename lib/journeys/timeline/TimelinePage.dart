@@ -61,7 +61,10 @@ class _TimelinePageState extends State<TimelinePage> {
             }
             else if (state is TimelineLoaded) {
               if (state.posts.length == 0) {
-                return Center(child: Text('No posts to show'));
+                return Center(child: Text('No Posts To Show', style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500
+                        ),));
               }
               else {
                 return ListView.builder(

@@ -7,13 +7,12 @@ import 'package:socialentertainmentclub/journeys/timeline/AskForRecommendationsP
 import 'package:socialentertainmentclub/presentation/blocs/my_recommendation_posts/myrecommendationposts_bloc.dart';
 
 class MyRecommendationPosts extends StatefulWidget {
-
   @override
   _MyRecommendationPostsState createState() => _MyRecommendationPostsState();
 }
 
 class _MyRecommendationPostsState extends State<MyRecommendationPosts> {
-   MyRecommendationPostsBloc myRecommendationPostsBloc; 
+  MyRecommendationPostsBloc myRecommendationPostsBloc;
 
   @override
   void initState() {
@@ -21,77 +20,69 @@ class _MyRecommendationPostsState extends State<MyRecommendationPosts> {
     myRecommendationPostsBloc = getItInstance<MyRecommendationPostsBloc>();
     myRecommendationPostsBloc.add(LoadMyRecommendationPostsEvent());
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocProvider.value(
-        value:myRecommendationPostsBloc,
-        child:Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Center(
-              child: Text(
-                'My Recommendation Posts',
-                style: TextStyle(
+        child: BlocProvider.value(
+      value: myRecommendationPostsBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Center(
+            child: Text(
+              'Recommendations',
+              style: TextStyle(
                   fontSize: FontSize.large,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic
-                ),
-              ),
+                  fontWeight: FontWeight.w700,
+                  ),
             ),
           ),
-          backgroundColor: Color(0xFF142e4a),
-          body: BlocBuilder<MyRecommendationPostsBloc, MyRecommendationPostsState>(
-            builder: (context, state) {
-              if(state is MyRecommendationPostsLoaded){
-                if (state.myRecommendationPosts.length == 0) {
-                  return Center(child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                          'No Posts To Show',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Go To Your Timeline To Ask Your Friends For Movie Recommendations!",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500
-                          ),
-                        ),
-                      ),
-                    ],
-                  ));
-                }
-                else {
-                  return ListView.builder(
-                    itemCount: state.myRecommendationPosts.length,
-                    itemBuilder: (context, index) {
-                      return AskForRecommendationsCard(state.myRecommendationPosts[index]);
-                    },
-                  );
-                }
-              } else if(state is MyRecommendationPostsLoading){
-                return RadiantGradientMask(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+        ),
+        backgroundColor: Color(0xFF142e4a),
+        body:
+            BlocBuilder<MyRecommendationPostsBloc, MyRecommendationPostsState>(
+          builder: (context, state) {
+            if (state is MyRecommendationPostsLoaded) {
+              if (state.myRecommendationPosts.length == 0) {
+                return Center(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Head To Your Timeline To Ask Your Friends For Movie Recommendations!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
+                    
+                  ],
+                ));
+              } else {
+                return ListView.builder(
+                  itemCount: state.myRecommendationPosts.length,
+                  itemBuilder: (context, index) {
+                    return AskForRecommendationsCard(
+                        state.myRecommendationPosts[index]);
+                  },
                 );
               }
-              return Center(child: Text("Undefined state in MyRecommendationPostsPage"));
-            },
-          ),
+            } else if (state is MyRecommendationPostsLoading) {
+              return RadiantGradientMask(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            return Center(
+                child: Text("Undefined state in MyRecommendationPostsPage"));
+          },
         ),
-        )
-    );
+      ),
+    ));
   }
 }

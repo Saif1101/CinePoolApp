@@ -62,12 +62,18 @@ class UserActionsRemoteDataSourceImpl extends UserActionsRemoteDataSource{
   @override
   Future<void> unfollowUser(String userID) async {
     //Delete reference of currentUser in followers collection of userID.
-    FirestoreConstants.followersRef.doc('$userID').collection('UserFollowers')
+    await FirestoreConstants.followersRef.doc('$userID').collection('UserFollowers')
         .doc('${FirestoreConstants.currentUserId}').delete();
 
     //Delete reference of userID in following collection of currentUser.
-    FirestoreConstants.followersRef.doc('${FirestoreConstants.currentUserId}').collection('UserFollowing')
+    await FirestoreConstants.followersRef.doc('${FirestoreConstants.currentUserId}').collection('UserFollowing')
         .doc('$userID').delete();
+
+    await FirestoreConstants.activityFeedRef
+    .doc(userID)
+    .collection("ActivityFeed")
+    .doc(FirestoreConstants.currentUserId)
+    .delete();
   }
 }
 

@@ -29,7 +29,7 @@ class horizontalGenreSliderBuilder extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),

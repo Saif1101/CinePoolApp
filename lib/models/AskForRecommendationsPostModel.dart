@@ -10,7 +10,7 @@ class AskForRecommendationsPostModel extends Post{
   final String postID;
   final String type;
   final String ownerID;
-  final String body;
+  final String title;
   final Map<String, List<String>> recommendationsTrackMap; //{movieID, ListOfUsers who recommended this} //
   // Map users to the recommendations they provided
   final List<String> preferredGenres; //[genreNames]
@@ -21,7 +21,7 @@ class AskForRecommendationsPostModel extends Post{
     this.postID,
     @required this.type,
     @required this.ownerID,
-    @required this.body,});
+    @required this.title,});
 
   factory AskForRecommendationsPostModel.fromDocument(DocumentSnapshot doc){
     final invalidRecommendationTrackMapFromFirestore = json.decode(json.encode(doc.data()['recommendationsTrackMap'])) as Map<String, dynamic>;
@@ -33,7 +33,7 @@ class AskForRecommendationsPostModel extends Post{
 
     return AskForRecommendationsPostModel(
       postID: doc.data()['postID'],
-      body: doc.data()['body'],
+      title: doc.data()['title'],
       type: doc.data()['type'],
       ownerID: doc.data()['ownerID'],
       recommendationsTrackMap: recommendationsTrackMap,
@@ -44,7 +44,7 @@ class AskForRecommendationsPostModel extends Post{
 
 
   @override
-  List<Object> get props => [type, postID, type, ownerID, body, recommendationsTrackMap, preferredGenres];
+  List<Object> get props => [type, postID, type, ownerID, title, recommendationsTrackMap, preferredGenres];
 
 }
 

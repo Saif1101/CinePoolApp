@@ -35,6 +35,6 @@ class CreateAskForRecommendationsButtonPress extends CreateAskForRecommendations
     @required this.tagStateKey,});
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [title, mapGenresWithID];
 }

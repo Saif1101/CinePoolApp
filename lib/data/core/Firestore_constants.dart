@@ -12,6 +12,7 @@ class FirestoreConstants {
   static CollectionReference _followersRef;
   static CollectionReference _followingRef;
   static CollectionReference _favoritesRef;
+  static CollectionReference _activityFeedRef; 
 
   static CollectionReference _watchAlongRef;
 
@@ -63,6 +64,7 @@ class FirestoreConstants {
     _followersRef= FirebaseFirestore.instance.collection('followers');
     _followingRef= FirebaseFirestore.instance.collection('following');
     _timelineRef= FirebaseFirestore.instance.collection('timeline');
+    _activityFeedRef = FirebaseFirestore.instance.collection('ActivityFeed');
 
     _watchAlongRef= FirebaseFirestore.instance.collection('WatchAlongs');
     _watchAlongParticipantsRef= FirebaseFirestore.instance.collection('WatchAlongParticipants');
@@ -82,6 +84,7 @@ static CollectionReference get watchAlongParticipantsRef => _watchAlongParticipa
 static CollectionReference get timelineRef => _timelineRef;
 static CollectionReference get pollPostsRef => _pollPostsRef;
 static CollectionReference get recommendationPostsRef => _recommendationPostsRef;
+static CollectionReference get activityFeedRef => _activityFeedRef; 
 
 static String get currentUsername => _currentUsername;
 static String get currentUserId => _currentUserId;

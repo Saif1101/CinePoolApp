@@ -12,7 +12,7 @@ class AppErrorWidget extends StatelessWidget {
   final String errorMessage;
   final Function onPressed;
 
-  Map<String,String> mapErrorToMessage = {'AppErrorType.api':'A problem occured during the API call.',
+  static const Map<String,String> mapErrorToMessage = {'AppErrorType.api':'A problem occured during the API call.',
     'AppErrorType.network':'There seems to be a problem with your internet connection. Check your connection and try again.',
   'AppErrorType.authentication': 'A problem occured while trying to authenticate the user. Try logging in again.'};
 

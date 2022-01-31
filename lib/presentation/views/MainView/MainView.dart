@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
+import 'package:socialentertainmentclub/journeys/activity_feed/activity_feed_page.dart';
 import 'package:socialentertainmentclub/journeys/home/explore_screen.dart';
 import 'package:socialentertainmentclub/journeys/profile_screen/user_profile/profile_screen.dart';
 import 'package:socialentertainmentclub/journeys/search/searchPage.dart';
@@ -48,7 +49,7 @@ class _MainViewState extends State<MainView> {
           ExploreScreen(currentUser: widget.currentUser),
           SearchPage(),
           TimelinePage(),
-          AboutPage(),
+          ActivityFeedPage(),
         ],
         physics: NeverScrollableScrollPhysics(),
         controller: pageController,
@@ -82,6 +83,12 @@ class _MainViewState extends State<MainView> {
                 size: 25),
           ),
           RadiantGradientMask(
+            child: Icon(
+                Icons.notifications_active_outlined,
+                color: Colors.white,
+                size: 25),
+          ),
+          RadiantGradientMask(
             child: Icon(Icons.build,
                 color: Colors.white,
                 size: 25),
@@ -89,7 +96,7 @@ class _MainViewState extends State<MainView> {
         ],
         onTap: (index) {
           //Handle button tap
-          if(index!=4){
+          if(index!=5){
             navigationOnTap(index);
           }
           else{

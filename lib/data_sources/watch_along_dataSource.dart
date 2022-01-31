@@ -29,11 +29,11 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
   @override
   Future<String> checkWatchAlong(movieID) async { 
-    //TODO fetch watchAlongID if a WatchAlong has been schedueled so that
+    // fetch watchAlongID if a WatchAlong has been schedueled so that
     // you can delete it from the movie detail screen too
     DocumentSnapshot doc = await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
-        .collection('WatchAlongs')
+        .collection('MyWatchAlongs')
     .doc(movieID)
     .get();
     
@@ -48,13 +48,13 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
     String id = FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId)
-        .collection('WatchAlongs')
+        .collection('MyWatchAlongs')
         .doc()
         .id;
 
     await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
-        .collection('WatchAlongs')
+        .collection('MyWatchAlongs')
         .doc(watchAlong.movieID)
         .set({
       'type': 'WatchAlong',
@@ -75,7 +75,7 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
     print("Delete Path: watchAlongRef/${FirestoreConstants.currentUserId.toString()}/WatchAlongs/$movieID");
     await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
-        .collection('WatchAlongs')
+        .collection('MyWatchAlongs')
         .doc(movieID)
         .delete();
         
@@ -86,19 +86,17 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
   @override
   Future<void> optIntoWatchAlong(WatchAlong watchAlong) async {
 
+    //Refactored DB
+
     await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
-        .collection('MyWatchAlongs')
+        .collection('OptedInToWatchAlongs')
         .doc(watchAlong.watchAlongID)
         .set({
-      'type': 'WatchAlong',
-      'location': watchAlong.location,
       'watchAlongID':watchAlong.watchAlongID,
       'movieID': watchAlong.movieID,
-      'ownerID': FirestoreConstants.currentUserId,
-      'title':watchAlong.title,
-      'scheduledTime':watchAlong.scheduledTime,}
-    );
+      'ownerID': watchAlong.ownerID,
+      });
 
 
     await FirestoreConstants
@@ -110,18 +108,27 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
   }
 
   @override
-  Future<void> optOutOfWatchAlong(WatchAlong watchAlong) async {
+  Future<void> optOutOfWatchAlong(WatchAlong watchAlong,) async {
 
     await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId.toString())
-        .collection('MyWatchAlongs')
-        .doc(watchAlong.watchAlongID)
+        .collection('OptedInToWatchAlongs')
+        .doc(watchAlong.movieID)
         .delete();
 
-    await FirestoreConstants.watchAlongParticipantsRef.doc(watchAlong.watchAlongID)
+    await FirestoreConstants.watchAlongParticipantsRef
+        .doc(watchAlong.watchAlongID)
         .collection('Participants')
         .doc(FirestoreConstants.currentUserId.toString())
         .delete();
+
+        //Remove this user's participation from owner's feed 
+
+    await FirestoreConstants.activityFeedRef
+          .doc(watchAlong.ownerID)
+          .collection('ActivityFeed')
+          .doc('${watchAlong.watchAlongID}${FirestoreConstants.currentUserId.toString()}')
+          .delete();
   }
 
   @override
@@ -143,17 +150,28 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
 
     QuerySnapshot snapshot = await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId)
-        .collection('MyWatchAlongs')
+        .collection('OptedInToWatchAlongs')
         .get();
     
     QuerySnapshot snapshot2 = await FirestoreConstants.watchAlongRef
         .doc(FirestoreConstants.currentUserId)
-        .collection('WatchAlongs')
+        .collection('MyWatchAlongs')
         .get();
 
     if(snapshot.docs.length>0){
-      snapshot.docs.forEach((doc) {
-        myWatchAlongs.add(WatchAlong.fromDocument(doc));
+      snapshot.docs.forEach((doc) async {
+
+        String ownerID = doc.data()['ownerID'];
+        String movieID = doc.data()['movieID'];
+        
+        DocumentSnapshot watchAlong  = await FirestoreConstants.watchAlongRef
+        .doc(ownerID)
+        .collection('MyWatchAlongs')
+        .doc(movieID)
+        .get(); 
+
+        myWatchAlongs.add(WatchAlong.fromDocument(watchAlong));
+
       });
     }
 

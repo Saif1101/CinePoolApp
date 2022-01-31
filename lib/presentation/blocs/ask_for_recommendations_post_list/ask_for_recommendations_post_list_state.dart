@@ -15,12 +15,14 @@ class AskForRecommendationsPostListLoaded extends AskForRecommendationsPostListS
   final Map<String, List<String>> recommendationsTrackMap;
   final Map<String, MovieDetailEntity> movies;
   final Map <String,UserModel> users;
+  final String postTitle; 
   final String ownerID;
   final String postID;
   final Map <String,List<UserModel>> movieUserMap;
 
 
   AskForRecommendationsPostListLoaded({
+    @required this.postTitle,
     @required this.recommendationsTrackMap,
     @required this.movies,
    @required this.users,
