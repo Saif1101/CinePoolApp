@@ -59,7 +59,6 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
                 else if(state is ActivityFeedLoaded){
                   if(state.feedItems.length>0){ 
                     return ListView.builder(
-                  
                     itemCount: state.feedItems.length,
                     itemBuilder: (context,index){
                       if(state.feedItems[index].runtimeType.toString()=='VoteRecommendActivity')
@@ -75,7 +74,8 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
                       else if(state.feedItems[index].runtimeType.toString()=='OptedInToWatchAlongActivity')
                           return GestureDetector(
                             onTap: (){
-                              Navigator.pushNamed(context, RouteList.showPostFromFeedPage, arguments:state.feedItems[index]);
+                              Navigator.pushNamed(context, RouteList.showPostFromFeedPage, arguments:state.feedItems[index])
+                              .then((value) =>activityFeedBloc.add(LoadActivityFeedEvent()));
                             },
                             child: OptedInToWatchAlongActivityTile(optedInToWatchAlongActivity: state.feedItems[index],
                             ));

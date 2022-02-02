@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialentertainmentclub/common/constants/route_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/entities/FeedActivityItem.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
@@ -25,7 +26,11 @@ class _ShowPostFromFeedPageState extends State<ShowPostFromFeedPage> {
   void initState() {
     super.initState();
     postFromFeedBloc = getItInstance<PostFromFeedBloc>();
-    postFromFeedBloc.add(LoadPostEvent(widget.feedActivityItem));
+    if(widget.feedActivityItem.type=='NewFollower'){
+      postFromFeedBloc.add(LoadFollowerProfileEvent(widget.feedActivityItem));
+    } else{
+        postFromFeedBloc.add(LoadPostEvent(widget.feedActivityItem));
+    }
   }
 
   @override
@@ -38,7 +43,12 @@ class _ShowPostFromFeedPageState extends State<ShowPostFromFeedPage> {
         ),
         body: BlocProvider.value(
           value: postFromFeedBloc,
-          child: BlocBuilder<PostFromFeedBloc, PostFromFeedState>(
+          child: BlocConsumer<PostFromFeedBloc, PostFromFeedState>(
+              listener: (context,state){
+                if(state is FollowerProfileLoadedState){
+                  Navigator.pushReplacementNamed(context, RouteList.profilePage,arguments: state.user);
+                }
+              },
               builder: (context, state) {
             if (state is PostFromFeedLoading) {
               return Center(

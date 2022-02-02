@@ -8,7 +8,6 @@ import 'package:socialentertainmentclub/common/constants/size_constants.dart';
 import 'package:socialentertainmentclub/common/extensions/size_extensions.dart';
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 
-
 import 'package:socialentertainmentclub/di/get_it.dart';
 
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
@@ -22,7 +21,6 @@ class PollPostCard extends StatefulWidget {
   final PollPostModel pollPost;
 
   const PollPostCard(this.pollPost);
-
 
   @override
   _PollPostCardState createState() => _PollPostCardState();
@@ -38,8 +36,6 @@ class _PollPostCardState extends State<PollPostCard> {
     pollPostBloc.add(LoadPollPostEvent(widget.pollPost));
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -51,38 +47,33 @@ class _PollPostCardState extends State<PollPostCard> {
             borderRadius: BorderRadius.circular(8.0),
             color: ThemeColors.vulcan,
           ),
-
           child: Padding(
-            padding: EdgeInsets.only(
-                left: 8.0,
-                right: 8.0,
-                bottom: 16.0,
-                top: 16.0
-            ),
+            padding:
+                EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0, top: 16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BlocConsumer<PollPostBloc, PollPostState>(
                   listener: ((context, state) {
-                    if(state is PollPostDeleted){
+                    if (state is PollPostDeleted) {
                       Navigator.pop(context);
                     }
                   }),
                   builder: (context, state) {
-                    if(state is PollPostLoaded){
-                     bool isOwner = widget.pollPost.ownerID == FirestoreConstants.currentUserId;
-                     return  Column(
-                       mainAxisSize: MainAxisSize.min,
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                         Row(
+                    if (state is PollPostLoaded) {
+                      bool isOwner = widget.pollPost.ownerID ==
+                          FirestoreConstants.currentUserId;
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Flexible(
                                 child: CircleAvatar(
-                                    backgroundImage:
-                                    CachedNetworkImageProvider(
+                                    backgroundImage: CachedNetworkImageProvider(
                                       state.postOwner.photoUrl,
                                     ),
                                     radius: 32),
@@ -91,10 +82,11 @@ class _PollPostCardState extends State<PollPostCard> {
                                 flex: 2,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,),
+                                    horizontal: 8.0,
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         state.postOwner.username,
@@ -119,118 +111,177 @@ class _PollPostCardState extends State<PollPostCard> {
                                   ),
                                 ),
                               ),
-                              isOwner?Flexible(
-                                  child: IconButton(
-                                            onPressed: (){
-                                              pollPostBloc.add(DeletePollPostEvent(widget.pollPost.postID));
-                                              },
-                                            icon: Icon(Icons.delete_forever),
-                                            color: Colors.redAccent,)
-                                  ):SizedBox.shrink()
+                              isOwner
+                                  ? Flexible(
+                                      child: IconButton(
+                                      onPressed: () {
+                                        pollPostBloc.add(DeletePollPostEvent(
+                                            widget.pollPost.postID));
+                                      },
+                                      icon: Icon(Icons.delete_forever),
+                                      color: Colors.redAccent,
+                                    ))
+                                  : SizedBox.shrink()
                             ],
                           ),
-                         Divider(color: Colors.white,thickness: 2,),
-                         Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: FittedBox(
-                             fit: BoxFit.fitWidth,
-                             child: Text(
-                               '${widget.pollPost.title}',
-                               style: TextStyle(
-                                   fontWeight: FontWeight.w300,
-                                   color: Colors.white,
-                                   fontSize: Sizes.dimen_8.h
-                               ),
-
-                             ),
-                           ),
-                         ),
-                       ],
-                     ); //
-                  }
-                    else if(state is PollPostLoading || state is PollPostInitial){
+                          Divider(
+                            color: Colors.white,
+                            thickness: 2,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Text(
+                                '${widget.pollPost.title}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                    fontSize: Sizes.dimen_8.h),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ); //
+                    } else if (state is PollPostLoading ||
+                        state is PollPostInitial) {
                       return Center(
-                        child: RadiantGradientMask( child: CircularProgressIndicator()),
+                        child: RadiantGradientMask(
+                            child: CircularProgressIndicator()),
                       );
-                    }
-                    else if(state is PollPostError){
+                    } else if (state is PollPostError) {
                       return SizedBox.shrink();
                     }
                     return Center(
-                        child: Text('Undefined state in PollPost; $state',
-                        style: TextStyle(
-                          color: Colors.white
-                        ),
-                        ),
-
+                      child: Text(
+                        'Undefined state in PollPost; $state',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     );
                   },
                 ), //Post Header
                 BlocBuilder<PollPostBloc, PollPostState>(
                   builder: (BuildContext context, state) {
-                    if(state is PollPostLoaded){
+                    if (state is PollPostLoaded) {
                       List pollOptions = [];
-                      for(int i =0; i<state.movies.length; i++){
-                        pollOptions.add(Polls.options(title: state.movies.elementAt(i).title,
-                            value: state.pollOptionsMap[state.movies.elementAt(i).movieID.toString()].toDouble()));
+                      for (int i = 0; i < state.movies.length; i++) {
+                        pollOptions.add(Polls.options(
+                            title: state.movies.elementAt(i).title,
+                            value: state.pollOptionsMap[state.movies
+                                    .elementAt(i)
+                                    .movieID
+                                    .toString()]
+                                .toDouble()));
                       }
+                      bool hasVoted = state.votersMap
+                          .containsKey(FirestoreConstants.currentUserId);
+
                       return Column(
                         mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Polls(
-                                question: Text(''),
-                                  children: pollOptions,
-                                  currentUser: FirestoreConstants.currentUserId,
-                                  creatorID: state.postOwner.id,
-                                  voteData: state.votersMap,
-                                  userChoice: state.votersMap[FirestoreConstants.currentUserId],
-                                  onVoteBackgroundColor: Colors.blue,
-                                  leadingBackgroundColor: Colors.blue,
-                                  backgroundColor: Colors.white,
-                              onVote: (choice){
-                                state.votersMap[FirestoreConstants.currentUserId] = state.movies.elementAt(choice-1).movieID;
-                                    state.pollOptionsMap[state.movies.elementAt(choice-1).movieID.toString()]+=1;
-                                    BlocProvider.of<PollPostBloc>(context).add(UpdatePollsEvent(
-                                      movies: state.movies,
-                                        owner : state.postOwner,
+                              question: Text(''),
+                              children: pollOptions,
+                              currentUser: FirestoreConstants.currentUserId,
+                              creatorID: state.postOwner.id,
+                              voteData: state.votersMap,
+                              userChoice: state
+                                  .votersMap[FirestoreConstants.currentUserId],
+                              onVoteBackgroundColor: Colors.blue,
+                              leadingBackgroundColor: Colors.blue,
+                              backgroundColor: Colors.white,
+                              onVote: (choice) {
+                                state.votersMap[
+                                        FirestoreConstants.currentUserId] =
+                                    state.movies.elementAt(choice - 1).movieID;
+                                state.pollOptionsMap[state.movies
+                                    .elementAt(choice - 1)
+                                    .movieID
+                                    .toString()] += 1;
+                                BlocProvider.of<PollPostBloc>(context).add(
+                                    UpdatePollsEvent(
+                                        movies: state.movies,
+                                        owner: state.postOwner,
                                         postID: widget.pollPost.postID,
                                         votersMap: state.votersMap,
-                                        pollOptionsMap: state.pollOptionsMap, 
-                                        postTitle: widget.pollPost.title)
-                                    );
-
+                                        pollOptionsMap: state.pollOptionsMap,
+                                        postTitle: widget.pollPost.title));
                               },
                             ),
                           ),
+                          hasVoted
+                              ? GestureDetector(
+                                  onTap: () {
+                                    int votedMovieID = state.votersMap[
+                                        FirestoreConstants.currentUserId];
+                                    state.votersMap.remove(
+                                        FirestoreConstants.currentUserId);
+                                    if (state.pollOptionsMap[
+                                            votedMovieID.toString()] >
+                                        1)
+                                      state.pollOptionsMap[
+                                          votedMovieID.toString()] -= 1;
+                                    else
+                                      state.pollOptionsMap[
+                                          votedMovieID.toString()] = 0;
+                                    BlocProvider.of<PollPostBloc>(context).add(
+                                        UpdatePollsEvent(
+                                            movies: state.movies,
+                                            owner: state.postOwner,
+                                            postID: widget.pollPost.postID,
+                                            votersMap: state.votersMap,
+                                            pollOptionsMap:
+                                                state.pollOptionsMap,
+                                            postTitle: widget.pollPost.title));
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delete_forever_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      Text(
+                                        "Remove Vote",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.redAccent,
+                                          fontSize: Sizes.dimen_6.h,
+                                        ),
+                                      ),
+                                    ],
+                                  ))
+                              : SizedBox.shrink()
                         ],
                       );
                     }
-                    if(state is PollPostLoading|| state is PollPostInitial){
+                    if (state is PollPostLoading || state is PollPostInitial) {
                       return SizedBox.shrink();
-                    }
-                    else if(state is PollPostError){
+                    } else if (state is PollPostError) {
                       return AppErrorWidget(
-                        onPressed: ()=>{
-                          BlocProvider.of<PollPostBloc>(context).add(LoadPollPostEvent(widget.pollPost))
+                        onPressed: () => {
+                          BlocProvider.of<PollPostBloc>(context)
+                              .add(LoadPollPostEvent(widget.pollPost))
                         },
                         errorType: state.appErrorType,
                       );
                     }
-                    return Center(child:
-                    Text('Undefined state in PollPost; $state',
-                        style: TextStyle(
-                        color: Colors.white
-                    ),)
-                    );
+                    return Center(
+                        child: Text(
+                      'Undefined state in PollPost; $state',
+                      style: TextStyle(color: Colors.white),
+                    ));
                   },
-
                 )
               ],
             ),
           ),
-
         ),
       ),
     );

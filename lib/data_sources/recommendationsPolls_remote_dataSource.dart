@@ -184,7 +184,7 @@ class RecommendationsPollsDataSourceImpl
         .update({'pollOptionsMap': pollOptionsMap, 'votersMap': votersMap});
 
     await FirestoreConstants.timelineRef
-        .doc(ownerID)
+        .doc(FirestoreConstants.currentUserId)
         .collection('Posts')
         .doc(postID)
         .update({'pollOptionsMap': pollOptionsMap, 'votersMap': votersMap});

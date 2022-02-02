@@ -13,6 +13,15 @@ class PostDoesNotExist extends PostFromFeedState{}
 
 class PostFromFeedLoading extends PostFromFeedState {}
 
+class FollowerProfileLoadingState extends PostFromFeedState{}
+
+class FollowerProfileLoadedState extends PostFromFeedState{
+  final UserModel user;
+
+  FollowerProfileLoadedState(this.user);
+
+}
+
 class PostFromFeedError extends PostFromFeedState {
   final String errorMessage; 
   final AppErrorType appErrorType;

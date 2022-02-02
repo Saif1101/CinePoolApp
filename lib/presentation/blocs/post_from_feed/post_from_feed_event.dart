@@ -16,6 +16,14 @@ class LoadPostEvent extends PostFromFeedEvent{
   List<Object> get props => [feedActivityItem];
 }
 
+class LoadFollowerProfileEvent extends PostFromFeedEvent{
+  final NewFollowerActivity newFollowerActivity;
+
+  LoadFollowerProfileEvent(this.newFollowerActivity); 
+
+}
+
+
 class DeleteActivityForPostEvent extends PostFromFeedEvent{
   final String activityID;
 
