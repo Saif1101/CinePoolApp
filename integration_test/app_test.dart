@@ -11,7 +11,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:socialentertainmentclub/main.dart' as app;
 
-void main() => run(_testMain);
+void main() => runApp();
 
 void _testMain() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

@@ -48,6 +48,8 @@ class RecommendationsPollsDataSourceImpl
       getMyAskForRecommendationPosts() async {
     List<AskForRecommendationsPostModel> myAskForRecommendationsPosts = [];
 
+    print('fetching my recommendations post');
+
     QuerySnapshot snapshot = await FirestoreConstants.recommendationPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserRecommendationPosts')

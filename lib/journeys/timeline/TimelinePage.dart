@@ -68,9 +68,11 @@ class _TimelinePageState extends State<TimelinePage> {
               }
               else {
                 return ListView.builder(
-                  itemCount: state.posts.length,
+                  itemCount: state.posts.length+1,
                   itemBuilder: (context, index) {
-
+                    if(index == state.posts.length){
+                      return SizedBox(height: 75,);
+                    }
                     if (state.posts[index].runtimeType.toString() ==
                         'WatchAlong') {
                       return WatchAlongCard(state.posts[index]);
@@ -82,7 +84,6 @@ class _TimelinePageState extends State<TimelinePage> {
                       return PollPostCard(state.posts[index]);
                     } else{
                       return Center(child: Text('Cant figure out the type'));
-
                     }
                   },
                 );

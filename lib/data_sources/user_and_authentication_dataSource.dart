@@ -110,6 +110,7 @@ class UserAndAuthenticationDataSourceImpl extends UserAndAuthenticationDataSourc
 
   @override
   Future<UserModel> getUserFromID(userID) async {
+    print('Getting user from ID: $userID');
     DocumentSnapshot doc = await FirestoreConstants.usersRef.doc(userID).get();
     return UserModel.fromDocument(doc);
   }

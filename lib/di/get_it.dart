@@ -429,5 +429,6 @@ Future init() async {
       deleteActivityFromFeed: getItInstance(),
       getPollPost: getItInstance(),
       getWatchAlong: getItInstance(),
-      getRecommendationPost: getItInstance()));
+      getRecommendationPost: getItInstance(),
+       getUserFromID: getItInstance()));
 }
