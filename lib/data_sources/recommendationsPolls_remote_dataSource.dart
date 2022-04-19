@@ -93,6 +93,7 @@ class RecommendationsPollsDataSourceImpl
   @override
   Future<void> createRecommendationsPost(
       AskForRecommendationsPostModel askForRecommendationsPost) async {
+        print('Inside datasource');
     String id = FirestoreConstants.recommendationPostsRef
         .doc(FirestoreConstants.currentUserId)
         .collection('UserRecommendationPosts')
@@ -108,8 +109,8 @@ class RecommendationsPollsDataSourceImpl
       'postID': id,
       'title': askForRecommendationsPost.title,
       'ownerID': FirestoreConstants.currentUserId,
-      'recommendationsTrackMap':
-          askForRecommendationsPost.recommendationsTrackMap,
+      'preferredGenres' : askForRecommendationsPost.preferredGenres,
+      'recommendationsTrackMap': askForRecommendationsPost.recommendationsTrackMap,
     });
   }
 
@@ -156,7 +157,7 @@ class RecommendationsPollsDataSourceImpl
         .set({
       'type': 'PollPost',
       'postID': id,
-      'body': pollPost.title,
+      'title': pollPost.title,
       'pollOptionsMap': pollPost.pollOptionsMap,
       'ownerID': FirestoreConstants.currentUserId,
       'votersMap': pollPost.votersMap,

@@ -14,6 +14,7 @@ class UserModel extends Equatable{
 
   final Map<String, String> genres;
   final String timestamp;
+  final bool registered; 
 
   const UserModel({
     this.id,
@@ -22,7 +23,8 @@ class UserModel extends Equatable{
     this.photoUrl,
     this.displayName,
     this.genres,
-    this.timestamp
+    this.timestamp,
+    this.registered,
   });
 
   static UserModel copyWithEditProfile({UserModel currentUser, Map<String,String> genres, String username}){
@@ -34,20 +36,24 @@ class UserModel extends Equatable{
       displayName: currentUser.displayName,
       genres: genres ?? currentUser.genres,
       timestamp: currentUser.timestamp,
+      registered: currentUser.registered
     );
   }
 
+
+
   /// Empty user which represents an unauthenticated user.
-  static const empty = UserModel(id: '');
+  //static const empty = UserModel(id: '');
+
 
   /// Convenience getter to determine whether the current user is empty.
-  bool get isEmpty => this == UserModel.empty;
+  bool get isEmpty => this.registered == false;
 
   /// Convenience getter to determine whether the current user is not empty.
-  bool get isNotEmpty => this != UserModel.empty;
+  bool get isNotEmpty => this.registered != false;
 
   factory UserModel.fromDocument(DocumentSnapshot doc){
-    final invalidGenreMapFromFirestore = json.decode(json.encode(doc.data()['genres'])) as Map<String, dynamic>;
+    final invalidGenreMapFromFirestore = json.decode(json.encode(doc['genres'])) as Map<String, dynamic>;
 
     Map<String, String> convertedGenreMap =
     invalidGenreMapFromFirestore.map((key, value) => MapEntry(key, value?.toString()));
@@ -55,13 +61,14 @@ class UserModel extends Equatable{
 
 
     return UserModel(
-        id: doc.data()['id'],
-        email: doc.data()['email'],
-        username: doc.data()['username'],
-        photoUrl: doc.data()['photoUrl'],
-        displayName: doc.data()['displayName'],
+        id: doc['id'],
+        email: doc['email'],
+        username: doc['username'],
+        photoUrl: doc['photoUrl'],
+        displayName: doc['displayName'],
         genres: convertedGenreMap,
-      timestamp: doc.data()['timestamp'],
+      timestamp: doc['timestamp'],
+      registered: true,
     );
   }
 
@@ -81,7 +88,7 @@ class UserModel extends Equatable{
   @override
   String toString() {
 
-    return("User details-> ID: ${this.id}, Username: ${this.username}, Genres:${this.genres},"
+    return("User details -> ID: ${this.id}, Username: ${this.username}, Genres:${this.genres},"
         "displayName: ${this.displayName}, e-mail: ${this.email},  photoURL: ${this.photoUrl}, "
         "timestamp: ${this.timestamp}");
   }

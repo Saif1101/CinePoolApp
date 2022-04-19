@@ -40,14 +40,14 @@ factory VoteRecommendActivity.fromDocument(DocumentSnapshot doc){
   
 
     return VoteRecommendActivity(
-      actorUserID: doc.data()['actorUserID'],
-      type: doc.data()['type'],
-      postTitle: doc.data()['postTitle'],
-      postID: doc.data()['postID'],
-      userPhotoURL: doc.data()['userPhotoURL'],
-      username:doc.data()['username'],
-      postOwnerID: doc.data()['postOwnerID'],
-      timestamp: doc.data()['timestamp'].toDate()
+      actorUserID: doc['actorUserID'],
+      type: doc['type'],
+      postTitle: doc['postTitle'],
+      postID: doc['postID'],
+      userPhotoURL: doc['userPhotoURL'],
+      username:doc['username'],
+      postOwnerID: doc['postOwnerID'],
+      timestamp: doc['timestamp'].toDate()
     );
   }
 }
@@ -72,12 +72,12 @@ class NewFollowerActivity extends FeedActivityItem{
   factory NewFollowerActivity.fromDocument(DocumentSnapshot doc){
 
     return NewFollowerActivity(
-      type: doc.data()['type'],
-      actorUserID: doc.data()['actorUserID'],
-      userPhotoURL: doc.data()['userPhotoURL'],
-      username:doc.data()['username'],
-      followedUserID: doc.data()['followedUserID'],
-      timestamp: doc.data()['timestamp'].toDate(), 
+      type: doc['type'],
+      actorUserID: doc['actorUserID'],
+      userPhotoURL: doc['userPhotoURL'],
+      username:doc['username'],
+      followedUserID: doc['followedUserID'],
+      timestamp: doc['timestamp'].toDate(), 
     );
   }
 }
@@ -110,15 +110,15 @@ class OptedInToWatchAlongActivity extends FeedActivityItem{
   factory OptedInToWatchAlongActivity.fromDocument(DocumentSnapshot doc) {
 
     return OptedInToWatchAlongActivity(
-      type: doc.data()['type'],
-      username: doc.data()['username'],
-      userPhotoURL: doc.data()['userPhotoURL'],
-      postOwnerID: doc.data()['postOwnerID'],
-      postTitle: doc.data()['postTitle'],
-      movieID: doc.data()['movieID'], 
-      timestamp: doc.data()['timestamp'].toDate(), 
-      actorUserID: doc.data()['actorUserID'], 
-      postID: doc.data()['postID'],
+      type: doc['type'],
+      username: doc['username'],
+      userPhotoURL: doc['userPhotoURL'],
+      postOwnerID: doc['postOwnerID'],
+      postTitle: doc['postTitle'],
+      movieID: doc['movieID'], 
+      timestamp: doc['timestamp'].toDate(), 
+      actorUserID: doc['actorUserID'], 
+      postID: doc['postID'],
     );
   }
 

@@ -23,8 +23,8 @@ class PollPostModel extends Post{
 
   factory PollPostModel.fromDocument(DocumentSnapshot doc){
 
-    final invalidPollOptionsFromFirestore = json.decode(json.encode(doc.data()['pollOptionsMap'])) as Map<String, dynamic>;
-    final invalidVotersMapFromFirestore = json.decode(json.encode(doc.data()['votersMap'])) as Map<String, dynamic>;
+    final invalidPollOptionsFromFirestore = json.decode(json.encode(doc['pollOptionsMap'])) as Map<String, dynamic>;
+    final invalidVotersMapFromFirestore = json.decode(json.encode(doc['votersMap'])) as Map<String, dynamic>;
 
     Map<String, int> pollOptionsMap =
     invalidPollOptionsFromFirestore.map((key, value) => MapEntry(key, value?.toInt()));
@@ -33,11 +33,11 @@ class PollPostModel extends Post{
     invalidVotersMapFromFirestore.map((key, value) => MapEntry(key, value?.toInt()));
 
     return PollPostModel(
-        postID: doc.data()['postID'],
-        title: doc.data()['title'],
+        postID: doc['postID'],
+        title: doc['title'],
         pollOptionsMap: pollOptionsMap,
-        type: doc.data()['type'],
-        ownerID: doc.data()['ownerID'],
+        type: doc['type'],
+        ownerID: doc['ownerID'],
         votersMap: votersMap,
     );
   }

@@ -29,9 +29,9 @@ class FavoritedMovie extends MovieEntity{
 
   factory FavoritedMovie.fromDocument(DocumentSnapshot doc){
     return FavoritedMovie(
-      id: int.parse(doc.data()['id']),
-      title: doc.data()['title'],
-      posterPath: doc.data()['posterPath']
+      id: int.parse(doc['id']),
+      title: doc['title'],
+      posterPath: doc['posterPath']
     );
   }
 }

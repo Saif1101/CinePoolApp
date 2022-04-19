@@ -53,7 +53,7 @@ class _MyRecommendationPostsState extends State<MyRecommendationPosts> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Head To Your Timeline To Ask Your Friends For Movie Recommendations!',
+                      'Head to your timeline to ask your friends for movie recommendations.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           

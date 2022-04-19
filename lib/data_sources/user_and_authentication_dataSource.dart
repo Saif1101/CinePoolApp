@@ -1,21 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 
-import 'package:socialentertainmentclub/models/AuthenticationDetail.dart';
+
 
 import 'package:socialentertainmentclub/models/UserModel.dart';
-import 'package:socialentertainmentclub/presentation/blocs/firestore/firebase_authentication.dart';
-import 'package:socialentertainmentclub/presentation/blocs/firestore/google_sign_in_provider.dart';
+
 
 abstract class UserAndAuthenticationDataSource{
   Future <void> setUsernameAndGenres(String username, Map<String,String>genres);
-  Future <AuthenticationDetail> getAuthenticationDetailFromGoogle();
+
   Future <UserModel> getUserFromID(String userID);
-  AuthenticationDetail getAuthCredentialFromFirebaseUser({User user});
+
   Future<UserModel> newUserSignUp(
       {String id,
         String username,
@@ -25,17 +20,14 @@ abstract class UserAndAuthenticationDataSource{
         String timestamp,
         String displayName}
       );
-  Future<UserModel> getUserFromAuthDetail(AuthenticationDetail authenticationDetail);
-  Future<void> unAuthenticate();
-  Future<GoogleSignInAccount> getCurrentLoggedInAccount();
+  Future<List<UserModel>> getRecentUsers(); 
+
 }
 
 class UserAndAuthenticationDataSourceImpl extends UserAndAuthenticationDataSource{
-  final AuthenticationFirebaseProvider authenticationFirebaseProvider;
-  final GoogleSignInProvider googleSignInProvider;
 
-  UserAndAuthenticationDataSourceImpl( {@required  this.authenticationFirebaseProvider,
-    @required this.googleSignInProvider});
+
+  UserAndAuthenticationDataSourceImpl();
 
   @override
   Future<void> setUsernameAndGenres(String username, Map<String, String> genres) async {
@@ -45,41 +37,7 @@ class UserAndAuthenticationDataSourceImpl extends UserAndAuthenticationDataSourc
     });
   }
 
-  @override
-  Future<AuthenticationDetail> getAuthenticationDetailFromGoogle() async {
-    User user = await authenticationFirebaseProvider.login(
-      credential: await googleSignInProvider.login());
-    AuthenticationDetail authDetail = getAuthCredentialFromFirebaseUser(user: user);
-    return authDetail;
-  }
-
-  @override
-  AuthenticationDetail getAuthCredentialFromFirebaseUser({User user}) {
-    if (user != null) {
-      return AuthenticationDetail(
-        isValid: true,
-        uid: user.uid,
-        email: user.email,
-        photoUrl: user.photoURL,
-        name: user.displayName,
-      );
-    } else {
-      return AuthenticationDetail(isValid: false);
-    }
-  }
-
-  @override
-  Future<UserModel> getUserFromAuthDetail(AuthenticationDetail authenticationDetail) async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(authenticationDetail.uid)
-        .get();
-    if (doc.exists) {
-      return UserModel.fromDocument(doc);
-    }
-    else {
-      return UserModel.empty;
-    }
-  }
-
+  
   @override
   Future<UserModel> newUserSignUp({String id, String username, String photoUrl, String email, Map<String, String> selectedGenres, String timestamp, String displayName}) async {
     FirestoreConstants.usersRef.doc(id).set({
@@ -95,23 +53,24 @@ class UserAndAuthenticationDataSourceImpl extends UserAndAuthenticationDataSourc
     return UserModel.fromDocument(doc);
   }
 
-  @override
-  Future<void> unAuthenticate() async {
-    await googleSignInProvider.logout();
-    await authenticationFirebaseProvider.logout();
-    return;
-  }
+  
 
-  @override
-  Future<GoogleSignInAccount> getCurrentLoggedInAccount() async {
-    GoogleSignInAccount googleAccount =  await googleSignInProvider.getGoogleAccount();
-    return googleAccount;
-  }
+  
 
   @override
   Future<UserModel> getUserFromID(userID) async {
     print('Getting user from ID: $userID');
     DocumentSnapshot doc = await FirestoreConstants.usersRef.doc(userID).get();
     return UserModel.fromDocument(doc);
+  }
+
+  @override
+  Future<List<UserModel>> getRecentUsers() async {
+    List<UserModel> users = []; 
+    QuerySnapshot userQuery = await FirestoreConstants.usersRef.orderBy('timestamp', descending: true).get();
+    userQuery.docs.forEach((doc) {
+      users.add(UserModel.fromDocument(doc));
+     });
+    return users; 
   }
 }

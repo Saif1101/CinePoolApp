@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:socialentertainmentclub/common/screenutil/screenutil.dart';
 import 'package:socialentertainmentclub/data/core/API_constants.dart';
+import 'package:socialentertainmentclub/data/core/Firestore_constants.dart';
 import 'package:socialentertainmentclub/entities/movie_detail_entity.dart';
 import 'package:socialentertainmentclub/journeys/timeline/FacePile.dart';
 import 'package:socialentertainmentclub/models/UserModel.dart';
@@ -45,11 +46,12 @@ class MovieRecommendationTile extends StatelessWidget {
               width: constraints.maxWidth/3.5,
               child: FacePile(users: users),
             ),
+            users.contains(FirestoreConstants.currentUser)?
             IconButton(
               icon: Icon(Icons.close,
                 color: Colors.blueGrey,),
               onPressed: onTap,
-            ),
+            ):SizedBox.shrink(),
           ],
         ),
       ),

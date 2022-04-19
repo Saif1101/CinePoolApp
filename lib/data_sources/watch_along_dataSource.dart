@@ -38,7 +38,7 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
     .get();
     
     if(doc.exists){
-      return doc.data()['watchAlongID'];
+      return doc['watchAlongID'];
     }
     return 'NA';
   }
@@ -161,8 +161,8 @@ class WatchAlongDataSourceImpl extends WatchAlongDataSource{
     if(snapshot.docs.length>0){
       snapshot.docs.forEach((doc) async {
 
-        String ownerID = doc.data()['ownerID'];
-        String movieID = doc.data()['movieID'];
+        String ownerID = doc['ownerID'];
+        String movieID = doc['movieID'];
         
         DocumentSnapshot watchAlong  = await FirestoreConstants.watchAlongRef
         .doc(ownerID)

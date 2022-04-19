@@ -52,11 +52,19 @@ class _CreateAskForRecommendationsPostPageState extends State<CreateAskForRecomm
           value: createAskForRecommendationsBloc,
           child: BlocConsumer<CreateAskForRecommendationsBloc, CreateAskForRecommendationsState>(
             listener: (context,state){
+              print("CreateAskForRecommendationsPost : listener state: $state");
               if(state is CreateAskForRecommendationsPostSuccess){
                 Navigator.pop(context);
               }
             },
+            buildWhen: (prev,curr){
+              if(curr is CreateAskForRecommendationsPostSuccess){
+                return false;
+              }
+              return true;
+            },
             builder: (context,state){
+              print("CreateAskForRecommendationsPost : builder state: $state");
               if(state is CreateAskForRecommendationsPostLoaded){
                 return Padding(
                   padding: const EdgeInsets.all(30),
@@ -72,15 +80,9 @@ class _CreateAskForRecommendationsPostPageState extends State<CreateAskForRecomm
                             children: [
                               CustomTextField(
                                 minLength: 4,
-                                maxLength: 12,
+                                maxLength: 75,
                                 controller: titleController,
                                 hintText: "Title",
-                              ),
-                              CustomTextField(
-                                minLength: 4,
-                                maxLength: 56,
-                                controller: descController,
-                                hintText: "Description",
                               ),
                               SizedBox(height: 16),
                             ],
@@ -116,6 +118,7 @@ class _CreateAskForRecommendationsPostPageState extends State<CreateAskForRecomm
                         MainButton(
                           text: 'Post',
                           onTap: () {
+                            print("Post Button Pressed");
                             BlocProvider.of<CreateAskForRecommendationsBloc>(context).add(CreateAskForRecommendationsButtonPress
                               (mapGenresWithID: state.genres,
                                 title: titleController.text,
@@ -142,7 +145,7 @@ class _CreateAskForRecommendationsPostPageState extends State<CreateAskForRecomm
                   ),
                 );
               }
-              return Center(child: Text("UndefinedState in CreateAskForRecommendationsPost",style:TextStyle(color: Colors.white)));
+              return Center(child: Text("UndefinedState in CreateAskForRecommendationsPost: $state",style:TextStyle(color: Colors.white)));
             },
 
           ),

@@ -54,7 +54,7 @@ class _MyPollPostsState extends State<MyPollPosts> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                      'Head To Your Timeline To Host Polls!',
+                      'Head to your timeline to host polls.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w500),

@@ -130,14 +130,11 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 8),
-                                          child: Text(
-                                            "is asking for recommendations",
-                                            style: TextStyle(
-                                              fontSize: Sizes.dimen_6.h,
-                                              color: Colors.white,
-                                            ),
+                                        Text(
+                                          "is asking for recommendations",
+                                          style: TextStyle(
+                                            fontSize: Sizes.dimen_6.h,
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ],
@@ -170,7 +167,7 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.w300,
                                       color: Colors.white,
-                                      fontSize: Sizes.dimen_6.h),
+                                      fontSize: Sizes.dimen_8.h),
                                 ),
                               ),
                             ),
@@ -181,7 +178,7 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8.0),
                               child: GenreTagsHorizontalScroll(
-                                  leftTitleWeight: FontWeight.bold,
+                                  leftTitleWeight: FontWeight.w800,
                                   titleColor: Colors.white,
                                   scrollBgColor: ThemeColors.vulcan,
                                   genres: state.askForRecommendationsPost
@@ -234,68 +231,66 @@ class _AskForRecommendationsCardState extends State<AskForRecommendationsCard> {
                                   thickness: 2.0,
                                 ),
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      //STOP OWNER OF THE POST FROM ADD RECOMMENDATIONS
-                                      FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: isOwner
-                                            ? Text(
-                                                'What Your Friends Recommended',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontSize: FontSize.medium,
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w500))
-                                            : state.users.containsKey(
-                                                    FirestoreConstants
-                                                        .currentUserId)
-                                                ? Text('Recommendation Added',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w500))
-                                                : Text('Add Recommendations',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w500)),
-                                      ),
-                                      isOwner
-                                          ? SizedBox.shrink()
+                              Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  children: [
+                                    //STOP OWNER OF THE POST FROM ADD RECOMMENDATIONS
+                                    FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: isOwner
+                                          ? Text(
+                                              'What Your Friends Recommended',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: Sizes.dimen_6.h,
+                                                  color: Colors.white,
+                                                  fontWeight:
+                                                      FontWeight.w500))
                                           : state.users.containsKey(
                                                   FirestoreConstants
                                                       .currentUserId)
-                                              ? SizedBox.shrink()
-                                              : RadiantGradientMask(
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.add,
+                                              ? Text('Recommendation Added',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
                                                       color: Colors.white,
-                                                    ),
-                                                    onPressed: () => {
-                                                      Navigator.of(context).pushNamed(
-                                                          RouteList
-                                                              .addRecommendationPage,
-                                                          arguments: NavigateRecommendationsPollParams(
-                                                              blocName:
-                                                                  'RecommendationsPost',
-                                                              askForRecommendationsPostListBloc:
-                                                                  askForRecommendationsPostListBloc))
-                                                    },
+                                                      fontWeight:
+                                                          FontWeight.w500))
+                                              : Text('Add Recommendations',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                    ),
+                                    isOwner
+                                        ? SizedBox.shrink()
+                                        : state.users.containsKey(
+                                                FirestoreConstants
+                                                    .currentUserId)
+                                            ? SizedBox.shrink()
+                                            : RadiantGradientMask(
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
                                                   ),
+                                                  onPressed: () => {
+                                                    Navigator.of(context).pushNamed(
+                                                        RouteList
+                                                            .addRecommendationPage,
+                                                        arguments: NavigateRecommendationsPollParams(
+                                                            blocName:
+                                                                'RecommendationsPost',
+                                                            askForRecommendationsPostListBloc:
+                                                                askForRecommendationsPostListBloc))
+                                                  },
                                                 ),
-                                    ],
-                                  ),
+                                              ),
+                                  ],
                                 ),
                               ),
                               Expanded(

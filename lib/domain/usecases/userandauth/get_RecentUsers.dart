@@ -1,20 +1,17 @@
 import 'package:dartz/dartz.dart';
-
+import 'package:socialentertainmentclub/domain/repositories/user_actions_repository.dart';
 import 'package:socialentertainmentclub/domain/repositories/user_and_authentication_repository.dart';
 import 'package:socialentertainmentclub/domain/usecases/usecase.dart';
 import 'package:socialentertainmentclub/entities/app_error.dart';
-
-import 'package:socialentertainmentclub/models/AuthenticationDetail.dart';
-
+import 'package:socialentertainmentclub/entities/no_params.dart';
 import 'package:socialentertainmentclub/models/UserModel.dart';
 
-class GetUserFromAuthDetail extends UseCase<UserModel, AuthenticationDetail>{
+class GetRecentUsers extends UseCase<List<UserModel>,NoParams>{
   final UserAndAuthenticationRepository repository;
 
-  GetUserFromAuthDetail(this.repository);
+  GetRecentUsers(this.repository);
 
-  @override
-  Future<Either<AppError, UserModel>> call(AuthenticationDetail params) async {
-    return await repository.getUserFromAuthDetail(params);
+  Future <Either<AppError,List<UserModel>>> call(NoParams parms) async {
+    return await repository.getRecentUsers();
   }
 }

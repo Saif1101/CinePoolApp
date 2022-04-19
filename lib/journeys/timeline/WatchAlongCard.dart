@@ -312,54 +312,62 @@ class _WatchAlongCardState extends State<WatchAlongCard> {
                                     bottomRight: Radius.circular(12))),
                             //Colors.greenAccent for opted in and Icons.beenhere_outlined with white color
 
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Icon(
-                                    isOwner?
-                                    Icons.assignment_turned_in_outlined:
-                                    participationState.isParticipating
-                                        ? Icons.emoji_emotions_outlined
-                                        : Icons.access_alarm_outlined,
-                                    color:isOwner?
-                                    Colors.black
-                                    :participationState.isParticipating
-                                        ? Colors.black
-                                        : Colors.white,
-                                    size: 40,
-                                  ),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    isOwner?
-                                    'Scheduled'
-                                    :participationState.isParticipating
-                                        ? 'You\'re in'
-                                        : 'Opt in',
-                                    style: TextStyle(
-                                      color: isOwner?
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical:2.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(child: SizedBox(),),
+                                  Flexible(
+                                    child: Icon(
+                                      isOwner?
+                                      Icons.assignment_turned_in_outlined:
+                                      participationState.isParticipating
+                                          ? Icons.emoji_emotions_outlined
+                                          : Icons.access_alarm_outlined,
+                                      color:isOwner?
                                       Colors.black
                                       :participationState.isParticipating
                                           ? Colors.black
                                           : Colors.white,
-                                      fontSize: Sizes.dimen_6.h,
-                                      fontWeight: FontWeight.bold,
+                                      size: 40,
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: LayoutBuilder(
-                                    builder:(context,constraints)=>SizedBox(
-                                      width: constraints.maxWidth/3,
-                                      child: FacePile(
-                                        users: participationState.participants
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal:4.0),
+                                      child: Text(
+                                        isOwner?
+                                        'Scheduled'
+                                        :participationState.isParticipating
+                                            ? 'You\'re in'
+                                            : 'Opt in',
+                                        style: TextStyle(
+                                          color: isOwner?
+                                          Colors.black
+                                          :participationState.isParticipating
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontSize: Sizes.dimen_6.h,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Expanded(
+                                    child: LayoutBuilder(
+                                      builder:(context,constraints)=>SizedBox(
+                                        width: constraints.maxWidth,
+                                        child: FacePile(
+                                          users: participationState.participants
+                                          ),
+                                        ),
+                                    ),
+                                  ),
+                         
+                                ],
+                              ),
                             ),
                           ),
                         );

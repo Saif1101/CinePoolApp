@@ -4,9 +4,11 @@ import 'package:socialentertainmentclub/common/constants/route_constants.dart';
 import 'package:socialentertainmentclub/di/get_it.dart';
 import 'package:socialentertainmentclub/helpers/shader_mask.dart';
 import 'package:socialentertainmentclub/helpers/theme_colors.dart';
+import 'package:socialentertainmentclub/journeys/search/search_user_card.dart';
 import 'package:socialentertainmentclub/journeys/timeline/AskForRecommendationsPost/AskForRecommendationsCard.dart';
 import 'package:socialentertainmentclub/journeys/timeline/ExpandableFAB.dart';
 import 'package:socialentertainmentclub/journeys/timeline/PollPost/PollPostCard.dart';
+import 'package:socialentertainmentclub/journeys/timeline/RecentUserCard.dart';
 import 'package:socialentertainmentclub/journeys/timeline/WatchAlongCard.dart';
 import 'package:socialentertainmentclub/presentation/blocs/timeline/timeline_bloc.dart';
 import 'package:socialentertainmentclub/presentation/widgets/app_error_widget.dart';
@@ -58,6 +60,32 @@ class _TimelinePageState extends State<TimelinePage> {
                   child: CircularProgressIndicator(),
                 ),
               );
+            }
+            else if(state is TimelinePostsEmpty){
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Start by following people you know', style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500
+                      ),), 
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Divider(
+                          color: Colors.white,
+                        ),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.recentUsers.length,
+                        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                        itemBuilder:(context, index){
+                          print(state.recentUsers[index]);
+                          return RecentUserCard(user: state.recentUsers[index]);
+                        })
+                ],
+              ); 
             }
             else if (state is TimelineLoaded) {
               if (state.posts.length == 0) {

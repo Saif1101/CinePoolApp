@@ -15,7 +15,7 @@ class NewFollowerActivityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: ThemeColors.primaryColor.withOpacity(0.7),
+      color: ThemeColors.primaryColor.withOpacity(0.4),
       elevation: 8.0,
       child: ListTile(
         leading: CircleAvatar(
@@ -29,29 +29,26 @@ class NewFollowerActivityTile extends StatelessWidget {
                   width: 80,
                 ),
         ),
-        title: FittedBox(
-          fit: BoxFit.contain,
-          child: RichText(
-            text: TextSpan(
-              style: TextStyle(
-              fontSize: Sizes.dimen_6.h,
-              color: Colors.white,
-            ),
-            children: <TextSpan>[
-              TextSpan(
-                text: "${newFollowerActivity.username}",
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-              ),),
-              TextSpan(
-                text: "just started following you.",
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-              ),)
-
-            ]
-            )
+        title: RichText(
+          text: TextSpan(
+            style: TextStyle(
+            fontSize: Sizes.dimen_6.h,
+            color: Colors.white,
           ),
+          children: <TextSpan>[
+            TextSpan(
+              text: "${newFollowerActivity.username}",
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+            ),),
+            TextSpan(
+              text: " just started following you. ",
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+            ),)
+
+          ]
+          )
         ),
       ),
     );
@@ -67,7 +64,7 @@ class AddVoteRecommendationActivityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 8.0,
-      color: ThemeColors.primaryColor.withOpacity(0.5),
+      color: ThemeColors.primaryColor.withOpacity(0.4),
       child: ListTile(
      
         leading: CircleAvatar(

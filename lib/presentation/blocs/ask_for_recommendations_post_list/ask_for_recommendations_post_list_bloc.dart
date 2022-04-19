@@ -153,7 +153,7 @@ class AskForRecommendationsPostListBloc extends Bloc<AskForRecommendationsPostLi
       final response = await updateRecommendationsTrackMap(UpdateRecommendationsTrackMapParams(
           recommendationsTrackMap:  event.recommendationsTrackMap,
           postID: event.postID,
-          ownerID: FirestoreConstants.currentUserId));
+          ownerID: event.ownerID));
 
       await addRecommendationActivity(VoteRecommendActivity(
             username: FirestoreConstants.currentUser.username,

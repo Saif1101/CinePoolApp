@@ -40,7 +40,7 @@ class CreatePollPostBloc extends Bloc<PollPostEvent, PollPostState> {
     Emitter<PollPostState> emit,
   ) async {
     emit(CreatePollPostLoading());
-        if(event.title.length>=4 && event.title.length<=15 &&  event.movies.length>=2){
+        if(event.title.length>=4 && event.title.length<=55 &&  event.movies.length>=2){
           final responseEither = await createPollPost(PollPostModel(
               votersMap: {},
               ownerID: FirestoreConstants.currentUserId,
@@ -56,10 +56,10 @@ class CreatePollPostBloc extends Bloc<PollPostEvent, PollPostState> {
                   )
                 );
         } else {
-          if(event.title.length<4 || event.title.length>15){
+          if(event.title.length<4 || event.title.length>55){
             ScaffoldMessenger.of(event.context).showSnackBar(
                 SnackBar(backgroundColor: ThemeColors.primaryColor,
-                  content: Text("The length of the title should be between 4 and 15 characters",
+                  content: Text("The length of the title should be between 4 and 55 characters",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

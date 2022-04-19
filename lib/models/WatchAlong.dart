@@ -25,12 +25,12 @@ class WatchAlong extends Post{
 
   factory WatchAlong.fromDocument(DocumentSnapshot doc){
     return WatchAlong(
-      location: doc.data()['location'],
-      watchAlongID: doc.data()['watchAlongID'],
-      scheduledTime: doc.data()['scheduledTime'].toDate(),
-        title: doc.data()['title'],
-        ownerID: doc.data()['ownerID'],
-        movieID: doc.data()['movieID'],
+      location: doc['location'],
+      watchAlongID: doc['watchAlongID'],
+      scheduledTime: doc['scheduledTime'].toDate(),
+        title: doc['title'],
+        ownerID: doc['ownerID'],
+        movieID: doc['movieID'],
     );
   }
 

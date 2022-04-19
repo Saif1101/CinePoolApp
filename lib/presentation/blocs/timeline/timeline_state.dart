@@ -20,6 +20,16 @@ class TimelineLoaded extends TimelineState {
   List<Object> get props => [posts];
 }
 
+class TimelinePostsEmpty extends TimelineState{
+  final List<UserModel> recentUsers;
+
+  TimelinePostsEmpty(this.recentUsers); 
+
+  @override
+
+  List<Object> get props => [recentUsers];
+  
+}
 class TimelineError extends TimelineState {
   final AppErrorType appErrorType;
   final String errorMessage;

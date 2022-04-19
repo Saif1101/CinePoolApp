@@ -207,7 +207,7 @@ class ActionButton extends StatelessWidget {
               color: ThemeColors.primaryColor,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:4.0,vertical: 2.0),
+          padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 2.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,

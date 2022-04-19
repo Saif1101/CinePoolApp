@@ -85,7 +85,7 @@ class _CreatePollPostPageState extends State<CreatePollPostPage> {
                               Header(heading: "Create a poll"),
                               SizedBox(height: Sizes.dimen_12.h,),
                               CustomTextField(
-                                maxLength: 25,
+                                maxLength: 55,
                                 minLength: 4,
                                 controller: titleController,
                                 hintText: "Title",

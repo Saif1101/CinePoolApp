@@ -27,13 +27,13 @@ class PostsRemoteDataSourceImpl extends PostsRemoteDataSource {
         .get();
 
     snapshot.docs.forEach((doc) {
-      if(doc.data()['type'] == 'WatchAlong'){
+      if(doc['type'] == 'WatchAlong'){
         posts.add(WatchAlong.fromDocument(doc));
       }
-      else if(doc.data()['type']=='PollPost'){
+      else if(doc['type']=='PollPost'){
         posts.add(PollPostModel.fromDocument(doc));
       }
-      else if(doc.data()['type']=='AskForRecommendationsPost'){
+      else if(doc['type']=='AskForRecommendationsPost'){
         posts.add(AskForRecommendationsPostModel.fromDocument(doc));
       }
     });

@@ -24,18 +24,18 @@ class AskForRecommendationsPostModel extends Post{
     @required this.title,});
 
   factory AskForRecommendationsPostModel.fromDocument(DocumentSnapshot doc){
-    final invalidRecommendationTrackMapFromFirestore = json.decode(json.encode(doc.data()['recommendationsTrackMap'])) as Map<String, dynamic>;
+    final invalidRecommendationTrackMapFromFirestore = json.decode(json.encode(doc['recommendationsTrackMap'])) as Map<String, dynamic>;
 
     Map<String, List<String>> recommendationsTrackMap =
     invalidRecommendationTrackMapFromFirestore.map((key, value) => MapEntry(key,List<String>.from(value)));
 
-    List<String> preferredGenresList = List<String>.from(doc.data()['preferredGenres']);
+    List<String> preferredGenresList = List<String>.from(doc['preferredGenres']);
 
     return AskForRecommendationsPostModel(
-      postID: doc.data()['postID'],
-      title: doc.data()['title'],
-      type: doc.data()['type'],
-      ownerID: doc.data()['ownerID'],
+      postID: doc['postID'],
+      title: doc['title'],
+      type: doc['type'],
+      ownerID: doc['ownerID'],
       recommendationsTrackMap: recommendationsTrackMap,
       preferredGenres: preferredGenresList,
     );

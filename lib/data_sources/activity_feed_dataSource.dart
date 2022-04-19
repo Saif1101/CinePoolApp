@@ -68,11 +68,11 @@ class ActivityFeedDataSourceImpl extends ActivityFeedDataSource{
     if(query.docs.length>0){
       query.docs.forEach(
         (doc) { 
-         if(doc.data()['type'] == "VoteAdded" || doc.data()["type"]=="RecommendationAdded"){
+         if(doc['type'] == "VoteAdded" || doc["type"]=="RecommendationAdded"){
            feedItems.add(VoteRecommendActivity.fromDocument(doc));
-         } else if (doc.data()['type'] == 'NewFollower'){
+         } else if (doc['type'] == 'NewFollower'){
            feedItems.add(NewFollowerActivity.fromDocument(doc));
-         } else if (doc.data()['type']=='OptedInToWatchAlong'){
+         } else if (doc['type']=='OptedInToWatchAlong'){
            feedItems.add(OptedInToWatchAlongActivity.fromDocument(doc));
          }
             }

@@ -46,11 +46,12 @@ class CreateAskForRecommendationsBloc extends Bloc<CreateAskForRecommendationsEv
     CreateAskForRecommendationsButtonPress event,
     Emitter<CreateAskForRecommendationsState> emit,
   ) async {
+    print('Inside create ask for recommendations bloc: button pressed');
     emit(CreateAskForRecommendationsPostLoading());
       List<Item> lst = event.tagStateKey.currentState?.getAllItem;
       List<String> genres = [];
       lst.where((a) => a.active==true).forEach( (a) => genres.add(a.title));
-      if(event.title.length>=4 && genres.length>=3){
+      if(event.title.length>=4){
         Map<String, String>  selectedGenres= new Map();
         genres.forEach((element) {
           selectedGenres[(event.mapGenresWithID.keys.firstWhere((k) => event.mapGenresWithID[k] == element).toString())]=element;}
@@ -58,9 +59,10 @@ class CreateAskForRecommendationsBloc extends Bloc<CreateAskForRecommendationsEv
 
         final responseEither = await createAskForRecommendationsPost(
           AskForRecommendationsPostModel(
+            
             preferredGenres: selectedGenres.values.toList(),
             recommendationsTrackMap: {},
-            title: event.description,
+            title: event.title,
             type: 'AskForRecommendationsPost',
             ownerID: FirestoreConstants.currentUserId,
           )
@@ -70,27 +72,17 @@ class CreateAskForRecommendationsBloc extends Bloc<CreateAskForRecommendationsEv
                 (r) => CreateAskForRecommendationsPostSuccess()
                 ));
       } else {
-        if(event.title.length<4 || event.title.length>15){
+        if(event.title.length<4 || event.title.length>75){
           ScaffoldMessenger.of(event.context).showSnackBar(
               SnackBar(backgroundColor: ThemeColors.primaryColor,
-                content: Text("The length of the title should be between 4 and 15 characters",
+                content: Text("The length of the title should be between 4 and 75 characters",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),),
               ));
         }
-        else if(event.description.length<4 || event.description.length>56){
-          ScaffoldMessenger.of(event.context).showSnackBar(
-              SnackBar(backgroundColor: ThemeColors.primaryColor,
-                content: Text("The length of the description should be between 4 and 56 characters",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),),
-              ));
-        }
-        emit (CreateAskForRecommendationsPostLoaded(event.title,event.description, event.mapGenresWithID));
+        emit(CreateAskForRecommendationsPostLoaded(event.title,event.description, event.mapGenresWithID));
       }
   }
   

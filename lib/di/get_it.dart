@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 import 'package:socialentertainmentclub/data/core/api_client.dart';
 import 'package:socialentertainmentclub/data/repositories/activity_feed_repository_impl.dart';
+import 'package:socialentertainmentclub/data/repositories/auth_repository.dart';
 import 'package:socialentertainmentclub/data/repositories/post_from_feed_repository_impl.dart';
 import 'package:socialentertainmentclub/data/repositories/posts_repository_impl.dart';
 import 'package:socialentertainmentclub/data/repositories/recommendations_poll_repository_impl.dart';
@@ -64,16 +66,19 @@ import 'package:socialentertainmentclub/domain/usecases/posts/get_watchAlong.dar
 import 'package:socialentertainmentclub/domain/usecases/userandauth/add_FollowersAndFollowing.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/add_NewUserSignUp.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/check_IfFollowing.dart';
-import 'package:socialentertainmentclub/domain/usecases/userandauth/get_AuthCredentialFromFirebaseUser.dart';
-import 'package:socialentertainmentclub/domain/usecases/userandauth/get_AuthenticationDetailFromGoogle.dart';
+import 'package:socialentertainmentclub/domain/usecases/userandauth/check_IfUserAlreadySigned.dart';
+
+import 'package:socialentertainmentclub/domain/usecases/userandauth/get_CurrentFirebaseAccount.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_Followers.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_Following.dart';
+import 'package:socialentertainmentclub/domain/usecases/userandauth/get_RecentUsers.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_SearchedUsers.dart';
-import 'package:socialentertainmentclub/domain/usecases/userandauth/get_User.dart';
+
 import 'package:socialentertainmentclub/domain/usecases/userandauth/get_UserFromID.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/remove_Follower.dart';
 import 'package:socialentertainmentclub/domain/usecases/userandauth/set_UsernameAndGenres.dart';
-import 'package:socialentertainmentclub/domain/usecases/userandauth/unauthenticate.dart';
+import 'package:socialentertainmentclub/domain/usecases/userandauth/signOut.dart';
+import 'package:socialentertainmentclub/domain/usecases/userandauth/sign_InWithGoogle.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_IfParticipant.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/check_WatchAlong.dart';
 import 'package:socialentertainmentclub/domain/usecases/watchalong/create_WatchAlong.dart';
@@ -100,8 +105,7 @@ import 'package:socialentertainmentclub/presentation/blocs/recommendations_poll_
 import 'package:socialentertainmentclub/presentation/blocs/search_page/search_page_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/edit_profile/edit_profile_bloc.dart';
 import 'package:socialentertainmentclub/presentation/blocs/favorite_movies/favorite_movies_bloc.dart';
-import 'package:socialentertainmentclub/presentation/blocs/firestore/firebase_authentication.dart';
-import 'package:socialentertainmentclub/presentation/blocs/firestore/google_sign_in_provider.dart';
+
 import 'package:socialentertainmentclub/presentation/blocs/generic_movie_slider/generic_movie_slider_bloc.dart';
 
 import 'package:socialentertainmentclub/presentation/blocs/movie_backdrop/movie_backdrop_bloc.dart';
@@ -128,12 +132,9 @@ Future init() async {
 
   //Provider implementations
   getItInstance.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn());
-  getItInstance
-      .registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  getItInstance.registerLazySingleton<GoogleSignInProvider>(
-      () => GoogleSignInProvider(googleSignIn: getItInstance()));
-  getItInstance.registerLazySingleton<AuthenticationFirebaseProvider>(
-      () => AuthenticationFirebaseProvider(firebaseAuth: getItInstance()));
+  getItInstance.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+  getItInstance.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+
 
   //For data source implementations
   getItInstance.registerLazySingleton<PostsRemoteDataSource>(
@@ -148,8 +149,7 @@ Future init() async {
       () => UserActionsRemoteDataSourceImpl());
   getItInstance.registerLazySingleton<UserAndAuthenticationDataSource>(
       () => UserAndAuthenticationDataSourceImpl(
-            authenticationFirebaseProvider: getItInstance(),
-            googleSignInProvider: getItInstance(),
+
           ));
   getItInstance.registerLazySingleton<WatchAlongDataSource>(
       () => WatchAlongDataSourceImpl());
@@ -201,20 +201,23 @@ Future init() async {
       () => RemoveFavoriteMovie(getItInstance()));
 
   //Usecases - User Data And Authentication
-  getItInstance.registerLazySingleton<GetAuthenticationDetailFromGoogle>(
-      () => GetAuthenticationDetailFromGoogle(getItInstance()));
-  getItInstance.registerLazySingleton<GetAuthCredentialFromFirebaseUser>(
-      () => GetAuthCredentialFromFirebaseUser(getItInstance()));
   getItInstance.registerLazySingleton<NewUserSignUp>(
       () => NewUserSignUp(getItInstance()));
-  getItInstance.registerLazySingleton<GetUserFromAuthDetail>(
-      () => GetUserFromAuthDetail(getItInstance()));
+  
+   getItInstance.registerLazySingleton<CheckIfUserAlreadySignedIn>(
+      () => CheckIfUserAlreadySignedIn(getItInstance()));
+
+
   getItInstance.registerLazySingleton<SetUsernameAndGenres>(
       () => SetUsernameAndGenres(getItInstance()));
-  getItInstance.registerLazySingleton<Unauthenticate>(
-      () => Unauthenticate(getItInstance()));
+  getItInstance.registerLazySingleton<SignOut>(
+      () => SignOut(getItInstance()));
   getItInstance.registerLazySingleton<GetUserFromID>(
       () => GetUserFromID(getItInstance()));
+
+  getItInstance.registerLazySingleton<GetRecentUsers>(() => GetRecentUsers(getItInstance()));
+
+  
 
   //Usecases - Watch Alongs
   getItInstance.registerLazySingleton<CheckWatchAlong>(
@@ -252,6 +255,12 @@ Future init() async {
   getItInstance.registerLazySingleton<DeleteRecommendationPost>(
       () => DeleteRecommendationPost(getItInstance()));
 
+  getItInstance.registerLazySingleton<SignInWithGoogle>(
+      () => SignInWithGoogle(getItInstance()));
+  getItInstance.registerLazySingleton<GetCurrentFirebaseUser>(
+      () => GetCurrentFirebaseUser(getItInstance()));
+  
+
   //Activity Feed
   getItInstance.registerLazySingleton<AddVoteActivity>(
       () => AddVoteActivity(getItInstance()));
@@ -273,6 +282,14 @@ Future init() async {
       () => DeleteActivityFromFeed(getItInstance()));
 
   //Repository implementations
+  getItInstance.registerLazySingleton<AuthRepository>(
+      () => AuthRepository(
+        firestore: getItInstance(),
+        firebaseAuth:getItInstance(), 
+        googleSignIn:getItInstance(), 
+      )
+    );
+
   getItInstance.registerLazySingleton<PostsRepository>(
       () => PostsRepositoryImpl(postsRemoteDataSource: getItInstance()));
   getItInstance.registerLazySingleton<PostFromFeedRepository>(
@@ -285,9 +302,8 @@ Future init() async {
           remoteDataSource: getItInstance()));
   getItInstance.registerLazySingleton<UserAndAuthenticationRepository>(() =>
       UserAndAuthenticationRepositoryImpl(
-          userAndAuthenticationDataSource: getItInstance(),
-          authenticationFirebaseProvider: getItInstance(),
-          googleSignInProvider: getItInstance()));
+          userAndAuthenticationDataSource: getItInstance()
+          ));
   getItInstance.registerLazySingleton<ActivityFeedRepository>(
       () => ActivityFeedRepositoryImpl(getItInstance()));
   getItInstance.registerLazySingleton<WatchAlongRepository>(
@@ -317,13 +333,15 @@ Future init() async {
       ));
 
   getItInstance.registerFactory(() => AuthenticationBloc(
-        authenticationFireBaseProvider: getItInstance(),
+       
+        checkIfUserAlreadySignedIn: getItInstance(),
         getMapOfGenres: getItInstance(),
         newUserSignUp: getItInstance(),
         setUsernameAndGenres: getItInstance(),
         unauthenticate: getItInstance(),
-        getAuthenticationDetailFromGoogle: getItInstance(),
-        getUserFromAuthDetail: getItInstance(),
+        getCurrentFirebaseUser: getItInstance(), 
+        getUserFromID: getItInstance(),
+        signInWithGoogle:getItInstance(),
       ));
 
   getItInstance.registerFactory(() => GenericMovieSliderBloc(
@@ -387,7 +405,9 @@ Future init() async {
         watchAlongParticipationBloc: getItInstance(),
       ));
 
-  getItInstance.registerFactory(() => TimelineBloc(getPosts: getItInstance()));
+  getItInstance.registerFactory(() => TimelineBloc(
+    getRecentUsers: getItInstance(),
+    getPosts: getItInstance()));
 
   getItInstance.registerFactory(() => CreatePollPostBloc(
       createPollPost: getItInstance(), getMapOfGenres: getItInstance()));
